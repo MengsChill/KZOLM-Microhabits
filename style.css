@@ -1,0 +1,159 @@
+/* === Global reset === */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:"Poppins",sans-serif;
+  background:#f9f9f9;
+  color:#fff;
+}
+
+/* === Navbar === */
+.navbar {
+  background:#2f5d44;
+  padding:15px 40px;
+  display:flex;
+  align-items:center;
+}
+.logo { font-size:1.8rem; font-weight:bold; color:#fff; }
+
+/* === Welcome Page Layout === */
+.container {
+  display:flex;
+  min-height:calc(100vh - 60px);
+  background:#fff;
+  flex-wrap:wrap;
+}
+.left {
+  background:#4a7c59;
+  flex:1 1 400px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:40px;
+  text-align:center;
+  color:#fff;
+}
+.left h1 { font-size:2.5rem; margin-bottom:10px; }
+.left p { color:#e8e8e8; margin-bottom:25px; line-height:1.5; }
+
+.right {
+  flex:1 1 400px;
+  background:url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80")
+    no-repeat center/cover;
+  position:relative;
+  display:flex; justify-content:center; align-items:center;
+}
+.overlay {
+  background:rgba(47,93,68,0.7);
+  width:100%; height:100%;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+}
+.overlay h2 { font-size:2rem; margin-bottom:20px; }
+
+/* === Buttons === */
+.btn {
+  background:#4a7c59;
+  color:#fff;
+  border:none;
+  padding:12px 40px;
+  border-radius:30px;
+  font-size:1rem;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all .3s ease;
+  display:inline-block;
+}
+.btn:hover { background:#3e6b4d; transform:scale(1.05); }
+.btn.outline { background:transparent; border:2px solid #fff; }
+.btn.outline:hover { background:#fff; color:#4a7c59; }
+
+/* === Sign In Page === */
+.signin-container {
+  display:flex;
+  flex-wrap:wrap;
+  min-height:calc(100vh - 60px);
+  background:#5b8765;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+}
+.signin-box {
+  background:#2f5d44;
+  border-radius:20px;
+  padding:40px;
+  flex:1 1 400px;
+  max-width:400px;
+  color:#fff;
+}
+.signin-box h2 { margin-bottom:20px; }
+.signin-box label { display:block; font-weight:600; margin:10px 0 5px; }
+.signin-box input {
+  width:100%; padding:12px;
+  border:none; border-radius:10px;
+  margin-bottom:10px;
+}
+.password-field { position:relative; }
+.password-field .toggle {
+  position:absolute; right:10px; top:10px; cursor:pointer;
+}
+.forgot {
+  display:block;
+  font-size:0.9rem;
+  color:#fff;
+  text-decoration:underline;
+  margin-bottom:20px;
+}
+.btn.login {
+  background:#9ef86c;
+  color:#204b33;
+  font-weight:600;
+  width:100%;
+}
+.btn.login:hover { background:#8be35f; }
+
+.or {
+  text-align:center;
+  margin:20px 0 10px;
+  color:#d9d9d9;
+}
+.socials {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
+.socials img {
+  width:32px;
+  height:32px;
+  cursor:pointer;
+  filter:brightness(0) invert(1);
+  transition:transform .2s;
+}
+.socials img:hover { transform:scale(1.2); }
+
+.signin-image {
+  flex:1 1 400px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+.signin-image img {
+  width:100%;
+  border-radius:20px;
+  max-width:500px;
+}
+
+/* === Footer Tagline === */
+.tagline {
+  background:#5b8765;
+  color:#fff;
+  text-align:center;
+  padding:20px;
+  font-weight:600;
+}
+
+/* === Responsive === */
+@media (max-width:900px){
+  .container, .signin-container{ flex-direction:column; }
+  .left, .right, .signin-box, .signin-image{ flex:1 1 100%; }
+}
