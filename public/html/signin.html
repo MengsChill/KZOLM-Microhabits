@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kzolm - Sign In</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">Kzolm</div>
+  </header>
+
+  <main class="signin-container">
+    <section class="signin-box">
+      <h2>Sign In</h2>
+
+      <!-- ✅ Form should wrap your inputs -->
+      <form action="/signin" method="POST">
+        <label>Your email</label>
+        <input type="email" name="email" placeholder="Enter your email" required />
+
+        <label>Password</label>
+        <div class="password-field">
+          <input type="password" name="password" placeholder="Enter your password" required />
+          <span class="toggle">👁️</span>
+        </div>
+
+        <a href="#" class="forgot">Forgot your password?</a>
+
+        <button type="submit" class="btn login">Log In</button>
+      </form>
+
+      <p class="or">or login with</p>
+      <div class="socials">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
+        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/apple.svg" alt="Apple">
+      </div>
+    </section>
+
+    <section class="signin-image">
+      <img src="https://media.istockphoto.com/id/2027278927/photo/young-athletic-woman-exercising-with-barbell-during-sports-training-in-a-gym.jpg?s=612x612&w=0&k=20&c=ifFL7Mqc8NwTj25PAx4ONy1OOQZvc1S_kVOofsbLgFw=" alt="Fitness">
+    </section>
+  </main>
+
+  <footer class="tagline">
+    You Don’t Need A New Life, Just New Habits.
+  </footer>
+
+  <script>
+    document.querySelectorAll('.toggle').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const input = toggle.previousElementSibling;
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggle.textContent = '🙈';
+        } else {
+          input.type = 'password';
+          toggle.textContent = '👁️';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
