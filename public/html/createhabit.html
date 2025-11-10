@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Habit</title>
+    <link rel="stylesheet" href="../css/createhabit.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header section with title and subtitle -->
+        <h1>Create a New Habit</h1>
+        <div class="subtitle">Habit Name</div>
+        
+        <!-- Input field for habit name -->
+        <input type="text" class="input-field" placeholder="e.g. Read for 15 minutes">
+        
+        <!-- Icon and color selection section -->
+        <div class="section">
+            <div class="section-title">Icon & Color</div>
+            <div class="icon-color-section">
+                <div>
+                    <div class="option-label">Icon</div>
+                    <!-- Icon selection buttons -->
+                    <div class="icon-selector">
+                        <button class="icon-btn">📚</button>
+                        <button class="icon-btn">🏃</button>
+                        <button class="icon-btn">💧</button>
+                        <button class="icon-btn">🧘</button>
+                        <button class="icon-btn">🎵</button>
+                        <button class="icon-btn">✍️</button>
+                        <button class="icon-btn">🌱</button>
+                        <button class="icon-btn">⭐</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="option-label">Color</div>
+                    <!-- Color selection buttons -->
+                    <div class="color-selector">
+                        <button class="color-btn color-1"></button>
+                        <button class="color-btn color-2"></button>
+                        <button class="color-btn color-3"></button>
+                        <button class="color-btn color-4"></button>
+                        <button class="color-btn color-5"></button>
+                        <button class="color-btn color-6"></button>
+                        <button class="color-btn color-7"></button>
+                        <button class="color-btn color-8"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frequency and schedule section -->
+        <div class="section">
+            <div class="section-title">Frequency & Schedule</div>
+            <!-- Frequency selection tabs -->
+            <div class="frequency-tabs">
+                <button class="tab-btn active">Daily</button>
+                <button class="tab-btn">Weekly</button>
+                <button class="tab-btn">Monthly</button>
+            </div>
+            <!-- Day selection buttons -->
+            <div class="week-days">
+                <button class="day-btn">M</button>
+                <button class="day-btn">T</button>
+                <button class="day-btn">W</button>
+                <button class="day-btn">T</button>
+                <button class="day-btn">F</button>
+                <button class="day-btn">S</button>
+                <button class="day-btn">S</button>
+            </div>
+        </div>
+
+        <!-- Divider line -->
+        <div class="divider"></div>
+
+        <!-- Goal section -->
+        <div class="goal-section">
+            <div class="section-title">Goal</div>
+            <div class="goal-display">3 + times per week</div>
+        </div>
+
+        <!-- Reminder section -->
+        <div class="reminder-section">
+            <div class="section-title">Reminders</div>
+            <div class="reminder-time">08:00AM</div>
+        </div>
+
+        <!-- Create habit button -->
+        <button class="create-btn">Create Habit</button>
+    </div>
+
+    <script>
+        // Add interactivity to icon buttons
+        const iconButtons = document.querySelectorAll('.icon-btn');
+        iconButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                iconButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add interactivity to color buttons
+        const colorButtons = document.querySelectorAll('.color-btn');
+        colorButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                colorButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add interactivity to frequency tabs
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add interactivity to day buttons
+        const dayButtons = document.querySelectorAll('.day-btn');
+        dayButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

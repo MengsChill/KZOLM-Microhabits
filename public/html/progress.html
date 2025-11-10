@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress</title>
+    <link rel="stylesheet" href="../css/progress.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header section -->
+        <header class="dashboard-header">
+            <h1>My Progress</h1>
+            <p class="subtitle">Visualization can reduce running your progression time.</p>
+        </header>
+
+        <!-- Settings section with time range buttons -->
+        <section class="settings-section">
+            <h2 class="section-title">Settings</h2>
+            <div class="time-range-buttons">
+                <button class="time-btn active">Last 30 Days</button>
+                <button class="time-btn">All Time</button>
+            </div>
+        </section>
+
+        <!-- Stats grid with progress metrics -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3 class="stat-title">Convert Status</h3>
+                <div class="stat-value">12 days</div>
+            </div>
+            <div class="stat-card">
+                <h3 class="stat-title">Post Comparisons</h3>
+                <div class="stat-value">89</div>
+            </div>
+            <div class="stat-card">
+                <h3 class="stat-title">Completion Rate</h3>
+                <div class="stat-value">92%</div>
+            </div>
+        </section>
+
+        <!-- Exercise progress section -->
+        <section class="progress-section">
+            <h2 class="section-title">Exercising Progress - Last 30 Days</h2>
+            <!-- Placeholder for chart/visualization -->
+            <div class="progress-chart">
+                <div class="chart-placeholder">
+                    <p>Progress chart visualization would appear here</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity log section with table -->
+        <section class="activity-section">
+            <h2 class="section-title">Activity Log</h2>
+            <div class="table-container">
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nov 19, 2023</td>
+                            <td>
+                                <span class="status-badge completed">Completed</span>
+                            </td>
+                            <td>For today, practiced yoga for 30 minutes.</td>
+                        </tr>
+                        <tr>
+                            <td>Nov 18, 2023</td>
+                            <td>
+                                <span class="status-badge completed">Completed</span>
+                            </td>
+                            <td>Morning run.</td>
+                        </tr>
+                        <tr>
+                            <td>Nov 17, 2023</td>
+                            <td>
+                                <span class="status-badge missed">Missed</span>
+                            </td>
+                            <td>Quit early in session.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Add interactivity to time range buttons
+        const timeButtons = document.querySelectorAll('.time-btn');
+        timeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                timeButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

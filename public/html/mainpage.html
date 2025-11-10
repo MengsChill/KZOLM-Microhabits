@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+        }
+
+        .theme-green {
+            --primary-color: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+        }
+
+        .theme-blue {
+            --primary-color: #1565c0;
+            --primary-light: #42a5f5;
+            --primary-dark: #0d47a1;
+        }
+
+        .theme-purple {
+            --primary-color: #6a1b9a;
+            --primary-light: #9c27b0;
+            --primary-dark: #4a148c;
+        }
+
+        .theme-orange {
+            --primary-color: #e65100;
+            --primary-light: #ff9800;
+            --primary-dark: #bf360c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .profile-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+        }
+        
+        .profile-name {
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .profile-name:hover {
+            text-decoration: underline;
+        }
+        
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .content {
+            padding: 30px;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 25px;
+            grid-template-areas: 
+                "timysteps streak"
+                "profile profile";
+        }
+        
+        .section {
+            background: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section:nth-child(1) {
+            grid-area: timysteps;
+        }
+        
+        .section:nth-child(2) {
+            grid-area: streak;
+        }
+        
+        .section:nth-child(3) {
+            grid-area: profile;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section-title::before {
+            content: "";
+            display: block;
+            width: 6px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .progress-container {
+            background: #f0f4f8;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .progress-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: #e0e6ed;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            width: 33.33%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .streak-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+        
+        .streak-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .streak-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .streak-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .water-icon {
+            background: #e3f2fd;
+            color: var(--primary-color);
+        }
+        
+        .workout-icon {
+            background: #e8f5e9;
+            color: var(--primary-color);
+        }
+        
+        .streak-name {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .streak-status {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .leaderboard {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .leaderboard-title:hover {
+            text-decoration: underline;
+        }
+        
+        .leaderboard-badge {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .leaderboard-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .leaderboard-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .rank {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .rank:hover {
+            transform: scale(1.1);
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #a56a2a);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        .points {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .points:hover {
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .navigation-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--card-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: modalAppear 0.3s ease;
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .modal-body {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .modal-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-features {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .modal-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-features li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-features li:before {
+            content: "✓";
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .theme-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .theme-green .theme-preview {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+        }
+        
+        .theme-blue .theme-preview {
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+        }
+        
+        .theme-purple .theme-preview {
+            background: linear-gradient(135deg, #6a1b9a, #9c27b0);
+        }
+        
+        .theme-orange .theme-preview {
+            background: linear-gradient(135deg, #e65100, #ff9800);
+        }
+        
+        .theme-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .selected {
+            border-color: var(--primary-color);
+            background: #f0f4ff;
+        }
+        
+        .modal-footer {
+            padding: 15px 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+            margin-right: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        /* Celebration Modal */
+        .celebration-modal .modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            animation: confetti-fall 2s ease-in-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "timysteps"
+                    "streak"
+                    "profile";
+            }
+            
+            .streak-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .leaderboard-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-section {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 12px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .theme-options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="theme-green">
+    <div class="container">
+        <header>
+            <h1 style="cursor: pointer;" onclick="showWelcomeMessage()">Task Tracker</h1>
+            <p style="cursor: pointer;" onclick="showAppDescription()">Stay productive and build healthy habits</p>
+            
+            <div class="profile-section">
+                <div class="profile-info">
+                    <div class="profile-pic" onclick="openProfile()">JD</div>
+                    <div class="profile-name" onclick="openProfile()">John Doe</div>
+                </div>
+                <button class="theme-btn" id="themeBtn">
+                    🎨 Green Theme
+                </button>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title" onclick="showTaskDetails()">TimySteps</h2>
+                <div class="progress-container" onclick="showTaskProgress()">
+                    <div class="progress-info">
+                        <span>Task on progress</span>
+                        <span>1 of 3 done</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title" onclick="showStreakInfo()">Streak</h2>
+                <div class="streak-container">
+                    <a href="water-tracker.html" class="streak-item" id="waterStreak">
+                        <div class="streak-icon water-icon">💧</div>
+                        <div class="streak-name">Water</div>
+                        <div class="streak-status">5 day streak</div>
+                    </a>
+                    <a href="workout-tracker.html" class="streak-item" id="workoutStreak">
+                        <div class="streak-icon workout-icon">💪</div>
+                        <div class="streak-name">Workout</div>
+                        <div class="streak-status">3 day streak</div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title" onclick="showProfileInfo()">Profile</h2>
+                <div class="leaderboard">
+                    <div class="leaderboard-header">
+                        <div class="leaderboard-title" onclick="showLeaderboardInfo()">Friends Leaderboard</div>
+                        <div class="leaderboard-badge" onclick="celebrateFirstPlace()">You are the 1st today!</div>
+                    </div>
+                    <ul class="leaderboard-list">
+                        <li class="leaderboard-item" onclick="viewUserProfile('You')">
+                            <div class="rank rank-1" onclick="showRankInfo(1)">1</div>
+                            <div class="user-info">
+                                <div class="user-avatar" onclick="viewUserProfile('You')">JD</div>
+                                <div onclick="viewUserProfile('You')">You</div>
+                            </div>
+                            <div class="points" onclick="showPointsBreakdown(245)">245 pts</div>
+                        </li>
+                        <li class="leaderboard-item" onclick="viewUserProfile('Alex Smith')">
+                            <div class="rank rank-2" onclick="showRankInfo(2)">2</div>
+                            <div class="user-info">
+                                <div class="user-avatar" onclick="viewUserProfile('Alex Smith')">AS</div>
+                                <div onclick="viewUserProfile('Alex Smith')">Alex Smith</div>
+                            </div>
+                            <div class="points" onclick="showPointsBreakdown(198)">198 pts</div>
+                        </li>
+                        <li class="leaderboard-item" onclick="viewUserProfile('Maria Johnson')">
+                            <div class="rank rank-3" onclick="showRankInfo(3)">3</div>
+                            <div class="user-info">
+                                <div class="user-avatar" onclick="viewUserProfile('Maria Johnson')">MJ</div>
+                                <div onclick="viewUserProfile('Maria Johnson')">Maria Johnson</div>
+                            </div>
+                            <div class="points" onclick="showPointsBreakdown(176)">176 pts</div>
+                        </li>
+                        <li class="leaderboard-item" onclick="viewUserProfile('Taylor Wilson')">
+                            <div class="rank" onclick="showRankInfo(4)">4</div>
+                            <div class="user-info">
+                                <div class="user-avatar" onclick="viewUserProfile('Taylor Wilson')">TW</div>
+                                <div onclick="viewUserProfile('Taylor Wilson')">Taylor Wilson</div>
+                            </div>
+                            <div class="points" onclick="showPointsBreakdown(154)">154 pts</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Actions Section -->
+            <div class="section">
+                <h2 class="section-title" onclick="showQuickActionsInfo()">Quick Actions</h2>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="addNewTask()">➕ Add New Task</button>
+                    <button class="action-btn" onclick="viewStatistics()">📊 View Statistics</button>
+                    <button class="action-btn" onclick="shareProgress()">📤 Share Progress</button>
+                    <button class="action-btn" onclick="openSettings()">⚙️ Settings</button>
+                    <button class="action-btn" onclick="showAchievements()">🏆 Achievements</button>
+                    <button class="action-btn" onclick="openHelp()">❓ Help & Support</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Theme Selection Modal -->
+    <div class="modal" id="themeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Theme</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="theme-options">
+                    <div class="theme-option theme-green selected" data-theme="green">
+                        <div class="theme-preview">🌿</div>
+                        <div class="theme-name">Green Forest</div>
+                    </div>
+                    <div class="theme-option theme-blue" data-theme="blue">
+                        <div class="theme-preview">💙</div>
+                        <div class="theme-name">Ocean Blue</div>
+                    </div>
+                    <div class="theme-option theme-purple" data-theme="purple">
+                        <div class="theme-preview">💜</div>
+                        <div class="theme-name">Royal Purple</div>
+                    </div>
+                    <div class="theme-option theme-orange" data-theme="orange">
+                        <div class="theme-preview">🧡</div>
+                        <div class="theme-name">Sunset Orange</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveThemeBtn">Apply Theme</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Popup Modal -->
+    <div class="modal" id="customModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modal Title</h2>
+                <button class="modal-close" onclick="closeCustomModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-icon" id="modalIcon">🎯</div>
+                <div class="modal-title" id="modalMainTitle">Main Title</div>
+                <div class="modal-description" id="modalDescription">Description goes here...</div>
+                <div class="modal-features" id="modalFeatures" style="display: none;">
+                    <ul id="featuresList"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeCustomModal()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div class="modal celebration-modal" id="celebrationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎉 Congratulations! 🎉</h2>
+                <button class="modal-close" onclick="closeCelebrationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-icon">🏆</div>
+                <div class="modal-title">You're #1!</div>
+                <div class="modal-description">
+                    You're leading the leaderboard today! Keep up the amazing work and maintain your winning streak!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeCelebrationModal()">Keep Going! 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const themeBtn = document.getElementById('themeBtn');
+        const themeModal = document.getElementById('themeModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveThemeBtn = document.getElementById('saveThemeBtn');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const customModal = document.getElementById('customModal');
+        const celebrationModal = document.getElementById('celebrationModal');
+        
+        // Current theme
+        let currentTheme = 'green';
+        
+        // Open theme modal
+        themeBtn.addEventListener('click', () => {
+            themeModal.style.display = 'flex';
+        });
+        
+        // Close theme modal
+        function closeThemeModal() {
+            themeModal.style.display = 'none';
+        }
+        
+        closeModal.addEventListener('click', closeThemeModal);
+        cancelBtn.addEventListener('click', closeThemeModal);
+        
+        // Theme selection
+        themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from all options
+                themeOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                option.classList.add('selected');
+                currentTheme = option.getAttribute('data-theme');
+            });
+        });
+        
+        // Save theme selection
+        saveThemeBtn.addEventListener('click', () => {
+            const selectedOption = document.querySelector('.theme-option.selected');
+            const themeName = selectedOption.querySelector('.theme-name').textContent;
+            
+            // Update theme button
+            themeBtn.innerHTML = `🎨 ${themeName}`;
+            
+            // Apply the selected theme to the body
+            document.body.className = `theme-${currentTheme}`;
+            
+            showCustomModal(
+                'Theme Updated! 🎨',
+                '🌈',
+                'New Theme Applied',
+                `Your app theme has been changed to <strong>${themeName}</strong>. Enjoy the fresh new look!`
+            );
+            closeThemeModal();
+        });
+
+        // Custom Modal Functions
+        function showCustomModal(title, icon, mainTitle, description, features = []) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalMainTitle').textContent = mainTitle;
+            document.getElementById('modalDescription').innerHTML = description;
+            
+            if (features.length > 0) {
+                document.getElementById('modalFeatures').style.display = 'block';
+                const featuresList = document.getElementById('featuresList');
+                featuresList.innerHTML = '';
+                features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.textContent = feature;
+                    featuresList.appendChild(li);
+                });
+            } else {
+                document.getElementById('modalFeatures').style.display = 'none';
+            }
+            
+            customModal.style.display = 'flex';
+        }
+
+        function closeCustomModal() {
+            customModal.style.display = 'none';
+        }
+
+        function showCelebrationModal() {
+            celebrationModal.style.display = 'flex';
+            createConfetti();
+        }
+
+        function closeCelebrationModal() {
+            celebrationModal.style.display = 'none';
+        }
+
+        function createConfetti() {
+            const colors = ['#ff9800', '#e91e63', '#9c27b0', '#2196f3', '#4caf50'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 2000);
+            }
+        }
+        
+        // Interactive Functions for ALL buttons
+        function showWelcomeMessage() {
+            showCustomModal(
+                'Welcome! 🎯',
+                '👋',
+                'Welcome to Task Tracker',
+                'Your personal productivity companion designed to help you build better habits and stay organized.',
+                [
+                    'Track daily tasks and goals',
+                    'Build healthy habit streaks',
+                    'Compete with friends on leaderboards',
+                    'Earn achievements and rewards'
+                ]
+            );
+        }
+
+        function showAppDescription() {
+            showCustomModal(
+                'About Task Tracker 🌟',
+                '📱',
+                'Stay Productive & Build Habits',
+                'Task Tracker is your all-in-one solution for personal productivity and habit building.',
+                [
+                    'Daily task management',
+                    'Habit streak tracking',
+                    'Social motivation with friends',
+                    'Progress visualization'
+                ]
+            );
+        }
+
+        function openProfile() {
+            showCustomModal(
+                'User Profile 👤',
+                '👤',
+                'John Doe\'s Profile',
+                'Manage your personal information, preferences, and account settings.',
+                [
+                    'Personal information',
+                    'Achievement history',
+                    'Notification settings',
+                    'Privacy controls'
+                ]
+            );
+        }
+
+        function showTaskDetails() {
+            showCustomModal(
+                'TimySteps Details 📝',
+                '📋',
+                'Your Task Progress',
+                'Track your daily tasks and monitor your productivity progress.',
+                [
+                    'Current Progress: 1/3 tasks completed',
+                    'Next task due: Today',
+                    'Weekly goal: 15 tasks',
+                    'Completion rate: 85%'
+                ]
+            );
+        }
+
+        function showTaskProgress() {
+            showCustomModal(
+                'Task Breakdown 📊',
+                '✅',
+                'Current Tasks',
+                'Here\'s your current task status and upcoming activities.',
+                [
+                    '✅ Completed: Morning routine',
+                    '🔄 In Progress: Work project',
+                    '⏰ Upcoming: Gym session',
+                    '📅 Later: Weekly planning'
+                ]
+            );
+        }
+
+        function showStreakInfo() {
+            showCustomModal(
+                'Streak Information 🔥',
+                '🔥',
+                'Habit Streaks',
+                'Maintain your daily habits and build impressive streaks for bonus rewards!',
+                [
+                    '💧 Water: 5 days straight!',
+                    '💪 Workout: 3 days ongoing',
+                    'Next milestone: 7-day streak bonus',
+                    'Total active streaks: 2'
+                ]
+            );
+        }
+
+        function showProfileInfo() {
+            showCustomModal(
+                'Profile Overview 🌟',
+                '📈',
+                'Your Progress Summary',
+                'Complete overview of your achievements and progress in Task Tracker.',
+                [
+                    'Level: 5',
+                    'Total Points: 245',
+                    'Member since: January 2024',
+                    'Achievements: 8/15 unlocked'
+                ]
+            );
+        }
+
+        function showLeaderboardInfo() {
+            showCustomModal(
+                'Friends Leaderboard 🏆',
+                '👥',
+                'Compete & Connect',
+                'Challenge your friends and stay motivated together in your productivity journey.',
+                [
+                    'Real-time ranking updates',
+                    'Weekly reset for fairness',
+                    'Bonus points for streaks',
+                    'Friend challenges available'
+                ]
+            );
+        }
+
+        function celebrateFirstPlace() {
+            showCelebrationModal();
+        }
+
+        function viewUserProfile(userName) {
+            showCustomModal(
+                'User Profile 👤',
+                '👤',
+                `${userName}'s Profile`,
+                `View ${userName}'s progress, achievements, and recent activity.`,
+                [
+                    'Recent activity feed',
+                    'Achievement history',
+                    'Current streaks',
+                    'Friend since: 3 months'
+                ]
+            );
+        }
+
+        function showRankInfo(rank) {
+            const rankMessages = {
+                1: "🥇 First Place! You're crushing it!",
+                2: "🥈 Second Place! So close to the top!",
+                3: "🥉 Third Place! Great job!",
+                4: "Top 5! Keep pushing for the podium!"
+            };
+            
+            showCustomModal(
+                `Rank ${rank} ${rank <= 3 ? '🏆' : '⭐'}`,
+                rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : '⭐',
+                `Rank ${rank} Position`,
+                rankMessages[rank] || 'Keep working hard and climbing the leaderboard!',
+                [
+                    `Current position: ${rank}`,
+                    'Points to next rank: ' + (rank > 1 ? Math.floor(Math.random() * 50) + 10 + ' pts' : 'N/A'),
+                    'Weekly rank change: ' + (rank < 4 ? '+' + Math.floor(Math.random() * 2) : '0'),
+                    'Maintenance bonus: Active'
+                ]
+            );
+        }
+
+        function showPointsBreakdown(points) {
+            showCustomModal(
+                'Points Breakdown 💰',
+                '📊',
+                `${points} Total Points`,
+                'Your points are earned through various activities and achievements.',
+                [
+                    `Task Completions: ${Math.floor(points * 0.6)} pts`,
+                    `Streak Bonuses: ${Math.floor(points * 0.3)} pts`,
+                    `Daily Goals: ${Math.floor(points * 0.1)} pts`,
+                    `Friend Bonuses: ${Math.floor(points * 0.05)} pts`
+                ]
+            );
+        }
+
+        function showQuickActionsInfo() {
+            showCustomModal(
+                'Quick Actions 🚀',
+                '⚡',
+                'Fast Access Features',
+                'Quickly access common features and settings to enhance your productivity experience.',
+                [
+                    'Add tasks instantly',
+                    'View progress statistics',
+                    'Share achievements',
+                    'Access settings quickly'
+                ]
+            );
+        }
+
+        function addNewTask() {
+            showCustomModal(
+                'New Task ✨',
+                '➕',
+                'Create New Task',
+                'Add a new task to your daily list and start tracking your progress immediately.',
+                [
+                    'Set task name and description',
+                    'Choose priority level',
+                    'Set due date and reminders',
+                    'Add to specific categories'
+                ]
+            );
+        }
+
+        function viewStatistics() {
+            showCustomModal(
+                'Statistics Dashboard 📈',
+                '📊',
+                'Your Progress Analytics',
+                'Detailed insights and analytics about your productivity patterns and habits.',
+                [
+                    'Weekly completion rates',
+                    'Habit consistency scores',
+                    'Productivity trends',
+                    'Achievement milestones'
+                ]
+            );
+        }
+
+        function shareProgress() {
+            showCustomModal(
+                'Share Progress 📤',
+                '📱',
+                'Share Your Success',
+                'Celebrate your achievements and inspire friends by sharing your progress.',
+                [
+                    'Share on social media',
+                    'Send to friends in app',
+                    'Export progress reports',
+                    'Create achievement cards'
+                ]
+            );
+        }
+
+        function openSettings() {
+            showCustomModal(
+                'Settings ⚙️',
+                '⚙️',
+                'App Configuration',
+                'Customize your Task Tracker experience with various settings and preferences.',
+                [
+                    'Notification preferences',
+                    'Theme customization',
+                    'Privacy settings',
+                    'Data management'
+                ]
+            );
+        }
+
+        function showAchievements() {
+            showCustomModal(
+                'Achievements 🏆',
+                '🏅',
+                'Your Accomplishments',
+                'Track your progress and unlock rewards as you complete various challenges.',
+                [
+                    '5-Day Streak Master ✓',
+                    'Task Completer ✓',
+                    'Early Bird ✓',
+                    'Weekend Warrior ✓',
+                    'Social Butterfly ✓',
+                    'Productivity Guru (3/5)',
+                    'Habit Hero (2/7)'
+                ]
+            );
+        }
+
+        function openHelp() {
+            showCustomModal(
+                'Help & Support ❓',
+                '❓',
+                'Need Assistance?',
+                'Get help with using Task Tracker and find answers to common questions.',
+                [
+                    'FAQ and tutorials',
+                    'Contact support team',
+                    'Feature requests',
+                    'Community forums'
+                ]
+            );
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === themeModal) {
+                closeThemeModal();
+            }
+            if (event.target === customModal) {
+                closeCustomModal();
+            }
+            if (event.target === celebrationModal) {
+                closeCelebrationModal();
+            }
+        });
+
+        // Add some dynamic interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make progress bar interactive
+            const progressFill = document.querySelector('.progress-fill');
+            let progress = 33.33;
+            
+            setInterval(() => {
+                progress = progress === 33.33 ? 66.66 : 33.33;
+                progressFill.style.width = `${progress}%`;
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
