@@ -164,18 +164,20 @@ body {
   right: 3rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .slider-control button {
   background: white;
   color: #2e7d32;
   border: none;
-  padding: 0.5rem 0.9rem;
-  border-radius: 50%;
+  padding: 12px 40px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 40px;
   transition: transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* soft shadow for depth */
+  color: #222; 
 }
 
 .slider-control button:hover {
@@ -204,3 +206,143 @@ body {
     gap: 1rem;
   }
 }
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  background-color: #c9efc0;
+}
+
+/* ===== Top bar ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #0b5f40;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+}
+
+.menu-icon {
+  font-size: 26px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.menu-icon:hover {
+  color: #9ef5c0;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.language-icon {
+  font-size: 22px;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 70px; /* collapsed width */
+  height: calc(100% - 60px);
+  background: #146c43;
+  color: white;
+  padding: 20px 10px;
+  overflow: hidden;
+  transition: width 0.4s ease;
+}
+
+/* Sidebar expands when hovering over the icon area */
+.sidebar:hover {
+  width: 220px;
+}
+
+/* ===== Progress Section ===== */
+.progress-container {
+  margin-bottom: 20px;
+}
+
+.progress-container p {
+  font-size: 14px;
+}
+
+.progress-bar {
+  width: 100%;
+  background: #255f3e;
+  height: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+
+.progress-fill {
+  height: 10px;
+  width: 25%;
+  background: #9ef5c0;
+  border-radius: 10px;
+}
+
+/* ===== Menu Links ===== */
+.menu-links {
+  list-style: none;
+}
+
+.menu-links li {
+  margin: 15px 0;
+}
+
+.menu-links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+  background: #0b5f40;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.menu-links a:hover {
+  background: #0a3f2a;
+  transform: translateX(5px);
+}
+
+/* ===== Exit text ===== */
+.exit {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 14px;
+  color: #f0f0f0;
+}
+
+/* ===== Main Content ===== */
+.content {
+  margin-left: 70px;
+  margin-top: 60px;
+  padding: 20px;
+  transition: margin-left 0.4s ease;
+}
+
+/* Move content slightly when sidebar expands */
+.sidebar:hover ~ .content {
+  margin-left: 220px;
+}
+
