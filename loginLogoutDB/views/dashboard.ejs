@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head')%>
+<body>
+<%- include('includes/header')%>
+
+    <main>
+        <h2><%=user.username%>, welcome to your dashboard</h2>
+
+        <% if (habits && habits.length > 0) { %>
+            <ul class="habit-list">
+                <% habits.forEach(habit => { %>
+                    <li class="habit-item">
+                        <a href="/post/<%= habit.id %>" class="habit-name"><%= habit.habitName %></a>
+                        <span class="habit-details">
+                            (<%= habit.frequency %>, streak: <%= habit.streakCount %> 🔥)
+                        </span>
+                        <a href="/edit-habit/<%= habit.id %>" class="btn btn-edit">Edit</a>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>You haven't added any habits yet.</p>
+        <% } %>
+    
+        <a href="/add-habit" class="btn btn-primary">Add New Habit</a>
+    </main>
+
+<%- include('includes/footer')%>
+</body>
+</html>

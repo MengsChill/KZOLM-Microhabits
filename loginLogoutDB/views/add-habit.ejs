@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head')%>
+<body>
+<%- include('includes/header')%>
+
+    <main>
+        <form action="/add-habit" method="POST">
+    <label for="habit">Habit Name:</label>
+    <input id="habit" name="habit" type="text" required>
+    
+    <label for="frequency">Frequency:</label>
+    <select id="frequency" name="frequency" required>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        </select>
+    
+    <button>Add Habit</button>
+</form>
+    </main>
+<%- include('includes/footer')%>
+</body>
+</html>
