@@ -4,7 +4,385 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kzolm - Sign In</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    /* === Global reset === */
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:"Poppins",sans-serif;
+      background:#f9f9f9;
+      color:#fff;
+      overflow-x: hidden;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      background:#2f5d44;
+      padding:15px 40px;
+      display:flex;
+      align-items:center;
+      position: relative;
+      z-index: 10;
+    }
+    .logo { font-size:1.8rem; font-weight:bold; color:#fff; }
+
+    /* === Sign In Page === */
+    .signin-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 60px);
+      background: #5b8765;
+      gap: 0;
+      padding: 20px 0;
+    }
+
+    /* Sign-in Box */
+    .signin-box {
+      background: #2f5d44;
+      border-radius: 24px;
+      padding: 50px 40px;
+      flex: 0 1 500px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 2;
+      min-height: 550px;
+      margin: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .signin-box h2 { 
+      margin-bottom:25px; 
+      font-size: 1.8rem;
+      text-align: center;
+    }
+    .signin-box label { 
+      display:block; 
+      font-weight:600; 
+      margin:12px 0 6px;
+      font-size: 1rem;
+    }
+    .signin-box input {
+      width:100%; 
+      padding:12px;
+      border:none; 
+      border-radius:10px;
+      margin-bottom:12px;
+      font-size: 0.95rem;
+    }
+    .password-field { position:relative; }
+    .password-field .toggle {
+      position:absolute; right:12px; top:12px; cursor:pointer;
+    }
+    .forgot {
+      display:block;
+      font-size:0.9rem;
+      color:#fff;
+      text-decoration:underline;
+      margin-bottom:20px;
+      text-align: center;
+    }
+    .btn.login {
+      background:#9ef86c;
+      color:#204b33;
+      font-weight:600;
+      width:100%;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      margin-top: 8px;
+    }
+    .btn.login:hover { background:#8be35f; transform:scale(1.05); }
+
+    .or {
+      text-align:center;
+      margin:20px 0 12px;
+      color:#d9d9d9;
+      font-size: 1rem;
+    }
+    
+    /* Error message styling */
+    .error-message {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin: 5px 0 15px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+      background: rgba(255, 107, 107, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #ff6b6b;
+    }
+    
+    /* Success message styling */
+    .success-message {
+      color: #9ef86c;
+      font-size: 0.9rem;
+      margin: 5px 0 15px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+      background: rgba(158, 248, 108, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #9ef86c;
+    }
+    
+    /* Updated Social Alternatives Section */
+    .alternative-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .option-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: white;
+      display: block;
+    }
+    
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      text-decoration: none;
+      color: white;
+    }
+    
+    .option-card i {
+      font-size: 24px;
+      margin-bottom: 10px;
+      display: block;
+      color: #9ef86c;
+    }
+    
+    .option-card span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Image section */
+    .signin-image {
+      flex: 0 1 550px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 24px;
+      min-height: 550px;
+      margin: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .signin-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+
+    /* === Footer Tagline === */
+    .tagline {
+      background:#5b8765;
+      color:#fff;
+      text-align:center;
+      padding:20px;
+      font-weight:600;
+      font-size: 1rem;
+    }
+
+    /* === Option Pages === */
+    .option-page {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #5b8765;
+      z-index: 1000;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .option-content {
+      background: #2f5d44;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 700px;
+      margin: 50px auto;
+      color: white;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    .option-content h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #9ef86c;
+    }
+
+    .option-content p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .back-btn {
+      background: #9ef86c;
+      color: #204b33;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin: 5px;
+    }
+
+    .back-btn:hover {
+      background: #8be35f;
+      transform: scale(1.05);
+    }
+
+    .back-btn.secondary {
+      background: transparent;
+      border: 2px solid #9ef86c;
+      color: #9ef86c;
+    }
+
+    .feature-list {
+      text-align: left;
+      max-width: 500px;
+      margin: 25px auto;
+    }
+
+    .feature-list li {
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    /* Demo Steps */
+    .demo-steps {
+      text-align: left;
+      max-width: 500px;
+      margin: 25px auto;
+    }
+
+    .step {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #9ef86c;
+    }
+
+    .step-number {
+      background: #9ef86c;
+      color: #204b33;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .step.active {
+      background: rgba(255, 255, 255, 0.2);
+      border-left: 4px solid #4caf50;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin: 20px 0;
+      height: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #9ef86c;
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* Assessment Questions */
+    .question {
+      text-align: left;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .option {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .option.selected {
+      background: #9ef86c;
+      color: #204b33;
+      font-weight: 600;
+    }
+
+    /* === Responsive === */
+    @media (max-width:900px){
+      .signin-container{ 
+        flex-direction:column;
+        padding: 10px;
+      }
+      .signin-box, .signin-image{ 
+        flex:1 1 100%; 
+        min-height: auto;
+        margin: 10px;
+      }
+      .signin-box { 
+        padding: 40px 25px;
+      }
+      .signin-image { 
+        min-height: 350px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <header class="navbar">
@@ -13,9 +391,9 @@
 
   <main class="signin-container">
     <section class="signin-box">
-      <h2>Sign In</h2>
+      <h2>Welcome Back!</h2>
 
-      <form action="/signin" method="POST">
+      <form id="signinForm" action="/signin" method="POST">
         <label>Your email</label>
         <input type="email" name="email" placeholder="Enter your email" required />
 
@@ -23,7 +401,6 @@
         <div class="password-field">
           <input type="password" name="password" placeholder="Enter your password" required />
           <span class="toggle">
-            <!-- Eye icon SVG (default hidden) -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -31,16 +408,36 @@
           </span>
         </div>
 
+        <!-- Error message container -->
+        <div class="error-message" id="errorMessage">
+          Incorrect email or password. Please try again.
+        </div>
+
+        <!-- Success message container -->
+        <div class="success-message" id="successMessage">
+          Success! Redirecting to dashboard...
+        </div>
+
         <a href="#" class="forgot">Forgot your password?</a>
 
         <button type="submit" class="btn login">Sign In</button>
       </form>
 
-      <p class="or">or login with</p>
-      <div class="socials">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook">
-        <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/apple.svg" alt="Apple">
+      <p class="or">or try these options</p>
+      
+      <div class="alternative-options">
+        <a href="#" class="option-card" onclick="showOptionPage('guest')">
+          <i class="fas fa-user-clock"></i>
+          <span>Continue as Guest</span>
+        </a>
+        <a href="#" class="option-card" onclick="showOptionPage('demo')">
+          <i class="fas fa-rocket"></i>
+          <span>Quick Start Demo</span>
+        </a>
+        <a href="#" class="option-card" onclick="showOptionPage('assessment')">
+          <i class="fas fa-heartbeat"></i>
+          <span>Take Health Assessment</span>
+        </a>
       </div>
     </section>
 
@@ -50,8 +447,134 @@
   </main>
 
   <footer class="tagline">
-    You Don’t Need A New Life, Just New Habits.
+    You Don't Need A New Life, Just New Habits.
   </footer>
+
+  <!-- Guest Mode Page -->
+  <div id="guest-page" class="option-page">
+    <div class="option-content">
+      <h2><i class="fas fa-user-clock"></i> Guest Mode Activated</h2>
+      <p>Welcome to Kzolm! As a guest, you can explore our platform and experience limited functionality.</p>
+      
+      <div class="demo-steps">
+        <div class="step active" id="guest-step-1">
+          <span class="step-number">1</span>
+          <strong>Browse Features</strong> - Explore habit tracking and goal setting
+        </div>
+        <div class="step" id="guest-step-2">
+          <span class="step-number">2</span>
+          <strong>Try Tools</strong> - Test our wellness tracking tools
+        </div>
+        <div class="step" id="guest-step-3">
+          <span class="step-number">3</span>
+          <strong>View Samples</strong> - See sample health content and community posts
+        </div>
+        <div class="step" id="guest-step-4">
+          <span class="step-number">4</span>
+          <strong>Get Inspired</strong> - Discover how Kzolm can transform your habits
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="guest-progress"></div>
+      </div>
+      
+      <button class="back-btn" onclick="nextGuestStep()" id="guest-next-btn">Start Exploring</button>
+      <button class="back-btn secondary" onclick="hideOptionPages()">Back to Sign In</button>
+    </div>
+  </div>
+
+  <!-- Quick Start Demo Page -->
+  <div id="demo-page" class="option-page">
+    <div class="option-content">
+      <h2><i class="fas fa-rocket"></i> Interactive Demo</h2>
+      <p>Let's get you familiar with Kzolm! Follow these steps to learn the basics.</p>
+      
+      <div class="demo-steps">
+        <div class="step active" id="demo-step-1">
+          <span class="step-number">1</span>
+          <strong>Set Your First Goal</strong> - Choose what you want to achieve
+        </div>
+        <div class="step" id="demo-step-2">
+          <span class="step-number">2</span>
+          <strong>Create a Habit</strong> - Select a daily activity to track
+        </div>
+        <div class="step" id="demo-step-3">
+          <span class="step-number">3</span>
+          <strong>Track Progress</strong> - Learn how to log your activities
+        </div>
+        <div class="step" id="demo-step-4">
+          <span class="step-number">4</span>
+          <strong>Join Community</strong> - Connect with others on similar journeys
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="demo-progress"></div>
+      </div>
+
+      <div id="demo-content">
+        <div id="demo-step-1-content">
+          <p>What would you like to focus on first?</p>
+          <div class="options">
+            <div class="option" onclick="selectDemoOption('fitness')">🏃 Fitness & Exercise</div>
+            <div class="option" onclick="selectDemoOption('nutrition')">🥗 Nutrition & Diet</div>
+            <div class="option" onclick="selectDemoOption('mindfulness')">🧘 Mindfulness & Stress</div>
+            <div class="option" onclick="selectDemoOption('sleep')">😴 Sleep & Recovery</div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="back-btn" onclick="nextDemoStep()" id="demo-next-btn">Get Started</button>
+      <button class="back-btn secondary" onclick="hideOptionPages()">Back to Sign In</button>
+    </div>
+  </div>
+
+  <!-- Health Assessment Page -->
+  <div id="assessment-page" class="option-page">
+    <div class="option-content">
+      <h2><i class="fas fa-heartbeat"></i> Health Assessment</h2>
+      <p>Let's understand your current wellness status to provide personalized recommendations.</p>
+      
+      <div class="demo-steps">
+        <div class="step active" id="assessment-step-1">
+          <span class="step-number">1</span>
+          <strong>Lifestyle Questions</strong> - About your daily habits
+        </div>
+        <div class="step" id="assessment-step-2">
+          <span class="step-number">2</span>
+          <strong>Health History</strong> - Your medical background
+        </div>
+        <div class="step" id="assessment-step-3">
+          <span class="step-number">3</span>
+          <strong>Goals & Preferences</strong> - What you want to achieve
+        </div>
+        <div class="step" id="assessment-step-4">
+          <span class="step-number">4</span>
+          <strong>Personalized Plan</strong> - Your custom wellness strategy
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="assessment-progress"></div>
+      </div>
+
+      <div id="assessment-content">
+        <div class="question" id="assessment-question-1">
+          <p>How would you describe your current activity level?</p>
+          <div class="options">
+            <div class="option" onclick="selectAssessmentAnswer(1, 'sedentary')">Mostly sedentary (office job, little exercise)</div>
+            <div class="option" onclick="selectAssessmentAnswer(1, 'light')">Light activity (walking, light exercise 1-2x/week)</div>
+            <div class="option" onclick="selectAssessmentAnswer(1, 'moderate')">Moderately active (exercise 3-4x/week)</div>
+            <div class="option" onclick="selectAssessmentAnswer(1, 'very')">Very active (exercise 5+ times/week)</div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="back-btn" onclick="nextAssessmentStep()" id="assessment-next-btn">Start Assessment</button>
+      <button class="back-btn secondary" onclick="hideOptionPages()">Back to Sign In</button>
+    </div>
+  </div>
 
   <script>
     // Eye toggle
@@ -62,7 +585,6 @@
         if (input.type === 'password') {
           input.type = 'text';
           toggle.innerHTML = `
-            <!-- Eye-off icon SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.94 17.94L6.06 6.06M1 1l22 22"></path>
               <path d="M10.59 10.59a3 3 0 0 1 4.24 4.24"></path>
@@ -71,7 +593,6 @@
         } else {
           input.type = 'password';
           toggle.innerHTML = `
-            <!-- Eye icon SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -80,32 +601,318 @@
       });
     });
 
-    // Incorrect password handling
-    const form = document.querySelector('form');
-    const passwordInput = form.querySelector('input[name="password"]');
-    const forgotLink = form.querySelector('.forgot');
+    // Form submission handler - connects to your backend
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const email = formData.get('email');
+      const password = formData.get('password');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      const submitBtn = this.querySelector('.btn.login');
+      const originalText = submitBtn.textContent;
+      
+      // Hide any previous messages
+      errorMessage.style.display = 'none';
+      successMessage.style.display = 'none';
+      
+      // Show loading state
+      submitBtn.textContent = 'Signing In...';
+      submitBtn.disabled = true;
+      
+      try {
+        // Send POST request to your backend
+        const response = await fetch('/signin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        });
 
-    // Create error message element
-    const errorMsg = document.createElement('div');
-    errorMsg.style.color = 'red';
-    errorMsg.style.marginBottom = '5px';
-    errorMsg.style.display = 'none';
-    errorMsg.textContent = 'Incorrect password';
-
-    // Insert above the "Forgot your password?" link
-    forgotLink.parentNode.insertBefore(errorMsg, forgotLink);
-
-      const enteredPassword = passwordInput.value;
-      const correctPassword = "123456"; // replace with your correct password
-
-      if (enteredPassword === correctPassword) {
-        errorMsg.style.display = 'none';
-        // Navigate to next page
-        window.location.href = '/nextpage.html'; // replace with your page
-      } else {
-        errorMsg.style.display = 'block';
-        passwordInput.value = '';
+        if (response.ok) {
+          // Successful login
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+            // Redirect to dashboard as specified in your server.js
+            window.location.href = '/menu';
+          }, 1500);
+        } else {
+          // Failed login - get error message from server
+          const errorText = await response.text();
+          errorMessage.textContent = errorText || 'Incorrect email or password. Please try again.';
+          errorMessage.style.display = 'block';
+          
+          // Clear password field and focus it
+          this.querySelector('input[name="password"]').value = '';
+          this.querySelector('input[name="password"]').focus();
+        }
+      } catch (error) {
+        // Network error
+        errorMessage.textContent = 'Network error. Please check your connection and try again.';
+        errorMessage.style.display = 'block';
+        console.error('Signin error:', error);
+      } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
       }
+    });
+
+    // Option page functions
+    function showOptionPage(page) {
+      document.querySelectorAll('.option-page').forEach(page => {
+        page.style.display = 'none';
+      });
+      
+      document.getElementById(page + '-page').style.display = 'block';
+      resetAllFlows();
+    }
+
+    function hideOptionPages() {
+      document.querySelectorAll('.option-page').forEach(page => {
+        page.style.display = 'none';
+      });
+    }
+
+    // Guest Mode Flow
+    let guestStep = 0;
+    const totalGuestSteps = 4;
+
+    function nextGuestStep() {
+      if (guestStep > 0) {
+        document.getElementById(`guest-step-${guestStep}`).classList.remove('active');
+      }
+      
+      guestStep++;
+      
+      if (guestStep <= totalGuestSteps) {
+        document.getElementById(`guest-step-${guestStep}`).classList.add('active');
+        document.getElementById('guest-progress').style.width = `${(guestStep / totalGuestSteps) * 100}%`;
+        
+        if (guestStep === totalGuestSteps) {
+          document.getElementById('guest-next-btn').textContent = 'Complete Tour';
+          document.getElementById('guest-next-btn').onclick = function() {
+            alert('Guest tour completed! You can now explore Kzolm features.');
+            hideOptionPages();
+          };
+        } else {
+          document.getElementById('guest-next-btn').textContent = 'Next Step';
+        }
+      }
+    }
+
+    // Demo Flow
+    let demoStep = 0;
+    const totalDemoSteps = 4;
+    let selectedFocus = '';
+
+    function nextDemoStep() {
+      if (demoStep > 0) {
+        document.getElementById(`demo-step-${demoStep}`).classList.remove('active');
+      }
+      
+      demoStep++;
+      
+      if (demoStep <= totalDemoSteps) {
+        document.getElementById(`demo-step-${demoStep}`).classList.add('active');
+        document.getElementById('demo-progress').style.width = `${(demoStep / totalDemoSteps) * 100}%`;
+        
+        updateDemoContent();
+        
+        if (demoStep === totalDemoSteps) {
+          document.getElementById('demo-next-btn').textContent = 'Complete Demo';
+          document.getElementById('demo-next-btn').onclick = function() {
+            alert(`Demo completed! You've set up your ${selectedFocus} focus. Ready to start your journey!`);
+            hideOptionPages();
+          };
+        } else {
+          document.getElementById('demo-next-btn').textContent = 'Continue';
+        }
+      }
+    }
+
+    function selectDemoOption(focus) {
+      selectedFocus = focus;
+      document.querySelectorAll('#demo-step-1-content .option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+      document.getElementById('demo-next-btn').disabled = false;
+    }
+
+    function updateDemoContent() {
+      const contentDiv = document.getElementById('demo-content');
+      if (demoStep === 1) {
+        contentDiv.innerHTML = `
+          <div id="demo-step-1-content">
+            <p>What would you like to focus on first?</p>
+            <div class="options">
+              <div class="option" onclick="selectDemoOption('fitness')">🏃 Fitness & Exercise</div>
+              <div class="option" onclick="selectDemoOption('nutrition')">🥗 Nutrition & Diet</div>
+              <div class="option" onclick="selectDemoOption('mindfulness')">🧘 Mindfulness & Stress</div>
+              <div class="option" onclick="selectDemoOption('sleep')">😴 Sleep & Recovery</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('demo-next-btn').disabled = true;
+      } else if (demoStep === 2) {
+        contentDiv.innerHTML = `
+          <p>Great choice! For ${selectedFocus}, we recommend starting with a simple daily habit.</p>
+          <p>Example: ${getHabitExample(selectedFocus)}</p>
+        `;
+      } else if (demoStep === 3) {
+        contentDiv.innerHTML = `
+          <p>You can track your progress daily and see your streaks grow!</p>
+          <p>Consistency is key to building lasting habits.</p>
+        `;
+      }
+    }
+
+    function getHabitExample(focus) {
+      const examples = {
+        fitness: "10-minute morning stretch or walk",
+        nutrition: "Drink 8 glasses of water daily",
+        mindfulness: "5-minute meditation session",
+        sleep: "Consistent bedtime routine"
+      };
+      return examples[focus] || "a simple daily activity";
+    }
+
+    // Assessment Flow
+    let assessmentStep = 0;
+    const totalAssessmentSteps = 4;
+    let assessmentAnswers = {};
+
+    function nextAssessmentStep() {
+      if (assessmentStep > 0) {
+        document.getElementById(`assessment-step-${assessmentStep}`).classList.remove('active');
+      }
+      
+      assessmentStep++;
+      
+      if (assessmentStep <= totalAssessmentSteps) {
+        document.getElementById(`assessment-step-${assessmentStep}`).classList.add('active');
+        document.getElementById('assessment-progress').style.width = `${(assessmentStep / totalAssessmentSteps) * 100}%`;
+        
+        updateAssessmentContent();
+        
+        if (assessmentStep === totalAssessmentSteps) {
+          document.getElementById('assessment-next-btn').textContent = 'View Results';
+          document.getElementById('assessment-next-btn').onclick = function() {
+            showAssessmentResults();
+          };
+        } else {
+          document.getElementById('assessment-next-btn').textContent = 'Next Question';
+        }
+      }
+    }
+
+    function selectAssessmentAnswer(question, answer) {
+      assessmentAnswers[question] = answer;
+      document.querySelectorAll(`#assessment-question-${question} .option`).forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.classList.add('selected');
+      document.getElementById('assessment-next-btn').disabled = false;
+    }
+
+    function updateAssessmentContent() {
+      const contentDiv = document.getElementById('assessment-content');
+      if (assessmentStep === 1) {
+        contentDiv.innerHTML = `
+          <div class="question" id="assessment-question-1">
+            <p>How would you describe your current activity level?</p>
+            <div class="options">
+              <div class="option" onclick="selectAssessmentAnswer(1, 'sedentary')">Mostly sedentary (office job, little exercise)</div>
+              <div class="option" onclick="selectAssessmentAnswer(1, 'light')">Light activity (walking, light exercise 1-2x/week)</div>
+              <div class="option" onclick="selectAssessmentAnswer(1, 'moderate')">Moderately active (exercise 3-4x/week)</div>
+              <div class="option" onclick="selectAssessmentAnswer(1, 'very')">Very active (exercise 5+ times/week)</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('assessment-next-btn').disabled = true;
+      } else if (assessmentStep === 2) {
+        contentDiv.innerHTML = `
+          <div class="question" id="assessment-question-2">
+            <p>How many hours of quality sleep do you typically get per night?</p>
+            <div class="options">
+              <div class="option" onclick="selectAssessmentAnswer(2, 'less5')">Less than 5 hours</div>
+              <div class="option" onclick="selectAssessmentAnswer(2, '5-6')">5-6 hours</div>
+              <div class="option" onclick="selectAssessmentAnswer(2, '7-8')">7-8 hours</div>
+              <div class="option" onclick="selectAssessmentAnswer(2, 'more8')">More than 8 hours</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('assessment-next-btn').disabled = true;
+      } else if (assessmentStep === 3) {
+        contentDiv.innerHTML = `
+          <div class="question" id="assessment-question-3">
+            <p>What is your primary wellness goal?</p>
+            <div class="options">
+              <div class="option" onclick="selectAssessmentAnswer(3, 'weight')">Weight management</div>
+              <div class="option" onclick="selectAssessmentAnswer(3, 'energy')">More energy & vitality</div>
+              <div class="option" onclick="selectAssessmentAnswer(3, 'stress')">Stress reduction</div>
+              <div class="option" onclick="selectAssessmentAnswer(3, 'fitness')">Improved fitness</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('assessment-next-btn').disabled = true;
+      }
+    }
+
+    function showAssessmentResults() {
+      const contentDiv = document.getElementById('assessment-content');
+      contentDiv.innerHTML = `
+        <div class="question">
+          <h3>Your Personalized Wellness Plan</h3>
+          <p>Based on your assessment, we recommend:</p>
+          <ul class="feature-list">
+            <li>✓ Start with 2-3 simple daily habits</li>
+            <li>✓ Focus on consistency over intensity</li>
+            <li>✓ Track your progress in the Kzolm app</li>
+            <li>✓ Join our community for support</li>
+          </ul>
+          <p>Ready to begin your wellness journey?</p>
+        </div>
+      `;
+      document.getElementById('assessment-next-btn').textContent = 'Start My Plan';
+      document.getElementById('assessment-next-btn').onclick = function() {
+        alert('Your wellness journey begins now! Welcome to Kzolm.');
+        hideOptionPages();
+      };
+    }
+
+    // Reset all flows
+    function resetAllFlows() {
+      guestStep = 0;
+      demoStep = 0;
+      assessmentStep = 0;
+      selectedFocus = '';
+      assessmentAnswers = {};
+      
+      // Reset progress bars
+      document.getElementById('guest-progress').style.width = '0%';
+      document.getElementById('demo-progress').style.width = '0%';
+      document.getElementById('assessment-progress').style.width = '0%';
+      
+      // Reset buttons
+      document.getElementById('guest-next-btn').textContent = 'Start Exploring';
+      document.getElementById('demo-next-btn').textContent = 'Get Started';
+      document.getElementById('assessment-next-btn').textContent = 'Start Assessment';
+      
+      // Reset step highlighting
+      document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.querySelectorAll('.step:first-child').forEach(step => {
+        step.classList.add('active');
+      });
+    }
   </script>
 </body>
 </html>

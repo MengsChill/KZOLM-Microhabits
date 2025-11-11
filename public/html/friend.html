@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kzolm - Health Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #ff9800;
+            --background: #f1f8e9;
+            --surface: #ffffff;
+            --text: #1b5e20;
+            --text-light: #4caf50;
+            --text-muted: #81c784;
+            --border: #c8e6c9;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        .background-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            background-color: var(--primary);
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background-color: var(--primary-light);
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background-color: var(--accent);
+            top: 20%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+        
+        .shape-4 {
+            width: 120px;
+            height: 120px;
+            background-color: var(--primary-dark);
+            top: 70%;
+            left: 10%;
+            animation-delay: 6s;
+        }
+        
+        .shape-5 {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            top: 40%;
+            left: 40%;
+            animation-delay: 8s;
+        }
+        
+        .shape-6 {
+            width: 180px;
+            height: 180px;
+            background-color: var(--primary-light);
+            top: 80%;
+            left: 60%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(90deg);
+            }
+            50% {
+                transform: translateY(0) rotate(180deg);
+            }
+            75% {
+                transform: translateY(20px) rotate(270deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: var(--surface);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 40%;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 16px;
+            background-color: var(--background);
+            transition: all 0.3s;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .icon-button:hover {
+            background-color: var(--background);
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+            border-radius: 16px;
+        }
+        
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .post-card {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            line-height: 1.4;
+        }
+        
+        .post-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-button {
+            background-color: var(--background);
+            color: var(--text);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .action-button:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .friends-section, .trending-section {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .friend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .friend-item:hover {
+            background-color: var(--background);
+        }
+        
+        .friend-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .friend-info {
+            flex-grow: 1;
+        }
+        
+        .friend-name {
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .friend-status {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .follow-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .follow-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background-color: var(--background);
+            color: var(--text);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tag:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .modal-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+        
+        .modal-message {
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .modal-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4);
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                width: 60%;
+            }
+            
+            .header {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+    </div>
+    
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-leaf"></i>
+            <h1>Kzolm</h1>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="user-actions">
+            <button class="icon-button" id="notificationButton">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="icon-button" id="profileButton">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title">A Blueprint for Optimal Health and Longevity</h1>
+            <p class="hero-subtitle">Kickstart Zeal, Overcome Limits, Master Your Wellbeing</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="posts-container">
+                <div class="post-card">
+                    <h2 class="post-title">How I gain my muscle within 1 month</h2>
+                    <div class="post-stats">
+                        <span><i class="fas fa-clock"></i> 71</span>
+                        <span><i class="fas fa-eye"></i> 510 views</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-button" data-action="read">
+                            <i class="fas fa-book-open"></i> Read More
+                        </button>
+                        <button class="action-button" data-action="like">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                        <button class="action-button" data-action="share">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="post-card">
+                    <h2 class="post-title">How I maintain my health and CGPA 4.0 at the same time</h2>
+                    <div class="post-stats">
+                        <span><i class="fas fa-clock"></i> 11</span>
+                        <span><i class="fas fa-eye"></i> 51 views</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-button" data-action="read">
+                            <i class="fas fa-book-open"></i> Read More
+                        </button>
+                        <button class="action-button" data-action="like">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                        <button class="action-button" data-action="share">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="post-card">
+                    <h2 class="post-title">Do we really need to drink 7 cup of water in a days?</h2>
+                    <div class="post-stats">
+                        <span><i class="fas fa-clock"></i> 13</span>
+                        <span><i class="fas fa-eye"></i> 521 views</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-button" data-action="read">
+                            <i class="fas fa-book-open"></i> Read More
+                        </button>
+                        <button class="action-button" data-action="like">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                        <button class="action-button" data-action="share">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="post-card">
+                    <h2 class="post-title">Obesity? dont worry , follow my page right now</h2>
+                    <div class="post-stats">
+                        <span><i class="fas fa-clock"></i> 1</span>
+                        <span><i class="fas fa-eye"></i> 10 views</span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-button" data-action="read">
+                            <i class="fas fa-book-open"></i> Read More
+                        </button>
+                        <button class="action-button" data-action="like">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                        <button class="action-button" data-action="share">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="friends-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-users"></i> Friends Progress
+                    </h3>
+                    <div class="friend-list">
+                        <div class="friend-item">
+                            <div class="friend-avatar" style="background-color: #4caf50;">J</div>
+                            <div class="friend-info">
+                                <div class="friend-name">Jamurgod</div>
+                                <div class="friend-status">Completed 5 workouts this week</div>
+                            </div>
+                            <button class="follow-button">Follow</button>
+                        </div>
+                        <div class="friend-item">
+                            <div class="friend-avatar" style="background-color: #ff9800;">W</div>
+                            <div class="friend-info">
+                                <div class="friend-name">WellnessWarrior</div>
+                                <div class="friend-status">Meditated for 30 days straight</div>
+                            </div>
+                            <button class="follow-button">Follow</button>
+                        </div>
+                        <div class="friend-item">
+                            <div class="friend-avatar" style="background-color: #2196f3;">G</div>
+                            <div class="friend-info">
+                                <div class="friend-name">GrowthGuru</div>
+                                <div class="friend-status">Shared 3 new articles</div>
+                            </div>
+                            <button class="follow-button">Follow</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trending-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-fire"></i> Trending Topics
+                    </h3>
+                    <div class="trending-tags">
+                        <div class="tag">#Fitness</div>
+                        <div class="tag">#Nutrition</div>
+                        <div class="tag">#MentalHealth</div>
+                        <div class="tag">#WorkoutTips</div>
+                        <div class="tag">#HealthyRecipes</div>
+                        <div class="tag">#SleepHygiene</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="actionModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle" id="modalIcon"></i>
+            </div>
+            <h2 class="modal-title" id="modalTitle">Action Completed</h2>
+            <p class="modal-message" id="modalMessage">Your action was successful!</p>
+            <button class="modal-button" id="modalButton">OK</button>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-bell"></i>
+        <span id="notificationMessage">New content available!</span>
+    </div>
+
+    <script>
+        // DOM Elements
+        const searchBar = document.getElementById('searchBar');
+        const actionButtons = document.querySelectorAll('.action-button');
+        const followButtons = document.querySelectorAll('.follow-button');
+        const tags = document.querySelectorAll('.tag');
+        const notificationButton = document.getElementById('notificationButton');
+        const profileButton = document.getElementById('profileButton');
+        const actionModal = document.getElementById('actionModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalButton = document.getElementById('modalButton');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        // Search functionality
+        const searchableContent = [
+            "muscle", "gain muscle", "workout", "fitness", "health", 
+            "CGPA", "study", "water", "hydration", "obesity", 
+            "weight loss", "nutrition", "mental health", "wellness"
+        ];
+        
+        searchBar.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            if (searchTerm.length > 0) {
+                const results = searchableContent.filter(item => 
+                    item.toLowerCase().includes(searchTerm)
+                );
+                
+                if (results.length > 0) {
+                    showNotification(`Found ${results.length} results for "${searchTerm}"`);
+                } else {
+                    showNotification(`No results found for "${searchTerm}"`);
+                }
+            }
+        });
+        
+        // Action buttons functionality
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                let title, message, icon;
+                
+                switch(action) {
+                    case 'read':
+                        title = 'Article Opened';
+                        message = 'You are now reading the full article. Enjoy!';
+                        icon = 'fas fa-book-open';
+                        break;
+                    case 'like':
+                        title = 'Post Liked';
+                        message = 'You liked this post. Thank you for your support!';
+                        icon = 'fas fa-heart';
+                        break;
+                    case 'share':
+                        title = 'Share Post';
+                        message = 'Post shared successfully with your friends!';
+                        icon = 'fas fa-share';
+                        break;
+                    default:
+                        title = 'Action Completed';
+                        message = 'Your action was successful!';
+                        icon = 'fas fa-check-circle';
+                }
+                
+                showModal(title, message, icon);
+            });
+        });
+        
+        // Follow buttons functionality
+        followButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const friendItem = this.closest('.friend-item');
+                const friendName = friendItem.querySelector('.friend-name').textContent;
+                
+                if (this.textContent === 'Follow') {
+                    this.textContent = 'Following';
+                    this.style.backgroundColor = '#81c784';
+                    showNotification(`You are now following ${friendName}`);
+                } else {
+                    this.textContent = 'Follow';
+                    this.style.backgroundColor = '#4caf50';
+                    showNotification(`You unfollowed ${friendName}`);
+                }
+            });
+        });
+        
+        // Trending tags functionality
+        tags.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const tagName = this.textContent;
+                showModal('Topic Selected', `You selected the topic: ${tagName}. We'll show you more content about this.`, 'fas fa-hashtag');
+            });
+        });
+        
+        // Header buttons functionality
+        notificationButton.addEventListener('click', function() {
+            showModal('Notifications', 'You have 3 new notifications from your friends.', 'fas fa-bell');
+        });
+        
+        profileButton.addEventListener('click', function() {
+            showModal('Your Profile', 'This would open your profile page in a real application.', 'fas fa-user');
+        });
+        
+        // Modal functionality
+        function showModal(title, message, icon) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalIcon.className = icon;
+            actionModal.style.display = 'flex';
+        }
+        
+        modalButton.addEventListener('click', function() {
+            actionModal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === actionModal) {
+                actionModal.style.display = 'none';
+            }
+        });
+        
+        // Notification functionality
+        function showNotification(message) {
+            notificationMessage.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Simulate initial notification
+        setTimeout(() => {
+            showNotification('Welcome to Kzolm! Discover health tips from the community.');
+        }, 1000);
+    </script>
+</body>
+</html>
