@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Steps, Big Change</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0e6b4b; /* 新的主题颜色 */
+            color: #fff; /* 主要文字改为白色 */
+            line-height: 1.6;
+        }
+        
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #0e6b4b;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon-button {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        
+        .icon-button:hover {
+            color: #c8e6d3;
+        }
+        
+        /* Hero Content Styles */
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            padding: 50px 0;
+        }
+        
+        .hero-text {
+            flex: 1;
+            max-width: 500px;
+        }
+        
+        .new-tag {
+            display: inline-block;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .new-tag:hover {
+            background-color: #c8e6d3;
+        }
+        
+        h1 {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .hero-text p {
+            font-size: 18px;
+            color: #e0f0e7;
+            margin-bottom: 30px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-left: 20px;
+        }
+        
+        .cta-button:hover {
+            background-color: #c8e6d3;
+            transform: translateY(-3px);
+        }
+        
+        .cta-button span {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .cta-button:hover span {
+            transform: translateX(5px);
+        }
+        
+        /* Hero Slider Styles */
+        .hero-slider {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+        }
+        
+        .slider-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-image-wrapper {
+            display: flex;
+            width: 400%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .slide {
+            width: 25%;
+            height: 100%;
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Footer Styles */
+        .hero-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .customer-proof {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        .avatars {
+            display: flex;
+        }
+        
+        .avatars img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #0e6b4b;
+            margin-left: -10px;
+        }
+        
+        .avatars img:first-child {
+            margin-left: 0;
+        }
+        
+        .customer-proof p {
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        .customer-proof strong {
+            font-size: 18px;
+            color: #fff;
+        }
+        
+        .slider-controls-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .slider-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .slider-arrow {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #0e6b4b;
+        }
+        
+        .slider-arrow:hover {
+            background-color: #fff;
+            color: #0e6b4b;
+            border-color: #fff;
+        }
+        
+        .slider-pagination {
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        .divider {
+            margin: 0 5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+            color: #333;
+        }
+        
+        .popup.active .popup-content {
+            transform: translateY(0);
+        }
+        
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .popup-title {
+            font-size: 24px;
+            color: #0e6b4b;
+        }
+        
+        .close-popup {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close-popup:hover {
+            color: #0e6b4b;
+        }
+        
+        .user-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .user-info h4 {
+            margin-bottom: 5px;
+            color: #0e6b4b;
+        }
+        
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 900px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+            
+            .hero-text {
+                max-width: 100%;
+            }
+            
+            .slider-container {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .main-nav ul {
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .main-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .main-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .hero-footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .slider-controls-container {
+                order: 2;
+            }
+            
+            .customer-proof {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="page-container">
+        
+        <header class="main-header">
+            <div class="logo">Kzolm</div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a class="nav-link">MICROHABITS</a></li>
+                    <li><a class="nav-link">BENEFITS</a></li>
+                    <li><a class="nav-link">GETTING STARTED</a></li>
+                    <li><a class="nav-link">SUCCESS STORIES</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-icons">
+                <a href="search.html" class="icon-button" aria-label="Search"><i class="fas fa-search"></i></a>
+                <a href="profile.html" class="icon-button" aria-label="User Account"><i class="fas fa-user"></i></a>
+            </div>
+        </header>
+
+        <main class="hero-content">
+            
+            <div class="hero-text">
+                <a href="new-kzolm.html" class="new-tag">TRY NEW KZOLM</a>
+                <h1>Small Steps,<br>Big Change</h1>
+                <p>Build the life you want through tiny, consistent actions that actually stick.</p>
+                
+                <a href="explorenow.html" class="cta-button">
+                    EXPLORE NOW
+                    <span>&rarr;</span>
+                </a>
+            </div>
+
+            <div class="hero-slider">
+                <div class="slider-container">
+                    <div class="slider-image-wrapper">
+                        <div class="slide">
+                            <img src="https://wearerestless.org/wp-content/uploads/2021/02/Reading-scaled.jpg" alt="Person reading a book in sunlight">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZXhlcmNpc2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80" alt="Person exercising">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVkaXRhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80" alt="Person meditating">
+                        </div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8am91cm5hbGluZ3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80" alt="Person journaling">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="hero-footer">
+            
+            <div class="customer-proof" id="customer-proof">
+                <div class="avatars">
+                    <img src="https://thumbs.dreamstime.com/b/portrait-handsome-smiling-young-man-folded-arms-smiling-joyful-cheerful-men-crossed-hands-isolated-studio-shot-172869765.jpg" alt="Customer 1">
+                    <img src="https://media.istockphoto.com/id/1483329842/photo/studio-portrait-of-attractive-woman-wearing-shirt-and-laughing-while-sitting-at-isolated-grey.webp?b=1&s=612x612&w=0&k=20&c=wE-CCntjb3Q4BlhDC7UA2K0VR485eVinp8pDagrErCw=" alt="Customer 2">
+                    <img src="https://img.freepik.com/free-photo/smiling-beautiful-young-woman-standing-posing_171337-11412.jpg?semt=ais_hybrid&w=740&q=80" alt="Customer 3">
+                </div>
+                <p><strong>50M+</strong> Happy<br>Customers</p>
+            </div>
+
+            <div class="slider-controls-container">
+                <div class="slider-controls">
+                    <button class="slider-arrow" id="prev-slide" aria-label="Previous slide">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-arrow" id="next-slide" aria-label="Next slide">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="slider-pagination">
+                    <span id="current-slide">01</span><span class="divider">/</span><span id="total-slides">04</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Popup for navigation buttons -->
+    <div class="popup" id="nav-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title" id="popup-title">Popup Title</h3>
+                <button class="close-popup" id="close-nav-popup">&times;</button>
+            </div>
+            <p id="popup-message">This is a popup message.</p>
+        </div>
+    </div>
+
+    <!-- Popup for customer list -->
+    <div class="popup" id="customer-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Our Happy Customers</h3>
+                <button class="close-popup" id="close-customer-popup">&times;</button>
+            </div>
+            <div class="user-list">
+                <div class="user-item">
+                    <img src="https://thumbs.dreamstime.com/b/portrait-handsome-smiling-young-man-folded-arms-smiling-joyful-cheerful-men-crossed-hands-isolated-studio-shot-172869765.jpg" alt="Customer 1" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Michael Chen</h4>
+                        <p>"Microhabits helped me build a consistent reading routine. I've read 12 books this year!"</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://media.istockphoto.com/id/1483329842/photo/studio-portrait-of-attractive-woman-wearing-shirt-and-laughing-while-sitting-at-isolated-grey.webp?b=1&s=612x612&w=0&k=20&c=wE-CCntjb3Q4BlhDC7UA2K0VR485eVinp8pDagrErCw=" alt="Customer 2" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>"Started with just 5 minutes of meditation daily. Now I meditate for 30 minutes every morning."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://img.freepik.com/free-photo/smiling-beautiful-young-woman-standing-posing_171337-11412.jpg?semt=ais_hybrid&w=740&q=80" alt="Customer 3" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Emily Rodriguez</h4>
+                        <p>"The microhabits approach helped me lose 15 pounds by making small, sustainable changes."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29ufGVufDB8fDB8fHww&w=1000&q=80" alt="Customer 4" class="user-avatar">
+                    <div class="user-info">
+                        <h4>David Kim</h4>
+                        <p>"I went from zero exercise to running a 5K by starting with just 10 minutes of walking daily."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&w=1000&q=80" alt="Customer 5" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Jessica Williams</h4>
+                        <p>"Microhabits transformed my productivity. I now complete my most important tasks first thing."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 图片轮播功能
+        const sliderWrapper = document.querySelector('.slider-image-wrapper');
+        const prevButton = document.getElementById('prev-slide');
+        const nextButton = document.getElementById('next-slide');
+        const currentSlideElement = document.getElementById('current-slide');
+        const totalSlidesElement = document.getElementById('total-slides');
+        
+        let currentSlide = 0;
+        const totalSlides = 4;
+        
+        // 初始化分页器
+        totalSlidesElement.textContent = '04';
+        
+        // 更新分页器
+        function updatePagination() {
+            currentSlideElement.textContent = (currentSlide + 1).toString().padStart(2, '0');
+        }
+        
+        // 切换到指定幻灯片
+        function goToSlide(slideIndex) {
+            if (slideIndex < 0) {
+                currentSlide = totalSlides - 1;
+            } else if (slideIndex >= totalSlides) {
+                currentSlide = 0;
+            } else {
+                currentSlide = slideIndex;
+            }
+            
+            const translateX = -currentSlide * 25; // 每张幻灯片占25%宽度
+            sliderWrapper.style.transform = `translateX(${translateX}%)`;
+            
+            updatePagination();
+        }
+        
+        // 下一张幻灯片
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+        
+        // 上一张幻灯片
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+        
+        // 添加事件监听器
+        prevButton.addEventListener('click', prevSlide);
+        nextButton.addEventListener('click', nextSlide);
+        
+        // 初始化分页器
+        updatePagination();
+        
+        // 导航链接激活效果
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // 移除所有链接的active类
+                navLinks.forEach(l => l.classList.remove('active'));
+                // 为点击的链接添加active类
+                e.target.classList.add('active');
+                
+                // 显示对应的弹出消息
+                const navText = e.target.textContent;
+                document.getElementById('popup-title').textContent = navText;
+                
+                // 设置不同的弹出消息内容
+                let message = "";
+                switch(navText) {
+                    case "MICROHABITS":
+                        message = "Discover how small, consistent actions can lead to significant life changes. Our microhabits approach focuses on sustainable progress.";
+                        break;
+                    case "BENEFITS":
+                        message = "Learn about the proven benefits of microhabits: increased consistency, reduced overwhelm, and lasting behavioral change.";
+                        break;
+                    case "GETTING STARTED":
+                        message = "Ready to begin your microhabits journey? We'll guide you through simple steps to build habits that stick.";
+                        break;
+                    case "SUCCESS STORIES":
+                        message = "Read inspiring stories from our community members who have transformed their lives through microhabits.";
+                        break;
+                }
+                
+                document.getElementById('popup-message').textContent = message;
+                document.getElementById('nav-popup').classList.add('active');
+            });
+        });
+        
+        // 客户证明点击事件
+        document.getElementById('customer-proof').addEventListener('click', function() {
+            document.getElementById('customer-popup').classList.add('active');
+        });
+        
+        // 关闭弹出窗口
+        document.getElementById('close-nav-popup').addEventListener('click', function() {
+            document.getElementById('nav-popup').classList.remove('active');
+        });
+        
+        document.getElementById('close-customer-popup').addEventListener('click', function() {
+            document.getElementById('customer-popup').classList.remove('active');
+        });
+        
+        // 点击弹出窗口外部关闭
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('popup')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+
+</body>
+</html>
