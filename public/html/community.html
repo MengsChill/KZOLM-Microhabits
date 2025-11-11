@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kzolm - Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --background: #f1f8e9;
+            --surface: #ffffff;
+            --text: #1b5e20;
+            --text-light: #4caf50;
+            --text-muted: #81c784;
+            --border: #c8e6c9;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(to bottom, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+        
+        .nav-links li {
+            padding: 12px 20px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-links li:hover, .nav-links li.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid white;
+        }
+        
+        .nav-links i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .progress-section {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            border-radius: 12px;
+        }
+        
+        .progress-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 25%;
+            background-color: white;
+            border-radius: 4px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        
+        .share-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+        }
+        
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 125, 50, 0.4);
+        }
+        
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .post {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        
+        .user-info {
+            flex-grow: 1;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary-dark);
+        }
+        
+        .post-time {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .post-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+        
+        .action-button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .action-button:hover {
+            color: var(--primary);
+            background-color: var(--background);
+        }
+        
+        .action-button.active {
+            color: var(--primary);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            color: var(--text);
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .image-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .image-upload:hover {
+            border-color: var(--primary);
+        }
+        
+        .image-upload i {
+            font-size: 40px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .submit-button {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4);
+        }
+        
+        /* Comments */
+        .comments-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .comment-content {
+            background-color: var(--background);
+            padding: 12px 15px;
+            border-radius: 18px;
+            flex-grow: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .comment-username {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary-dark);
+        }
+        
+        .comment-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .add-comment {
+            display: flex;
+            margin-top: 10px;
+        }
+        
+        .comment-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .comment-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 10px;
+            }
+            
+            .nav-links li {
+                flex-shrink: 0;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+            
+            .nav-links li:hover, .nav-links li.active {
+                border-left: none;
+                border-bottom: 4px solid white;
+            }
+            
+            .progress-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-leaf"></i>
+            <h1>Kzolm</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li class="active"><i class="fas fa-home"></i> Home</li>
+            <li><i class="fas fa-chart-line"></i> Progress</li>
+            <li><i class="fas fa-footsteps"></i> TinySteps</li>
+            <li><i class="fas fa-users"></i> Community</li>
+            <li><i class="fas fa-cog"></i> Settings</li>
+            <li><i class="fas fa-question-circle"></i> Help/Feedback</li>
+        </ul>
+        
+        <div class="progress-section">
+            <div class="progress-title">
+                <span>Your Progress</span>
+                <span>25%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">1 of 4 completed</div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Community</h2>
+            <button class="share-button" id="shareButton">
+                <i class="fas fa-plus"></i> Share Thought
+            </button>
+        </div>
+        
+        <div class="posts-container" id="postsContainer">
+            <!-- Posts will be dynamically added here -->
+        </div>
+    </div>
+    
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Share Your Thought</h2>
+                <button class="close-button" id="closeModal">&times;</button>
+            </div>
+            <form id="postForm">
+                <div class="form-group">
+                    <textarea id="postText" placeholder="What's on your mind?"></textarea>
+                </div>
+                
+                <div class="image-upload" id="imageUpload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload an image (optional)</p>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                    <img id="imagePreview" class="image-preview">
+                </div>
+                
+                <button type="submit" class="submit-button">Post to Community</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample initial posts
+        const initialPosts = [
+            {
+                id: 1,
+                username: "jamurgod",
+                time: "6 hours ago",
+                content: "Spot me emotionally.",
+                likes: 12,
+                comments: [
+                    { username: "greenleaf", time: "5 hours ago", content: "I feel you! Sending positive vibes your way." },
+                    { username: "naturelover", time: "4 hours ago", content: "You've got this! Remember to take deep breaths." }
+                ],
+                liked: false
+            },
+            {
+                id: 2,
+                username: "wellnesswarrior",
+                time: "1 day ago",
+                content: "Just completed my 30-day meditation streak! Feeling so centered and peaceful. 🌿",
+                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                likes: 24,
+                comments: [
+                    { username: "mindfulmike", time: "22 hours ago", content: "Congratulations! That's an amazing achievement." },
+                    { username: "serenityseek", time: "20 hours ago", content: "Any tips for someone just starting out?" }
+                ],
+                liked: true
+            },
+            {
+                id: 3,
+                username: "growthguru",
+                time: "2 days ago",
+                content: "Remember: Progress isn't always linear. Celebrate the small wins along the way!",
+                likes: 18,
+                comments: [],
+                liked: false
+            }
+        ];
+
+        let posts = JSON.parse(localStorage.getItem('posts')) || initialPosts;
+        let postIdCounter = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 4;
+
+        // DOM Elements
+        const postsContainer = document.getElementById('postsContainer');
+        const shareButton = document.getElementById('shareButton');
+        const shareModal = document.getElementById('shareModal');
+        const closeModal = document.getElementById('closeModal');
+        const postForm = document.getElementById('postForm');
+        const imageUpload = document.getElementById('imageUpload');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Initialize the app
+        function initApp() {
+            renderPosts();
+            
+            // Set up event listeners
+            shareButton.addEventListener('click', () => {
+                shareModal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', () => {
+                shareModal.style.display = 'none';
+                resetForm();
+            });
+            
+            postForm.addEventListener('submit', handlePostSubmit);
+            
+            imageUpload.addEventListener('click', () => {
+                imageInput.click();
+            });
+            
+            imageInput.addEventListener('change', handleImageUpload);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === shareModal) {
+                    shareModal.style.display = 'none';
+                    resetForm();
+                }
+            });
+        }
+
+        // Render all posts
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            
+            if (posts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="post">
+                        <div class="post-content" style="text-align: center; padding: 40px;">
+                            <i class="fas fa-comments" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                            <h3>No posts yet</h3>
+                            <p>Be the first to share something with the community!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                
+                // Generate user avatar based on username
+                const userInitial = post.username.charAt(0).toUpperCase();
+                
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <div class="user-avatar" style="background-color: ${getColorFromUsername(post.username)};">
+                            ${userInitial}
+                        </div>
+                        <div class="user-info">
+                            <div class="username">${post.username}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        ${post.content}
+                    </div>
+                    ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
+                    <div class="post-actions">
+                        <button class="action-button ${post.liked ? 'active' : ''}" data-id="${post.id}" data-action="like">
+                            <i class="fas fa-heart"></i> <span>${post.likes}</span>
+                        </button>
+                        <button class="action-button" data-id="${post.id}" data-action="comment">
+                            <i class="fas fa-comment"></i> <span>${post.comments.length}</span>
+                        </button>
+                        <button class="action-button" data-id="${post.id}" data-action="share">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}">
+                        ${renderComments(post.comments)}
+                        <div class="add-comment">
+                            <input type="text" class="comment-input" placeholder="Add a comment..." data-id="${post.id}">
+                            <button class="comment-button" data-id="${post.id}">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                postsContainer.appendChild(postElement);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.action-button[data-action="like"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    toggleLike(postId);
+                });
+            });
+            
+            document.querySelectorAll('.comment-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    addComment(postId);
+                });
+            });
+            
+            document.querySelectorAll('.comment-input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                        addComment(postId);
+                    }
+                });
+            });
+        }
+
+        // Render comments for a post
+        function renderComments(comments) {
+            if (comments.length === 0) return '';
+            
+            return comments.map(comment => {
+                const userInitial = comment.username.charAt(0).toUpperCase();
+                return `
+                    <div class="comment">
+                        <div class="comment-avatar" style="background-color: ${getColorFromUsername(comment.username)};">
+                            ${userInitial}
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-username">${comment.username}</div>
+                                <div class="comment-time">${comment.time}</div>
+                            </div>
+                            <div>${comment.content}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle post submission
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('postText').value;
+            if (!content.trim()) {
+                alert('Please enter some content for your post');
+                return;
+            }
+            
+            const imageSrc = imagePreview.style.display === 'block' ? imagePreview.src : null;
+            
+            const newPost = {
+                id: postIdCounter++,
+                username: "You", // In a real app, this would be the logged-in user
+                time: "Just now",
+                content: content,
+                image: imageSrc,
+                likes: 0,
+                comments: [],
+                liked: false
+            };
+            
+            posts.unshift(newPost);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            
+            // Reset form and close modal
+            resetForm();
+            shareModal.style.display = 'none';
+            
+            // Update UI
+            renderPosts();
+        }
+
+        // Handle image upload
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('postText').value = '';
+            imagePreview.style.display = 'none';
+            imageInput.value = '';
+        }
+
+        // Toggle like on a post
+        function toggleLike(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            if (post.liked) {
+                post.likes--;
+                post.liked = false;
+            } else {
+                post.likes++;
+                post.liked = true;
+            }
+            
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts();
+        }
+
+        // Add comment to a post
+        function addComment(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const commentInput = document.querySelector(`.comment-input[data-id="${postId}"]`);
+            const content = commentInput.value.trim();
+            
+            if (!content) return;
+            
+            const newComment = {
+                username: "You", // In a real app, this would be the logged-in user
+                time: "Just now",
+                content: content
+            };
+            
+            post.comments.push(newComment);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            
+            // Clear input
+            commentInput.value = '';
+            
+            // Update UI
+            renderPosts();
+        }
+
+        // Generate color from username (for avatars)
+        function getColorFromUsername(username) {
+            const colors = [
+                '#4caf50', '#2e7d32', '#388e3c', '#1b5e20', 
+                '#689f38', '#33691e', '#827717', '#f57f17'
+            ];
+            const index = username.length % colors.length;
+            return colors[index];
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

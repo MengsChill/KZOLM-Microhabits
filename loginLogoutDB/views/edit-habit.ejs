@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head')%>
+<body>
+<%- include('includes/header')%>
+
+    <main>
+        <h2>Edit Habit: <%= habit.habitName %></h2>
+
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+            <div style="color: red; margin-bottom: 1em;">
+                <% errors.forEach(function(error) { %>
+                    <p><%= error %></p>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <form action="/edit-habit/<%= habit.id %>" method="POST">
+            <div class="form-group">
+                <label for="habit">Habit Name:</label>
+                <input id="habit" name="habit" type="text" value="<%= habit.habitName %>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="frequency">Frequency:</label>
+                <select id="frequency" name="frequency" required>
+                    <option value="daily" <%= habit.frequency === 'daily' ? 'selected' : '' %>>Daily</option>
+                    <option value="weekly" <%= habit.frequency === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                    <option value="monthly" <%= habit.frequency === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+
+        <hr>
+
+        <form action="/delete-habit/<%= habit.id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this habit?');">
+            <button type="submit" class="btn btn-danger">Delete Habit</button>
+        </form>
+    </main>
+
+<%- include('includes/footer')%>
+</body>
+</html>

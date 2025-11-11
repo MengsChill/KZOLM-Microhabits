@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head')%>
+<body>
+<%- include('includes/header')%>
+
+    <main>
+        <h2><%= habit.habitName %></h2>
+<p>Frequency: <strong><%= habit.frequency %></strong></p>
+<p>Current Streak: <strong><%= habit.streakCount %> 🔥</strong></p>
+
+<% if (completedToday) { %>
+    <p style="color: green;">Completed for today!</p>
+<% } else { %>
+    <form action="/complete-habit/<%= habit.id %>" method="POST">
+        <button type="submit">Mark as Completed</button>
+    </form>
+<% } %>
+    </main>
+<%- include('includes/footer')%>
+</body>
+</html>

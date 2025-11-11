@@ -1,0 +1,289 @@
+/* --- Basic Reset and Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    background-color: #0e6b4b; /* Fallback background color */
+    overflow: hidden; /* Prevents page scrolling */
+}
+
+/* --- Main Container and Background --- */
+.page-container {
+    width: 100vw;
+    height: 100vh;
+    /* Using a gradient to match the image background */
+    background: linear-gradient(135deg, #22c55e, #15803d, #16a34a, #0e6b4b);
+    display: flex;
+    flex-direction: column;
+    padding: 30px 60px;
+    position: relative;
+}
+
+/* --- 1. Top Navigation Bar --- */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Active state for "PRODUCTS" */
+.nav-link.active {
+    background: #ffffff;
+    color: #333333;
+    font-weight: 600;
+}
+
+.header-icons {
+    display: flex;
+    gap: 20px;
+}
+
+.icon-button {
+    font-size: 1.5rem; /* Icon size */
+    color: #ffffff;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.icon-button:hover {
+    transform: scale(1.1);
+}
+
+/* --- 2. Main Content --- */
+.hero-content {
+    display: flex;
+    flex: 1; /* Fills remaining space */
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding-top: 40px; /* Space for the nav bar */
+}
+
+/* --- 2a. Left Text --- */
+.hero-text {
+    flex-basis: 45%;
+    max-width: 600px;
+}
+
+.new-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.hero-text h1 {
+    font-size: 4.5rem; /* Size for "Small Steps, Big Change" */
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 20px 0;
+}
+
+.hero-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 450px;
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: #ffffff;
+    color: #333333;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 16px 32px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.cta-button span {
+    font-size: 1.5rem; /* Arrow size */
+    transition: transform 0.3s ease;
+    margin-left: 20px;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover span {
+    transform: translateX(5px); /* Arrow moves right on hover */
+}
+
+
+/* --- 2b. Right Image --- */
+.hero-slider {
+    flex-basis: 55%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Pushes content to the right */
+}
+
+.slider-image-wrapper {
+    position: relative;
+    width: 80%; /* Main image container width */
+}
+
+/* Center "halo" effect */
+.halo-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    padding-bottom: 150%; /* Maintains 1:1 aspect ratio */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 60%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.main-slide-image {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    display: block;
+}
+
+.next-slide-preview {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -25%; /* Peeking out slightly */
+    width: 40%; /* Size of the next slide preview */
+    border-radius: 15px;
+    filter: blur(4px) brightness(0.8);
+    opacity: 0.8;
+    z-index: -2;
+}
+
+/* --- 3. Bottom Controls --- */
+.hero-footer {
+    position: absolute;
+    bottom: 30px;
+    left: 60px;
+    right: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.customer-proof {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatars {
+    display: flex;
+}
+
+.avatars img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    /* Avatar stacking effect */
+    margin-left: -12px;
+}
+
+.avatars img:first-child {
+    margin-left: 0;
+}
+
+.customer-proof p {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    font-weight: 300;
+}
+
+.customer-proof p strong {
+    font-weight: 700;
+}
+
+.slider-controls {
+    display: flex;
+    gap: 10px;
+    /* Adjust position to be in the middle */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+}
+
+.slider-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 550px;
+}
+
+.slider-arrow:hover {
+    background: #ffffff;
+    color: #333333;
+}
+
+.slider-pagination {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.slider-pagination .divider {
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 5px;
+}
+
