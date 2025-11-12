@@ -25,14 +25,46 @@ const db = new sqlite3.Database("./users.db", (err) => {
   }
 });
 
-// Create users table if it doesn't exist
-db.run(`
-  CREATE TABLE IF NOT EXISTS users (
+
+//database preparation
+const createTables = db.transaction(()=>{
+ db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE,
-    password TEXT
-  )
-`);
+    username STRING NOT NULL UNIQUE,
+    password STRING NOT NULL
+    )
+    `
+).run()
+
+db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS habits(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    createdDate TEXT,
+    habitName STRING NOT NULL,
+    frequency STRING NOT NULL,
+    streakCount INTEGER DEFAULT 0,
+    authorID INTEGER,
+    FOREIGN KEY (authorID) REFERENCES users (id)
+    )
+    `
+).run()
+
+db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS completions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    habitID INTEGER,
+    completionDate TEXT NOT NULL,
+    FOREIGN KEY (habitID) REFERENCES habits (id)
+    )
+    `
+).run()
+})
+
+createTables()
 
 // ✅ Route: Home page
 app.get("/", (req, res) => {
