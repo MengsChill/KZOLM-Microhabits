@@ -25,15 +25,13 @@ const db = new sqlite3.Database("./users.db", (err) => {
   }
 })
 
-
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE,
     password TEXT
   )
-`);
-
+`)
 
 // ✅ Route: Home page
 app.get("/", (req, res) => {
@@ -52,7 +50,7 @@ app.get("/signup", (req, res) => {
 
 // ✅ Route: Menu page
 app.get("/menu", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/html/menu.html"))
+  res.sendFile(path.join(__dirname, "public/html/mxdash.html"))
 })
 
 // ✅ POST route: handle user signup
@@ -103,6 +101,26 @@ app.post("/signin", (req, res) => {
       res.status(401).send("Incorrect password.")
     }
   })
+})
+
+app.get("/explore-now", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/kent.html"))
+})
+
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/profile.html"))
+})
+
+app.get("/progress", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/progress.html"))
+})
+
+app.get("/community", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/community.html"))
+})
+
+app.get("/add-habit", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/html/addhabit.html"))
 })
 
 // ✅ Start the server

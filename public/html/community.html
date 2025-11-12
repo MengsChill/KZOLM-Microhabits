@@ -16,10 +16,24 @@
         </div>
         
         <ul class="nav-links">
-            <li class="active"><i class="fas fa-home"></i> Home</li>
-            <li><i class="fas fa-chart-line"></i> Progress</li>
+            <li>
+                <a href="/menu">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="/progress">
+                <i class="fas fa-chart-line">
+                </i> Progress
+                </a>
+            </li>
             <li><i class="fas fa-footsteps"></i> TinySteps</li>
-            <li><i class="fas fa-users"></i> Community</li>
+            <li class="active">
+                <a href="/community">
+                <i class="fas fa-users">
+                </i> Community
+                </a>
+            </li>
             <li><i class="fas fa-cog"></i> Settings</li>
             <li><i class="fas fa-question-circle"></i> Help/Feedback</li>
         </ul>
@@ -380,3 +394,9 @@
     </script>
 </body>
 </html>
+
+<style>
+.nav-links a {
+    text-decoration: none;
+    color: inherit;}
+</style>
