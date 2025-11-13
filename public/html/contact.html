@@ -68,9 +68,6 @@
             font-size: 28px;
             font-weight: bold;
             color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
             text-decoration: none;
             position: relative;
             padding-bottom: 5px;
@@ -92,19 +89,6 @@
         .logo:hover::after {
             transform: scaleX(1);
             transform-origin: left;
-        }
-        
-        .logo-icon {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
         }
         
         .logo-text {
@@ -300,53 +284,6 @@
             transform: rotate(180deg);
         }
         
-        /* Community Section */
-        .community-section {
-            text-align: center;
-            padding: 40px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            border-radius: 15px;
-            color: white;
-            margin-bottom: 60px;
-        }
-        
-        .community-title {
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-        
-        .community-description {
-            font-size: 18px;
-            margin-bottom: 25px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        
-        .social-link:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
-        }
-        
         /* Footer */
         .main-footer {
             text-align: center;
@@ -380,7 +317,6 @@
         <!-- Header -->
         <header class="main-header">
             <a href="index.html" class="logo">
-                <div class="logo-icon">K</div>
                 <div class="logo-text">Kzolm</div>
             </a>
             
@@ -501,30 +437,6 @@
                 <div class="faq-answer">
                     <p>Absolutely! We offer team and enterprise plans that include group tracking, shared habits, and administrator tools. Contact our sales team at enterprise@kzolm.com for more information.</p>
                 </div>
-            </div>
-        </section>
-
-        <!-- Community Section -->
-        <section class="community-section">
-            <h2 class="community-title">Join Our Community</h2>
-            <p class="community-description">Connect with thousands of microhabit builders sharing their journeys, tips, and successes.</p>
-            
-            <div class="social-links">
-                <a href="#" class="social-link">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-youtube"></i>
-                </a>
             </div>
         </section>
 
