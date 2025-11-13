@@ -83,6 +83,7 @@
       text-decoration:underline;
       margin-bottom:20px;
       text-align: center;
+      cursor: pointer;
     }
     .btn.login {
       background:#9ef86c;
@@ -132,6 +133,20 @@
       padding: 8px 12px;
       border-radius: 8px;
       border-left: 3px solid #9ef86c;
+    }
+    
+    /* Info message styling */
+    .info-message {
+      color: #6bc2ff;
+      font-size: 0.9rem;
+      margin: 5px 0 15px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+      background: rgba(107, 194, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #6bc2ff;
     }
     
     /* Updated Social Alternatives Section */
@@ -202,6 +217,67 @@
       padding:20px;
       font-weight:600;
       font-size: 1rem;
+    }
+
+    /* === Reset Password Section === */
+    .reset-section {
+      display: none;
+    }
+    
+    .reset-section h2 { 
+      margin-bottom:25px; 
+      font-size: 1.8rem;
+      text-align: center;
+    }
+    
+    .reset-section p {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #e0e0e0;
+      line-height: 1.5;
+    }
+    
+    .btn.reset {
+      background:#9ef86c;
+      color:#204b33;
+      font-weight:600;
+      width:100%;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      margin-top: 8px;
+    }
+    .btn.reset:hover { background:#8be35f; transform:scale(1.05); }
+    
+    .btn.back {
+      background: transparent;
+      color: #9ef86c;
+      font-weight:600;
+      width:100%;
+      border: 2px solid #9ef86c;
+      border-radius: 30px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      margin-top: 15px;
+    }
+    .btn.back:hover { background: rgba(158, 248, 108, 0.1); }
+    
+    /* Verification Code Display */
+    .verification-code {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      letter-spacing: 5px;
+      color: #9ef86c;
     }
 
     /* === Option Pages === */
@@ -391,53 +467,89 @@
 
   <main class="signin-container">
     <section class="signin-box">
-      <h2>Welcome Back!</h2>
+      <!-- Sign In Section (shown by default) -->
+      <div id="signin-section">
+        <h2>Welcome Back!</h2>
 
-      <form id="signinForm" action="/signin" method="POST">
-        <label>Your email</label>
-        <input type="email" name="email" placeholder="Enter your email" required />
+        <form id="signinForm" action="/signin" method="POST">
+          <label>Your email</label>
+          <input type="email" name="email" placeholder="Enter your email" required />
 
-        <label>Password</label>
-        <div class="password-field">
-          <input type="password" name="password" placeholder="Enter your password" required />
-          <span class="toggle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
-            </svg>
-          </span>
+          <label>Password</label>
+          <div class="password-field">
+            <input type="password" name="password" placeholder="Enter your password" required />
+            <span class="toggle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Error message container -->
+          <div class="error-message" id="errorMessage">
+            Incorrect email or password. Please try again.
+          </div>
+
+          <!-- Success message container -->
+          <div class="success-message" id="successMessage">
+            Success! Redirecting to dashboard...
+          </div>
+
+          <a class="forgot" onclick="showResetPassword()">Forgot your password?</a>
+
+          <button type="submit" class="btn login">Sign In</button>
+        </form>
+
+        <p class="or">or try these options</p>
+        
+        <div class="alternative-options">
+          <a href="#" class="option-card" onclick="showOptionPage('guest')">
+            <i class="fas fa-user-clock"></i>
+            <span>Continue as Guest</span>
+          </a>
+          <a href="#" class="option-card" onclick="showOptionPage('demo')">
+            <i class="fas fa-rocket"></i>
+            <span>Quick Start Demo</span>
+          </a>
+          <a href="#" class="option-card" onclick="showOptionPage('assessment')">
+            <i class="fas fa-heartbeat"></i>
+            <span>Take Health Assessment</span>
+          </a>
         </div>
+      </div>
 
+      <!-- Simple Reset Password Section (hidden by default) -->
+      <div id="reset-section" class="reset-section">
+        <h2>Reset Your Password</h2>
+        <p>Enter the verification code below and create a new password.</p>
+        
+        <!-- Verification Code Display -->
+        <div class="verification-code" id="verification-code-display">----</div>
+        
+        <label>Verification Code</label>
+        <input type="text" id="verification-code-input" placeholder="Enter the 4-digit code above" maxlength="4">
+        
+        <label>New Password</label>
+        <input type="password" id="new-password" placeholder="Enter your new password">
+        
+        <label>Confirm New Password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm your new password">
+        
         <!-- Error message container -->
-        <div class="error-message" id="errorMessage">
-          Incorrect email or password. Please try again.
+        <div class="error-message" id="reset-error-message">
+          Please check your entries and try again.
         </div>
-
+        
         <!-- Success message container -->
-        <div class="success-message" id="successMessage">
-          Success! Redirecting to dashboard...
+        <div class="success-message" id="reset-success-message">
+          Password reset successfully!
         </div>
-
-        <a href="#" class="forgot">Forgot your password?</a>
-
-        <button type="submit" class="btn login">Sign In</button>
-      </form>
-
-      <p class="or">or try these options</p>
-      
-      <div class="alternative-options">
-        <a href="#" class="option-card" onclick="showOptionPage('guest')">
-          <i class="fas fa-user-clock"></i>
-          <span>Continue as Guest</span>
-        </a>
-        <a href="#" class="option-card" onclick="showOptionPage('demo')">
-          <i class="fas fa-rocket"></i>
-          <span>Quick Start Demo</span>
-        </a>
-        <a href="#" class="option-card" onclick="showOptionPage('assessment')">
-          <i class="fas fa-heartbeat"></i>
-          <span>Take Health Assessment</span>
-        </a>
+        
+        <button type="button" class="btn reset" onclick="resetPassword()">Reset Password</button>
+        <button type="button" class="btn back" onclick="showSignIn()">
+          <i class="fas fa-arrow-left"></i> Back to Sign In
+        </button>
       </div>
     </section>
 
@@ -577,7 +689,92 @@
   </div>
 
   <script>
-    // Eye toggle
+    // Generate a simple 4-digit verification code
+    function generateVerificationCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
+    // Show reset password section
+    function showResetPassword() {
+      document.getElementById('signin-section').style.display = 'none';
+      document.getElementById('reset-section').style.display = 'block';
+      
+      // Generate and display verification code
+      const code = generateVerificationCode();
+      document.getElementById('verification-code-display').textContent = code;
+      
+      // Store code for verification
+      sessionStorage.setItem('resetCode', code);
+      
+      // Clear previous messages and inputs
+      document.getElementById('reset-error-message').style.display = 'none';
+      document.getElementById('reset-success-message').style.display = 'none';
+      document.getElementById('verification-code-input').value = '';
+      document.getElementById('new-password').value = '';
+      document.getElementById('confirm-password').value = '';
+    }
+
+    // Show sign in section
+    function showSignIn() {
+      document.getElementById('reset-section').style.display = 'none';
+      document.getElementById('signin-section').style.display = 'block';
+    }
+
+    // Reset password function
+    function resetPassword() {
+      const userCode = document.getElementById('verification-code-input').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const storedCode = sessionStorage.getItem('resetCode');
+      
+      const errorDiv = document.getElementById('reset-error-message');
+      const successDiv = document.getElementById('reset-success-message');
+      
+      // Hide previous messages
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      // Validate inputs
+      if (!userCode || !newPassword || !confirmPassword) {
+        errorDiv.textContent = 'Please fill in all fields';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (userCode !== storedCode) {
+        errorDiv.textContent = 'Invalid verification code. Please check the code above.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        errorDiv.textContent = 'Password must be at least 6 characters';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      // Success - Password reset
+      successDiv.textContent = 'Password reset successfully! Redirecting to sign in...';
+      successDiv.style.display = 'block';
+      
+      // In a real application, you would send the new password to your backend here
+      console.log('New password set:', newPassword);
+      
+      // Return to sign in after 2 seconds
+      setTimeout(() => {
+        showSignIn();
+        // Clear the reset code from storage
+        sessionStorage.removeItem('resetCode');
+      }, 2000);
+    }
+
+    // Eye toggle functionality
     document.querySelectorAll('.toggle').forEach(toggle => {
       toggle.addEventListener('click', () => {
         const input = toggle.previousElementSibling;

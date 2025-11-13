@@ -41,31 +41,13 @@
             font-size: 28px;
             font-weight: bold;
             color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             text-decoration: none;
-        }
-        
-        .logo-icon {
-            background: linear-gradient(135deg, #fff 0%, #c8e6d3 100%);
-            color: #0e6b4b;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
         }
         
         .logo-text {
             font-weight: 700;
             letter-spacing: 1px;
-            background: linear-gradient(to right, #fff, #c8e6d3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #fff;
         }
         
         .main-nav ul {
@@ -78,15 +60,102 @@
             text-decoration: none;
             color: #fff;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: all 0.3s;
             padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
         
         .nav-link:hover, .nav-link.active {
             color: #0e6b4b;
             background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Animation for MICROHABITS */
+        .nav-link.microhabits.active {
+            animation: microhabitsAnimation 0.8s ease-out;
+        }
+        
+        @keyframes microhabitsAnimation {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        
+        /* Animation for BENEFITS */
+        .nav-link.benefits.active {
+            animation: benefitsAnimation 0.8s ease-out;
+        }
+        
+        @keyframes benefitsAnimation {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(-2deg);
+            }
+            50% {
+                transform: translateY(5px) rotate(2deg);
+            }
+            75% {
+                transform: translateY(-3px) rotate(-1deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        /* Animation for GETTING STARTED */
+        .nav-link.getting-started.active {
+            animation: gettingStartedAnimation 0.8s ease-out;
+        }
+        
+        @keyframes gettingStartedAnimation {
+            0% {
+                letter-spacing: normal;
+            }
+            50% {
+                letter-spacing: 3px;
+            }
+            100% {
+                letter-spacing: normal;
+            }
+        }
+        
+        /* Animation for SUCCESS STORIES */
+        .nav-link.success-stories.active {
+            animation: successStoriesAnimation 0.8s ease-out;
+        }
+        
+        @keyframes successStoriesAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .nav-link.success-stories.active {
+            background: linear-gradient(90deg, #0e6b4b, #fff, #0e6b4b);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .header-icons {
@@ -573,6 +642,64 @@
             background-color: #0a4d35;
         }
         
+        /* Simple Footer Styles */
+        .simple-footer {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0e6b4b;
+            margin-bottom: 10px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: #b8b8b8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: #0e6b4b;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            color: #b8b8b8;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #2d2d44;
+            width: 100%;
+        }
+        
+        .kzolm-link {
+            color: #0e6b4b;
+            font-weight: 600;
+        }
+        
         /* Responsive Styles */
         @media (max-width: 900px) {
             .hero-content {
@@ -623,6 +750,12 @@
             .customer-proof {
                 order: 1;
             }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -632,21 +765,20 @@
         
         <header class="main-header">
             <a href="#" class="logo">
-                <div class="logo-icon">K</div>
-                <div class="logo-text">ZCum</div>
+                <div class="logo-text">Kzolm</div>
             </a>
             
             <nav class="main-nav">
                 <ul>
-                    <li><a class="nav-link" href="#microhabits-page">MICROHABITS</a></li>
-                    <li><a class="nav-link" href="#benefits-page">BENEFITS</a></li>
-                    <li><a class="nav-link" href="#getting-started-page">GETTING STARTED</a></li>
-                    <li><a class="nav-link" href="#success-stories-page">SUCCESS STORIES</a></li>
+                    <li><a class="nav-link microhabits" href="#microhabits-page">MICROHABITS</a></li>
+                    <li><a class="nav-link benefits" href="#benefits-page">BENEFITS</a></li>
+                    <li><a class="nav-link getting-started" href="#getting-started-page">GETTING STARTED</a></li>
+                    <li><a class="nav-link success-stories" href="#success-stories-page">SUCCESS STORIES</a></li>
                 </ul>
             </nav>
             
             <div class="header-icons">
-                <a class="icon-button" id="search-button" aria-label="Search"><i class="fas fa-search"></i></a>
+                <!-- Search icon removed as requested -->
                 <a href="/profile" class="icon-button" aria-label="User Account"><i class="fas fa-user"></i></a>
             </div>
         </header>
@@ -654,7 +786,7 @@
         <main class="hero-content">
             
             <div class="hero-text">
-                <a href="new-kzolm.html" class="new-tag">TRY NEW KZCum</a>
+                <a href="new-kzolm.html" class="new-tag">TRY NEW KZOLM</a>
                 <h1>Small Steps,<br>Big Change</h1>
                 <p>Build the life you want through tiny, consistent actions that actually stick.</p>
                 
@@ -712,6 +844,26 @@
         </footer>
 
     </div>
+
+    <!-- Global Footer - Will be hidden when navigation buttons are clicked -->
+    <footer class="simple-footer" id="global-footer">
+        <div class="footer-container">
+            <div class="footer-logo">Kzolm Microhabits</div>
+            
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="security-verification.html">Account Security</a>
+                <a href="habits.html">My Habits</a>
+                <a href="progress.html">Progress</a>
+                <a href="about.html">About <span class="kzolm-link">Kzolm</span></a>
+                <a href="contact.html">Contact</a>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 <span class="kzolm-link">Kzolm</span> Microhabits. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <div class="search-popup" id="search-popup">
         <div class="search-content">
@@ -1024,6 +1176,9 @@
             // 隐藏主页内容
             document.querySelector('.page-container').style.display = 'none';
             
+            // 隐藏全局页脚
+            document.getElementById('global-footer').style.display = 'none';
+            
             // 显示目标文章页面
             document.getElementById(pageId).style.display = 'block';
         }
@@ -1033,10 +1188,16 @@
             // 显示主页内容
             document.querySelector('.page-container').style.display = 'flex';
             
+            // 显示全局页脚
+            document.getElementById('global-footer').style.display = 'block';
+            
             // 隐藏所有文章页面
             document.querySelectorAll('.article-container').forEach(page => {
                 page.style.display = 'none';
             });
+            
+            // 移除所有导航链接的active类
+            navLinks.forEach(l => l.classList.remove('active'));
         }
         
         // 客户证明点击事件
@@ -1044,11 +1205,7 @@
             document.getElementById('customer-popup').classList.add('active');
         });
         
-        // 搜索按钮点击事件
-        document.getElementById('search-button').addEventListener('click', function() {
-            document.getElementById('search-popup').classList.add('active');
-            document.getElementById('search-input').focus();
-        });
+        // 搜索按钮点击事件 - removed as requested
         
         // 搜索表单提交
         document.getElementById('search-form').addEventListener('submit', function(e) {
@@ -1096,6 +1253,30 @@
             if (e.key === 'Escape') {
                 document.getElementById('search-popup').classList.remove('active');
             }
+        });
+        
+        // Footer functionality
+        document.querySelectorAll('.kzolm-link').forEach(link => {
+            link.addEventListener('mouseover', function() {
+                this.style.color = '#1a9c6e';
+                this.style.transition = 'color 0.3s ease';
+            });
+            
+            link.addEventListener('mouseout', function() {
+                this.style.color = '#0e6b4b';
+            });
+        });
+        
+        // Add click effect to footer links
+        document.querySelectorAll('.footer-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // In a real implementation, this would navigate to the page
+                // For demo purposes, we'll just show an alert
+                if(this.getAttribute('href') === 'security-verification.html') {
+                    e.preventDefault();
+                    alert('Navigating to Security Verification page...');
+                }
+            });
         });
     </script>
 
