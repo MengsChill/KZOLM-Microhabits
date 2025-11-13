@@ -50,7 +50,7 @@ app.get("/signup", (req, res) => {
 
 // ✅ Route: Menu page
 app.get("/menu", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/html/mxdash.html"))
+  res.sendFile(path.join(__dirname, "public/html/dashboard.html"))
 })
 
 // ✅ POST route: handle user signup
