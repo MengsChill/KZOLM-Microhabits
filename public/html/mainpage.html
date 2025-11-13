@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Tracker</title>
+    <title>Task Tracker - Stay Productive</title>
     <style>
         :root {
             --primary-color: #2e7d32;
@@ -15,30 +15,82 @@
             --text-color: #333333;
             --text-light: #666666;
             --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --secondary-bg: #f8f9fa;
+            --progress-bg: #f0f4f8;
+            
+            /* Sidebar specific variables */
+            --sidebar-bg: #f5f7fa;
+            --sidebar-card: #ffffff;
+            --sidebar-text: #333333;
+            --sidebar-border: #e0e0e0;
+        }
+
+        /* Dark Theme Variables */
+        .dark-mode {
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-light: #b0b0b0;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --secondary-bg: #2d2d2d;
+            --progress-bg: #2a2a2a;
+            
+            /* Dark sidebar */
+            --sidebar-bg: #1a1a1a;
+            --sidebar-card: #2d2d2d;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #333333;
         }
 
         .theme-green {
             --primary-color: #2e7d32;
             --primary-light: #4caf50;
             --primary-dark: #1b5e20;
+            
+            /* Green sidebar */
+            --sidebar-bg: #1b5e20;
+            --sidebar-card: #2e7d32;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #4caf50;
         }
 
         .theme-blue {
             --primary-color: #1565c0;
             --primary-light: #42a5f5;
             --primary-dark: #0d47a1;
+            
+            /* Blue sidebar */
+            --sidebar-bg: #0d47a1;
+            --sidebar-card: #1565c0;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #42a5f5;
         }
 
         .theme-purple {
             --primary-color: #6a1b9a;
             --primary-light: #9c27b0;
             --primary-dark: #4a148c;
+            
+            /* Purple sidebar */
+            --sidebar-bg: #4a148c;
+            --sidebar-card: #6a1b9a;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #9c27b0;
         }
 
         .theme-orange {
             --primary-color: #e65100;
             --primary-light: #ff9800;
             --primary-dark: #bf360c;
+            
+            /* Orange sidebar */
+            --sidebar-bg: #bf360c;
+            --sidebar-card: #e65100;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #ff9800;
         }
 
         * {
@@ -49,24 +101,340 @@
         }
         
         body {
+            display: flex;
+            min-height: 100vh;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            transition: all 0.3s ease;
-            padding: 20px;
-            min-height: 100vh;
+            transition: var(--transition);
         }
         
-        .container {
-            max-width: 1400px;
+        /* Icon Styles */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            stroke: currentColor;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-small {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-large {
+            width: 32px;
+            height: 32px;
+        }
+
+        .icon-xlarge {
+            width: 48px;
+            height: 48px;
+        }
+
+        .nav-icon .icon,
+        .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+
+        .dark-mode .nav-icon .icon,
+        .dark-mode .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-color);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-left-color: #4caf50;
+        }
+
+        .toast-error {
+            border-left-color: #f44336;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+        
+        /* Sidebar Styles - IMPROVED MINIMIZED LAYOUT */
+        .sidebar {
+            width: 70px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+            border-right: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar:hover {
+            width: 280px;
+        }
+
+        /* Sidebar Header - FIXED FOR MINIMIZED STATE */
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            min-height: 60px;
+        }
+
+        .sidebar:hover .sidebar-header {
+            padding: 20px 24px;
+            justify-content: flex-start;
+            min-height: 80px;
+        }
+
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            /* Ensure icon is centered when minimized */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin: 0 auto;
+        }
+
+        .sidebar:hover .sidebar-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0; /* Remove auto margin when expanded */
+        }
+
+        .sidebar-icon:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Progress Section - VISIBLE IN BOTH STATES */
+        .progress-section {
+            padding: 0 15px 15px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar:hover .progress-section {
+            padding: 0 24px 24px;
+            align-items: stretch;
+        }
+
+        .progress-bar-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .sidebar:hover .progress-bar-container {
+            max-width: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--sidebar-text);
+            width: 33.33%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--sidebar-text);
+            display: none; /* Hidden by default in minimized state */
+        }
+
+        .sidebar:hover .progress-title {
+            display: block; /* Show when expanded */
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .sidebar:hover .progress-text {
+            font-size: 14px;
+            text-align: left;
+        }
+
+        /* Navigation Menu - IMPROVED MINIMIZED LAYOUT */
+        .nav-menu {
+            flex: 1;
+            padding: 0 5px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar:hover .nav-menu {
+            padding: 0 16px;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .sidebar:hover .nav-item {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--sidebar-text);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            font-size: 16px;
+            transition: var(--transition);
+            margin-left: 0;
+            opacity: 0;
+            visibility: hidden;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar:hover .nav-text {
+            margin-left: 12px;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Sidebar Footer - IMPROVED MINIMIZED LAYOUT */
+        .sidebar-footer {
+            padding: 10px 5px 0;
+            border-top: 1px solid var(--sidebar-border);
+            transition: var(--transition);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar:hover .sidebar-footer {
+            padding: 16px 24px 0;
+        }
+
+        .exit-button {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .sidebar:hover .exit-button {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .exit-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            margin-left: 70px;
+        }
+
+        .sidebar:hover ~ .main-content {
+            margin-left: 280px;
+        }
+
+        .container {
+            flex: 1;
             background: var(--card-color);
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 90vh;
         }
         
         header {
@@ -79,6 +447,25 @@
         h1 {
             font-size: 28px;
             margin-bottom: 10px;
+            cursor: pointer;
+            display: inline-block;
+            transition: var(--transition);
+        }
+        
+        h1:hover {
+            transform: translateY(-2px);
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .header-subtitle:hover {
+            opacity: 1;
+            text-decoration: underline;
         }
         
         .profile-section {
@@ -106,20 +493,30 @@
             font-weight: bold;
             font-size: 20px;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .profile-pic:hover {
             transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .profile-name {
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
         }
 
         .profile-name:hover {
             text-decoration: underline;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         .theme-btn {
@@ -133,10 +530,30 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
         
         .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
@@ -149,6 +566,7 @@
             grid-template-rows: auto auto;
             gap: 25px;
             grid-template-areas: 
+                "quick-actions quick-actions"
                 "timysteps streak"
                 "profile profile";
         }
@@ -158,17 +576,26 @@
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .section:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
         .section:nth-child(1) {
-            grid-area: timysteps;
+            grid-area: quick-actions;
         }
         
         .section:nth-child(2) {
-            grid-area: streak;
+            grid-area: timysteps;
         }
         
         .section:nth-child(3) {
+            grid-area: streak;
+        }
+        
+        .section:nth-child(4) {
             grid-area: profile;
         }
         
@@ -182,6 +609,12 @@
             gap: 10px;
             padding-bottom: 10px;
             border-bottom: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .section-title:hover {
+            color: var(--primary-color);
         }
         
         .section-title::before {
@@ -194,11 +627,11 @@
         }
         
         .progress-container {
-            background: #f0f4f8;
+            background: var(--progress-bg);
             border-radius: 12px;
             padding: 20px;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: var(--transition);
         }
 
         .progress-container:hover {
@@ -213,9 +646,9 @@
             font-weight: 500;
         }
         
-        .progress-bar {
+        .progress-bar-main {
             height: 12px;
-            background: #e0e6ed;
+            background: var(--secondary-bg);
             border-radius: 6px;
             overflow: hidden;
         }
@@ -230,27 +663,27 @@
         
         .streak-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 20px;
             height: 100%;
         }
         
         .streak-item {
-            background: #f8f9fa;
+            background: var(--secondary-bg);
             border-radius: 12px;
-            padding: 20px; /* Reduced padding */
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px; /* Reduced gap */
-            border: 2px solid #e9ecef;
-            transition: all 0.3s;
+            gap: 12px;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
             cursor: pointer;
             text-align: center;
             text-decoration: none;
             color: inherit;
-            height: 140px; /* Smaller fixed height */
+            height: 140px;
         }
         
         .streak-item:hover {
@@ -260,37 +693,32 @@
         }
         
         .streak-icon {
-            width: 50px; /* Smaller icon */
-            height: 50px; /* Smaller icon */
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px; /* Smaller font */
+            font-size: 24px;
         }
         
-        .water-icon {
-            background: #e3f2fd;
-            color: var(--primary-color);
-        }
-        
-        .workout-icon {
-            background: #e8f5e9;
+        .addon-icon {
+            background: var(--secondary-bg);
             color: var(--primary-color);
         }
         
         .streak-name {
             font-weight: 600;
-            font-size: 16px; /* Smaller font */
+            font-size: 16px;
         }
         
         .streak-status {
-            font-size: 13px; /* Smaller font */
+            font-size: 13px;
             color: var(--text-light);
         }
         
         .leaderboard {
-            background: #f8f9fa;
+            background: var(--secondary-bg);
             border-radius: 12px;
             padding: 25px;
         }
@@ -307,10 +735,12 @@
             color: var(--primary-dark);
             font-size: 18px;
             cursor: pointer;
+            transition: var(--transition);
         }
 
         .leaderboard-title:hover {
             text-decoration: underline;
+            color: var(--primary-color);
         }
         
         .leaderboard-badge {
@@ -321,11 +751,12 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: var(--transition);
         }
 
         .leaderboard-badge:hover {
             transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
         
         .leaderboard-list {
@@ -339,11 +770,11 @@
             display: flex;
             align-items: center;
             padding: 15px;
-            background: white;
+            background: var(--card-color);
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .leaderboard-item:hover {
@@ -355,7 +786,6 @@
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            background: var(--primary-color);
             color: white;
             display: flex;
             align-items: center;
@@ -364,7 +794,7 @@
             margin-right: 15px;
             flex-shrink: 0;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: var(--transition);
         }
 
         .rank:hover {
@@ -383,6 +813,10 @@
             background: linear-gradient(135deg, #cd7f32, #a56a2a);
         }
         
+        .rank-other {
+            background: var(--primary-color);
+        }
+        
         .user-info {
             display: flex;
             align-items: center;
@@ -394,7 +828,7 @@
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: #e9ecef;
+            background: var(--secondary-bg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -402,7 +836,7 @@
             color: var(--primary-color);
             flex-shrink: 0;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: var(--transition);
         }
 
         .user-avatar:hover {
@@ -416,18 +850,11 @@
             cursor: pointer;
             padding: 5px 10px;
             border-radius: 5px;
-            transition: background 0.3s;
+            transition: var(--transition);
         }
 
         .points:hover {
             background: rgba(46, 125, 50, 0.1);
-        }
-
-        .navigation-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
         }
 
         .quick-actions {
@@ -445,30 +872,18 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.3s;
+            transition: var(--transition);
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .action-btn:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
-        }
-
-        .back-btn {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 15px;
-            transition: background 0.3s;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         /* Modal Styles */
@@ -529,7 +944,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            transition: var(--transition);
         }
         
         .modal-close:hover {
@@ -562,7 +977,7 @@
 
         .modal-features {
             text-align: left;
-            background: #f8f9fa;
+            background: var(--secondary-bg);
             padding: 15px;
             border-radius: 8px;
             margin: 15px 0;
@@ -578,6 +993,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--text-color);
         }
 
         .modal-features li:before {
@@ -600,7 +1016,8 @@
             border: 2px solid var(--border-color);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            background: var(--card-color);
         }
         
         .theme-option:hover {
@@ -621,30 +1038,31 @@
             color: white;
         }
         
-        .theme-green .theme-preview {
+        .theme-green-preview {
             background: linear-gradient(135deg, #2e7d32, #4caf50);
         }
         
-        .theme-blue .theme-preview {
+        .theme-blue-preview {
             background: linear-gradient(135deg, #1565c0, #42a5f5);
         }
         
-        .theme-purple .theme-preview {
+        .theme-purple-preview {
             background: linear-gradient(135deg, #6a1b9a, #9c27b0);
         }
         
-        .theme-orange .theme-preview {
+        .theme-orange-preview {
             background: linear-gradient(135deg, #e65100, #ff9800);
         }
         
         .theme-name {
             font-weight: 600;
             margin-bottom: 5px;
+            color: var(--text-color);
         }
         
         .selected {
             border-color: var(--primary-color);
-            background: #f0f4ff;
+            background: var(--secondary-bg);
         }
         
         .modal-footer {
@@ -660,7 +1078,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
         
         .btn-primary {
@@ -674,13 +1092,13 @@
         }
         
         .btn-secondary {
-            background: #e9ecef;
-            color: #495057;
+            background: var(--secondary-bg);
+            color: var(--text-color);
             margin-right: 10px;
         }
         
         .btn-secondary:hover {
-            background: #dee2e6;
+            background: var(--border-color);
             transform: translateY(-2px);
         }
 
@@ -710,11 +1128,184 @@
             }
         }
         
+        /* Task List Styles */
+        .task-list {
+            margin-top: 20px;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .task-name {
+            flex: 1;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-color);
+        }
+        
+        .task-name:hover {
+            color: var(--primary-color);
+        }
+        
+        .task-completed {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+            transition: var(--transition);
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+        
+        /* Settings Page Styles */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .settings-section {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .settings-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .settings-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .settings-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .settings-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .settings-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .settings-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .settings-slider:before {
+            transform: translateX(26px);
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             .content {
                 grid-template-columns: 1fr;
                 grid-template-areas: 
+                    "quick-actions"
                     "timysteps"
                     "streak"
                     "profile";
@@ -726,6 +1317,58 @@
         }
         
         @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+           
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px 0;
+            }
+
+            .sidebar:hover {
+                width: 100%;
+            }
+
+            .sidebar .nav-text {
+                display: block;
+                opacity: 1;
+                visibility: visible;
+                margin-left: 12px;
+            }
+
+            .sidebar .progress-section {
+                opacity: 1;
+                visibility: visible;
+                height: auto;
+                padding: 0 24px 20px;
+            }
+
+            .sidebar .nav-item {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+
+            .sidebar .sidebar-footer {
+                padding: 16px 24px 0;
+            }
+
+            .sidebar .exit-button {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+           
+            .main-content {
+                padding: 20px;
+                margin-left: 0;
+            }
+            
+            .sidebar:hover ~ .main-content {
+                margin-left: 0;
+            }
+            
             .content {
                 padding: 20px;
             }
@@ -740,13 +1383,18 @@
                 align-items: flex-start;
             }
 
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .quick-actions {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
         }
         
         @media (max-width: 480px) {
-            body {
+            .main-content {
                 padding: 10px;
             }
             
@@ -765,113 +1413,252 @@
             .theme-options {
                 grid-template-columns: 1fr 1fr;
             }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .leaderboard-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body class="theme-green">
-    <div class="container">
-        <header>
-            <h1 style="cursor: pointer;" onclick="showWelcomeMessage()">Task Tracker</h1>
-            <p style="cursor: pointer;" onclick="showAppDescription()">Stay productive and build healthy habits</p>
-            
-            <div class="profile-section">
-                <div class="profile-info">
-                    <div class="profile-pic" onclick="openProfile()">JD</div>
-                    <div class="profile-name" onclick="openProfile()">John Doe</div>
-                </div>
-                <button class="theme-btn" id="themeBtn">
-                    🎨 Green Theme
-                </button>
-                <a href="mainpage.html" class="back-btn" style="margin-left: 10px;">
-    ← Back to Main
-</a>
-            </div>
-        </header>
-        
-        <div class="content">
-            <div class="section">
-                <h2 class="section-title" onclick="showTaskDetails()">TimySteps</h2>
-                <div class="progress-container" onclick="showTaskProgress()">
-                    <div class="progress-info">
-                        <span>Task on progress</span>
-                        <span>1 of 3 done</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title" onclick="showStreakInfo()">Streak</h2>
-                <div class="streak-container">
-                    <a href="water-tracker.html" class="streak-item" id="waterStreak">
-                        <div class="streak-icon water-icon">💧</div>
-                        <div class="streak-name">Water</div>
-                        <div class="streak-status">5 day streak</div>
-                    </a>
-                    <a href="workout-tracker.html" class="streak-item" id="workoutStreak">
-                        <div class="streak-icon workout-icon">💪</div>
-                        <div class="streak-name">Workout</div>
-                        <div class="streak-status">3 day streak</div>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title" onclick="showProfileInfo()">Profile</h2>
-                <div class="leaderboard">
-                    <div class="leaderboard-header">
-                        <div class="leaderboard-title" onclick="showLeaderboardInfo()">Friends Leaderboard</div>
-                        <div class="leaderboard-badge" onclick="celebrateFirstPlace()">You are the 1st today!</div>
-                    </div>
-                    <ul class="leaderboard-list">
-                        <li class="leaderboard-item" onclick="viewUserProfile('You')">
-                            <div class="rank rank-1" onclick="showRankInfo(1)">1</div>
-                            <div class="user-info">
-                                <div class="user-avatar" onclick="viewUserProfile('You')">JD</div>
-                                <div onclick="viewUserProfile('You')">You</div>
-                            </div>
-                            <div class="points" onclick="showPointsBreakdown(245)">245 pts</div>
-                        </li>
-                        <li class="leaderboard-item" onclick="viewUserProfile('Alex Smith')">
-                            <div class="rank rank-2" onclick="showRankInfo(2)">2</div>
-                            <div class="user-info">
-                                <div class="user-avatar" onclick="viewUserProfile('Alex Smith')">AS</div>
-                                <div onclick="viewUserProfile('Alex Smith')">Alex Smith</div>
-                            </div>
-                            <div class="points" onclick="showPointsBreakdown(198)">198 pts</div>
-                        </li>
-                        <li class="leaderboard-item" onclick="viewUserProfile('Maria Johnson')">
-                            <div class="rank rank-3" onclick="showRankInfo(3)">3</div>
-                            <div class="user-info">
-                                <div class="user-avatar" onclick="viewUserProfile('Maria Johnson')">MJ</div>
-                                <div onclick="viewUserProfile('Maria Johnson')">Maria Johnson</div>
-                            </div>
-                            <div class="points" onclick="showPointsBreakdown(176)">176 pts</div>
-                        </li>
-                        <li class="leaderboard-item" onclick="viewUserProfile('Taylor Wilson')">
-                            <div class="rank" onclick="showRankInfo(4)">4</div>
-                            <div class="user-info">
-                                <div class="user-avatar" onclick="viewUserProfile('Taylor Wilson')">TW</div>
-                                <div onclick="viewUserProfile('Taylor Wilson')">Taylor Wilson</div>
-                            </div>
-                            <div class="points" onclick="showPointsBreakdown(154)">154 pts</div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
 
-            <!-- Quick Actions Section -->
-            <div class="section">
-                <h2 class="section-title" onclick="showQuickActionsInfo()">Quick Actions</h2>
-                <div class="quick-actions">
-                    <button class="action-btn" onclick="addNewTask()">➕ Add New Task</button>
-                    <button class="action-btn" onclick="viewStatistics()">📊 View Statistics</button>
-                    <button class="action-btn" onclick="shareProgress()">📤 Share Progress</button>
-                    <button class="action-btn" onclick="openSettings()">⚙️ Settings</button>
-                    <button class="action-btn" onclick="showAchievements()">🏆 Achievements</button>
-                    <button class="action-btn" onclick="openHelp()">❓ Help & Support</button>
+    <!-- Sidebar - Starts minimized, expands on hover -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-kzolm">
+                <img src="https://via.placeholder.com/80x80/56b881/ffffff?text=kzolm" alt="kzolm" class="sidebar-icon" id="sidebarImage">
+            </div>
+        </div>
+       
+        <div class="progress-section">
+            <div class="progress-title">Task Progress</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="sidebarProgressBar"></div>
+            </div>
+            <div class="progress-text" id="sidebarProgressText">1 of 3 completed</div>
+        </div>
+       
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="navigateTo('home')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Home</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('progress')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Progress</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('tinysteps')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M18.5 9.51L14.5 5.51V7c0 1.1-.9 2-2 2H4v2h8.5c1.1 0 2 .9 2 2v1.49l4-4zM5.5 14.49L9.5 18.49V17c0-1.1.9-2 2-2H20v-2h-8.5c-1.1 0-2-.9-2-2v-1.49l-4 4z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">TinySteps</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('community')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Community</div>
+            </div>
+            <div class="nav-item" onclick="openSettings()">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Settings</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('help')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Help/Feedback</div>
+            </div>
+        </div>
+       
+        <div class="sidebar-footer">
+            <div class="exit-button" onclick="exitApp()">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Exit</div>
+            </div>
+        </div>
+    </div>
+   
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <h1 onclick="showWelcomeMessage()">Task Tracker</h1>
+                <p class="header-subtitle" onclick="showAppDescription()">Stay productive and build healthy habits</p>
+                
+                <div class="profile-section">
+                    <div class="profile-info">
+                        <div class="profile-pic" onclick="openUserProfile()">JD</div>
+                        <div class="profile-name" onclick="openUserProfile()">John Doe</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="theme-btn" id="themeBtn">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-18c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z"/>
+                                <path d="M12 18c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm0-2c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                                <path d="M12 8c-2.21 0-4 1.79-4 4s1.79-4 4-4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"/>
+                            </svg>
+                            Green Theme
+                        </button>
+                        <a href="mainpage.html" class="back-btn">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                            Back to Main
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="section">
+                    <h2 class="section-title" onclick="showQuickActionsInfo()">Quick Actions</h2>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="addNewTask()">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            Add New Task
+                        </button>
+                        <button class="action-btn" onclick="viewStatistics()">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                            View Statistics
+                        </button>
+                        <button class="action-btn" onclick="shareProgress()">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                            </svg>
+                            Share Progress
+                        </button>
+                        <button class="action-btn" onclick="showAchievements()">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+                            </svg>
+                            Achievements
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-title" onclick="showTaskDetails()">TinySteps</h2>
+                    <div class="progress-container" onclick="showTaskProgress()">
+                        <div class="progress-info">
+                            <span>Task on progress</span>
+                            <span id="taskProgress">1 of 3 done</span>
+                        </div>
+                        <div class="progress-bar-main">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-list">
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="task1" onchange="updateTaskProgress()" checked>
+                            <label for="task1" class="task-name task-completed" onclick="toggleTask('task1')">Morning routine</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="task2" onchange="updateTaskProgress()">
+                            <label for="task2" class="task-name" onclick="toggleTask('task2')">Work project</label>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" id="task3" onchange="updateTaskProgress()">
+                            <label for="task3" class="task-name" onclick="toggleTask('task3')">Gym session</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-title" onclick="showStreakInfo()">Streak</h2>
+                    <div class="streak-container">
+                        <div class="streak-item" onclick="showAddons()">
+                            <div class="streak-icon addon-icon">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                            </div>
+                            <div class="streak-name">Add-ons</div>
+                            <div class="streak-status">Discover new features</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-title" onclick="showProfileInfo()">Profile</h2>
+                    <div class="leaderboard">
+                        <div class="leaderboard-header">
+                            <div class="leaderboard-title" onclick="showLeaderboardInfo()">Friends Leaderboard</div>
+                            <div class="leaderboard-badge" onclick="celebrateFirstPlace()">You are the 1st today!</div>
+                        </div>
+                        <ul class="leaderboard-list">
+                            <li class="leaderboard-item" onclick="viewUserProfile('You')">
+                                <div class="rank rank-1" onclick="showRankInfo(1)">1</div>
+                                <div class="user-info">
+                                    <div class="user-avatar" onclick="viewUserProfile('You')">JD</div>
+                                    <div onclick="viewUserProfile('You')">You</div>
+                                </div>
+                                <div class="points" onclick="showPointsBreakdown(245)">245 pts</div>
+                            </li>
+                            <li class="leaderboard-item" onclick="viewUserProfile('Alex Smith')">
+                                <div class="rank rank-2" onclick="showRankInfo(2)">2</div>
+                                <div class="user-info">
+                                    <div class="user-avatar" onclick="viewUserProfile('Alex Smith')">AS</div>
+                                    <div onclick="viewUserProfile('Alex Smith')">Alex Smith</div>
+                                </div>
+                                <div class="points" onclick="showPointsBreakdown(198)">198 pts</div>
+                            </li>
+                            <li class="leaderboard-item" onclick="viewUserProfile('Maria Johnson')">
+                                <div class="rank rank-3" onclick="showRankInfo(3)">3</div>
+                                <div class="user-info">
+                                    <div class="user-avatar" onclick="viewUserProfile('Maria Johnson')">MJ</div>
+                                    <div onclick="viewUserProfile('Maria Johnson')">Maria Johnson</div>
+                                </div>
+                                <div class="points" onclick="showPointsBreakdown(176)">176 pts</div>
+                            </li>
+                            <li class="leaderboard-item" onclick="viewUserProfile('Taylor Wilson')">
+                                <div class="rank rank-other" onclick="showRankInfo(4)">4</div>
+                                <div class="user-info">
+                                    <div class="user-avatar" onclick="viewUserProfile('Taylor Wilson')">TW</div>
+                                    <div onclick="viewUserProfile('Taylor Wilson')">Taylor Wilson</div>
+                                </div>
+                                <div class="points" onclick="showPointsBreakdown(154)">154 pts</div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -886,20 +1673,36 @@
             </div>
             <div class="modal-body">
                 <div class="theme-options">
-                    <div class="theme-option theme-green selected" data-theme="green">
-                        <div class="theme-preview">🌿</div>
+                    <div class="theme-option selected" data-theme="green">
+                        <div class="theme-preview theme-green-preview">
+                            <svg class="icon icon-large" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
                         <div class="theme-name">Green Forest</div>
                     </div>
-                    <div class="theme-option theme-blue" data-theme="blue">
-                        <div class="theme-preview">💙</div>
+                    <div class="theme-option" data-theme="blue">
+                        <div class="theme-preview theme-blue-preview">
+                            <svg class="icon icon-large" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
                         <div class="theme-name">Ocean Blue</div>
                     </div>
-                    <div class="theme-option theme-purple" data-theme="purple">
-                        <div class="theme-preview">💜</div>
+                    <div class="theme-option" data-theme="purple">
+                        <div class="theme-preview theme-purple-preview">
+                            <svg class="icon icon-large" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
                         <div class="theme-name">Royal Purple</div>
                     </div>
-                    <div class="theme-option theme-orange" data-theme="orange">
-                        <div class="theme-preview">🧡</div>
+                    <div class="theme-option" data-theme="orange">
+                        <div class="theme-preview theme-orange-preview">
+                            <svg class="icon icon-large" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
                         <div class="theme-name">Sunset Orange</div>
                     </div>
                 </div>
@@ -907,6 +1710,154 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
                 <button class="btn btn-primary" id="saveThemeBtn">Apply Theme</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" onclick="closeSettingsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                            </svg>
+                            Appearance
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Dark Mode</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M18 16v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-6 6c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2z"/>
+                            </svg>
+                            Notifications
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Push Notifications</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Push Notifications', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Email Notifications</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" onchange="showToggleNotification('Email Notifications', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Task Reminders</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Task Reminders', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                            </svg>
+                            Privacy
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Show on Leaderboard</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Show on Leaderboard', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Allow Friend Requests</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Allow Friend Requests', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Share Progress Publicly</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" onchange="showToggleNotification('Share Progress Publicly', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="settings-section-title">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                            </svg>
+                            App Settings
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Auto-save Progress</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Auto-save Progress', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-label">Weekly Progress Report</div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" class="settings-toggle-input" checked onchange="showToggleNotification('Weekly Progress Report', this.checked)">
+                                <span class="settings-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSettingsModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div class="modal" id="userProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Profile</h2>
+                <button class="modal-close" onclick="closeUserProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="userName" value="John Doe">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="userEmail" value="john.doe@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-textarea" id="userBio">Productivity enthusiast and habit builder. Always looking for ways to improve daily routines and achieve goals.</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Daily Goal</label>
+                    <input type="number" class="form-input" id="dailyGoal" value="3" min="1" max="10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUserProfileModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveUserProfile()">Save Profile</button>
             </div>
         </div>
     </div>
@@ -919,7 +1870,11 @@
                 <button class="modal-close" onclick="closeCustomModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-icon" id="modalIcon">🎯</div>
+                <div class="modal-icon" id="modalIcon">
+                    <svg class="icon icon-xlarge" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
                 <div class="modal-title" id="modalMainTitle">Main Title</div>
                 <div class="modal-description" id="modalDescription">Description goes here...</div>
                 <div class="modal-features" id="modalFeatures" style="display: none;">
@@ -936,18 +1891,22 @@
     <div class="modal celebration-modal" id="celebrationModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🎉 Congratulations! 🎉</h2>
+                <h2>Congratulations!</h2>
                 <button class="modal-close" onclick="closeCelebrationModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-icon">🏆</div>
+                <div class="modal-icon">
+                    <svg class="icon icon-xlarge" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
                 <div class="modal-title">You're #1!</div>
                 <div class="modal-description">
                     You're leading the leaderboard today! Keep up the amazing work and maintain your winning streak!
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeCelebrationModal()">Keep Going! 🚀</button>
+                <button class="btn btn-primary" onclick="closeCelebrationModal()">Keep Going!</button>
             </div>
         </div>
     </div>
@@ -962,9 +1921,41 @@
         const themeOptions = document.querySelectorAll('.theme-option');
         const customModal = document.getElementById('customModal');
         const celebrationModal = document.getElementById('celebrationModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const userProfileModal = document.getElementById('userProfileModal');
+        const progressFill = document.getElementById('progressFill');
+        const taskProgress = document.getElementById('taskProgress');
+        const sidebarProgressBar = document.getElementById('sidebarProgressBar');
+        const sidebarProgressText = document.getElementById('sidebarProgressText');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastMessage = document.getElementById('toastMessage');
         
-        // Current theme
+        // Current theme and settings
         let currentTheme = 'green';
+        let isDarkMode = false;
+        
+        // Task tracking
+        let completedTasks = 1;
+        const totalTasks = 3;
+        
+        // Initialize progress
+        updateProgressBar();
+        
+        // Initialize dark mode toggle
+        function initializeDarkMode() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === 'true') {
+                isDarkMode = true;
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+        }
+        
+        initializeDarkMode();
         
         // Open theme modal
         themeBtn.addEventListener('click', () => {
@@ -996,24 +1987,164 @@
             const themeName = selectedOption.querySelector('.theme-name').textContent;
             
             // Update theme button
-            themeBtn.innerHTML = `🎨 ${themeName}`;
+            themeBtn.innerHTML = `
+                <svg class="icon icon-small" viewBox="0 0 24 24">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-18c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8 3.582-8 8-8z"/>
+                    <path d="M12 18c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm0-2c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                    <path d="M12 8c-2.21 0-4 1.79-4 4s1.79-4 4-4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2z"/>
+                </svg>
+                ${themeName}
+            `;
             
             // Apply the selected theme to the body
             document.body.className = `theme-${currentTheme}`;
             
+            // Re-apply dark mode if it's enabled
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            
             showCustomModal(
-                'Theme Updated! 🎨',
-                '🌈',
+                'Theme Updated!',
                 'New Theme Applied',
                 `Your app theme has been changed to <strong>${themeName}</strong>. Enjoy the fresh new look!`
             );
             closeThemeModal();
         });
 
+        // Dark mode toggle
+        darkModeToggle.addEventListener('change', function() {
+            isDarkMode = this.checked;
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                showToast('Dark mode turned on', true);
+            } else {
+                document.body.classList.remove('dark-mode');
+                showToast('Dark mode turned off', false);
+            }
+            localStorage.setItem('darkMode', isDarkMode);
+        });
+
+        // Toast notification function
+        function showToast(message, isSuccess) {
+            toastMessage.textContent = message;
+            
+            if (isSuccess) {
+                toast.className = 'toast toast-success show';
+                toastIcon.innerHTML = '<svg class="icon icon-small" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+            } else {
+                toast.className = 'toast toast-error show';
+                toastIcon.innerHTML = '<svg class="icon icon-small" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Settings toggle notifications
+        function showToggleNotification(settingName, isEnabled) {
+            if (isEnabled) {
+                showToast(`${settingName} turned on`, true);
+            } else {
+                showToast(`${settingName} turned off`, false);
+            }
+        }
+
+        // Update task progress
+        function updateTaskProgress() {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            completedTasks = 0;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    completedTasks++;
+                    checkbox.nextElementSibling.classList.add('task-completed');
+                } else {
+                    checkbox.nextElementSibling.classList.remove('task-completed');
+                }
+            });
+            
+            // Update progress bar
+            updateProgressBar();
+            
+            // Update task progress text
+            taskProgress.textContent = `${completedTasks} of ${totalTasks} done`;
+            
+            // If all tasks are completed, show celebration
+            if (completedTasks === totalTasks) {
+                showCustomModal(
+                    'All Tasks Completed!',
+                    'Great Job!',
+                    'You have successfully completed all your tasks for today. Keep up the excellent work!'
+                );
+            }
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = (completedTasks / totalTasks) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            sidebarProgressBar.style.width = `${progressPercentage}%`;
+            sidebarProgressText.textContent = `${completedTasks} of ${totalTasks} completed`;
+        }
+
+        // Toggle task by clicking on label
+        function toggleTask(taskId) {
+            const checkbox = document.getElementById(taskId);
+            checkbox.checked = !checkbox.checked;
+            updateTaskProgress();
+        }
+
+        // Settings Modal Functions
+        function openSettings() {
+            settingsModal.style.display = 'flex';
+        }
+        
+        function closeSettingsModal() {
+            settingsModal.style.display = 'none';
+        }
+        
+        function saveSettings() {
+            showCustomModal(
+                'Settings Saved!',
+                'Settings Updated',
+                'Your application settings have been successfully saved and applied.'
+            );
+            closeSettingsModal();
+        }
+
+        // User Profile Modal Functions
+        function openUserProfile() {
+            userProfileModal.style.display = 'flex';
+        }
+        
+        function closeUserProfileModal() {
+            userProfileModal.style.display = 'none';
+        }
+        
+        function saveUserProfile() {
+            const userName = document.getElementById('userName').value;
+            const userEmail = document.getElementById('userEmail').value;
+            
+            // Update profile in header
+            document.querySelector('.profile-name').textContent = userName;
+            document.querySelector('.profile-pic').textContent = getInitials(userName);
+            
+            showCustomModal(
+                'Profile Updated!',
+                'Profile Saved',
+                `Your profile information has been successfully updated.`
+            );
+            closeUserProfileModal();
+        }
+        
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase();
+        }
+
         // Custom Modal Functions
-        function showCustomModal(title, icon, mainTitle, description, features = []) {
+        function showCustomModal(title, mainTitle, description, features = []) {
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalIcon').textContent = icon;
             document.getElementById('modalMainTitle').textContent = mainTitle;
             document.getElementById('modalDescription').innerHTML = description;
             
@@ -1062,11 +2193,34 @@
             }
         }
         
+        // Sidebar navigation functions
+        function navigateTo(page) {
+            showCustomModal(
+                `Navigating to ${page.charAt(0).toUpperCase() + page.slice(1)}`,
+                `Opening ${page}`,
+                `You're being redirected to the ${page} section of the application.`
+            );
+            
+            // Update active nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+        
+        function exitApp() {
+            if (confirm('Are you sure you want to exit the application?')) {
+                showCustomModal(
+                    'Exit Application',
+                    'Goodbye!',
+                    'Thank you for using Task Tracker. We hope to see you again soon!'
+                );
+            }
+        }
+        
         // Interactive Functions for ALL buttons
         function showWelcomeMessage() {
             showCustomModal(
-                'Welcome! 🎯',
-                '👋',
+                'Welcome!',
                 'Welcome to Task Tracker',
                 'Your personal productivity companion designed to help you build better habits and stay organized.',
                 [
@@ -1080,8 +2234,7 @@
 
         function showAppDescription() {
             showCustomModal(
-                'About Task Tracker 🌟',
-                '📱',
+                'About Task Tracker',
                 'Stay Productive & Build Habits',
                 'Task Tracker is your all-in-one solution for personal productivity and habit building.',
                 [
@@ -1093,29 +2246,13 @@
             );
         }
 
-        function openProfile() {
-            showCustomModal(
-                'User Profile 👤',
-                '👤',
-                'John Doe\'s Profile',
-                'Manage your personal information, preferences, and account settings.',
-                [
-                    'Personal information',
-                    'Achievement history',
-                    'Notification settings',
-                    'Privacy controls'
-                ]
-            );
-        }
-
         function showTaskDetails() {
             showCustomModal(
-                'TimySteps Details 📝',
-                '📋',
+                'TinySteps Details',
                 'Your Task Progress',
                 'Track your daily tasks and monitor your productivity progress.',
                 [
-                    'Current Progress: 1/3 tasks completed',
+                    `Current Progress: ${completedTasks}/${totalTasks} tasks completed`,
                     'Next task due: Today',
                     'Weekly goal: 15 tasks',
                     'Completion rate: 85%'
@@ -1125,38 +2262,49 @@
 
         function showTaskProgress() {
             showCustomModal(
-                'Task Breakdown 📊',
-                '✅',
+                'Task Breakdown',
                 'Current Tasks',
                 'Here\'s your current task status and upcoming activities.',
                 [
-                    '✅ Completed: Morning routine',
-                    '🔄 In Progress: Work project',
-                    '⏰ Upcoming: Gym session',
-                    '📅 Later: Weekly planning'
+                    'Completed: Morning routine',
+                    'In Progress: Work project',
+                    'Upcoming: Gym session',
+                    'Later: Weekly planning'
                 ]
             );
         }
 
         function showStreakInfo() {
             showCustomModal(
-                'Streak Information 🔥',
-                '🔥',
+                'Streak Information',
                 'Habit Streaks',
                 'Maintain your daily habits and build impressive streaks for bonus rewards!',
                 [
-                    '💧 Water: 5 days straight!',
-                    '💪 Workout: 3 days ongoing',
+                    'Water: 5 days straight!',
+                    'Workout: 3 days ongoing',
                     'Next milestone: 7-day streak bonus',
                     'Total active streaks: 2'
                 ]
             );
         }
 
+        function showAddons() {
+            showCustomModal(
+                'Add-ons',
+                'Enhance Your Experience',
+                'Discover new features and integrations to make your Task Tracker even more powerful.',
+                [
+                    'Integration with calendar apps',
+                    'Advanced analytics and insights',
+                    'Custom themes and layouts',
+                    'Premium productivity tools'
+                ]
+            );
+        }
+
         function showProfileInfo() {
             showCustomModal(
-                'Profile Overview 🌟',
-                '📈',
+                'Profile Overview',
                 'Your Progress Summary',
                 'Complete overview of your achievements and progress in Task Tracker.',
                 [
@@ -1170,8 +2318,7 @@
 
         function showLeaderboardInfo() {
             showCustomModal(
-                'Friends Leaderboard 🏆',
-                '👥',
+                'Friends Leaderboard',
                 'Compete & Connect',
                 'Challenge your friends and stay motivated together in your productivity journey.',
                 [
@@ -1189,8 +2336,7 @@
 
         function viewUserProfile(userName) {
             showCustomModal(
-                'User Profile 👤',
-                '👤',
+                'User Profile',
                 `${userName}'s Profile`,
                 `View ${userName}'s progress, achievements, and recent activity.`,
                 [
@@ -1204,15 +2350,14 @@
 
         function showRankInfo(rank) {
             const rankMessages = {
-                1: "🥇 First Place! You're crushing it!",
-                2: "🥈 Second Place! So close to the top!",
-                3: "🥉 Third Place! Great job!",
+                1: "First Place! You're crushing it!",
+                2: "Second Place! So close to the top!",
+                3: "Third Place! Great job!",
                 4: "Top 5! Keep pushing for the podium!"
             };
             
             showCustomModal(
-                `Rank ${rank} ${rank <= 3 ? '🏆' : '⭐'}`,
-                rank <= 3 ? ['🥇','🥈','🥉'][rank-1] : '⭐',
+                `Rank ${rank}`,
                 `Rank ${rank} Position`,
                 rankMessages[rank] || 'Keep working hard and climbing the leaderboard!',
                 [
@@ -1226,8 +2371,7 @@
 
         function showPointsBreakdown(points) {
             showCustomModal(
-                'Points Breakdown 💰',
-                '📊',
+                'Points Breakdown',
                 `${points} Total Points`,
                 'Your points are earned through various activities and achievements.',
                 [
@@ -1241,8 +2385,7 @@
 
         function showQuickActionsInfo() {
             showCustomModal(
-                'Quick Actions 🚀',
-                '⚡',
+                'Quick Actions',
                 'Fast Access Features',
                 'Quickly access common features and settings to enhance your productivity experience.',
                 [
@@ -1256,8 +2399,7 @@
 
         function addNewTask() {
             showCustomModal(
-                'New Task ✨',
-                '➕',
+                'New Task',
                 'Create New Task',
                 'Add a new task to your daily list and start tracking your progress immediately.',
                 [
@@ -1271,8 +2413,7 @@
 
         function viewStatistics() {
             showCustomModal(
-                'Statistics Dashboard 📈',
-                '📊',
+                'Statistics Dashboard',
                 'Your Progress Analytics',
                 'Detailed insights and analytics about your productivity patterns and habits.',
                 [
@@ -1286,8 +2427,7 @@
 
         function shareProgress() {
             showCustomModal(
-                'Share Progress 📤',
-                '📱',
+                'Share Progress',
                 'Share Your Success',
                 'Celebrate your achievements and inspire friends by sharing your progress.',
                 [
@@ -1299,25 +2439,9 @@
             );
         }
 
-        function openSettings() {
-            showCustomModal(
-                'Settings ⚙️',
-                '⚙️',
-                'App Configuration',
-                'Customize your Task Tracker experience with various settings and preferences.',
-                [
-                    'Notification preferences',
-                    'Theme customization',
-                    'Privacy settings',
-                    'Data management'
-                ]
-            );
-        }
-
         function showAchievements() {
             showCustomModal(
-                'Achievements 🏆',
-                '🏅',
+                'Achievements',
                 'Your Accomplishments',
                 'Track your progress and unlock rewards as you complete various challenges.',
                 [
@@ -1328,21 +2452,6 @@
                     'Social Butterfly ✓',
                     'Productivity Guru (3/5)',
                     'Habit Hero (2/7)'
-                ]
-            );
-        }
-
-        function openHelp() {
-            showCustomModal(
-                'Help & Support ❓',
-                '❓',
-                'Need Assistance?',
-                'Get help with using Task Tracker and find answers to common questions.',
-                [
-                    'FAQ and tutorials',
-                    'Contact support team',
-                    'Feature requests',
-                    'Community forums'
                 ]
             );
         }
@@ -1358,18 +2467,26 @@
             if (event.target === celebrationModal) {
                 closeCelebrationModal();
             }
+            if (event.target === settingsModal) {
+                closeSettingsModal();
+            }
+            if (event.target === userProfileModal) {
+                closeUserProfileModal();
+            }
         });
 
-        // Add some dynamic interactions
+        // Sidebar functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Make progress bar interactive
-            const progressFill = document.querySelector('.progress-fill');
-            let progress = 33.33;
-            
-            setInterval(() => {
-                progress = progress === 33.33 ? 66.66 : 33.33;
-                progressFill.style.width = `${progress}%`;
-            }, 3000);
+            // Make the sidebar image clickable
+            const sidebarImage = document.getElementById('sidebarImage');
+           
+            sidebarImage.addEventListener('click', function() {
+                showCustomModal(
+                    'kzolm',
+                    'Welcome to kzolm',
+                    'Your productivity companion for building better habits and achieving your goals.'
+                );
+            });
         });
     </script>
 </body>
