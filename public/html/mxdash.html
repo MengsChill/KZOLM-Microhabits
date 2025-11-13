@@ -38,9 +38,34 @@
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, #fff 0%, #c8e6d3 100%);
+            color: #0e6b4b;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #c8e6d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .main-nav ul {
@@ -67,6 +92,7 @@
         .header-icons {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
         
         .icon-button {
@@ -74,6 +100,7 @@
             color: #fff;
             font-size: 18px;
             transition: color 0.3s;
+            cursor: pointer;
         }
         
         .icon-button:hover {
@@ -366,6 +393,186 @@
             font-size: 14px;
         }
         
+        /* Search Popup Styles */
+        .search-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .search-popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .search-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 100px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+        }
+        
+        .search-popup.active .search-content {
+            transform: translateY(0);
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .search-title {
+            font-size: 20px;
+            color: #0e6b4b;
+        }
+        
+        .search-form {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: #0e6b4b;
+        }
+        
+        .search-button {
+            background-color: #0e6b4b;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #0a4d35;
+        }
+        
+        .search-suggestions {
+            margin-top: 15px;
+        }
+        
+        .suggestion-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .suggestion-tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .suggestion-tag:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Article Page Styles */
+        .article-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #333;
+        }
+        
+        .article-header {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .article-title {
+            font-size: 32px;
+            color: #0e6b4b;
+            margin-bottom: 15px;
+        }
+        
+        .article-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .article-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            line-height: 1.8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .article-content h2 {
+            color: #0e6b4b;
+            margin: 25px 0 15px;
+        }
+        
+        .article-content p {
+            margin-bottom: 15px;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #0e6b4b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #0a4d35;
+        }
+        
         /* Responsive Styles */
         @media (max-width: 900px) {
             .hero-content {
@@ -424,19 +631,22 @@
     <div class="page-container">
         
         <header class="main-header">
-            <div class="logo">Kzolm</div>
+            <a href="#" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text">ZCum</div>
+            </a>
             
             <nav class="main-nav">
                 <ul>
-                    <li><a class="nav-link">MICROHABITS</a></li>
-                    <li><a class="nav-link">BENEFITS</a></li>
-                    <li><a class="nav-link">GETTING STARTED</a></li>
-                    <li><a class="nav-link">SUCCESS STORIES</a></li>
+                    <li><a class="nav-link" href="#microhabits-page">MICROHABITS</a></li>
+                    <li><a class="nav-link" href="#benefits-page">BENEFITS</a></li>
+                    <li><a class="nav-link" href="#getting-started-page">GETTING STARTED</a></li>
+                    <li><a class="nav-link" href="#success-stories-page">SUCCESS STORIES</a></li>
                 </ul>
             </nav>
             
             <div class="header-icons">
-                <a href="search.html" class="icon-button" aria-label="Search"><i class="fas fa-search"></i></a>
+                <a class="icon-button" id="search-button" aria-label="Search"><i class="fas fa-search"></i></a>
                 <a href="/profile" class="icon-button" aria-label="User Account"><i class="fas fa-user"></i></a>
             </div>
         </header>
@@ -444,7 +654,7 @@
         <main class="hero-content">
             
             <div class="hero-text">
-                <a href="new-kzolm.html" class="new-tag">TRY NEW KZOLM</a>
+                <a href="new-kzolm.html" class="new-tag">TRY NEW KZCum</a>
                 <h1>Small Steps,<br>Big Change</h1>
                 <p>Build the life you want through tiny, consistent actions that actually stick.</p>
                 
@@ -501,6 +711,30 @@
             </div>
         </footer>
 
+    </div>
+
+    <!-- Search Popup -->
+    <div class="search-popup" id="search-popup">
+        <div class="search-content">
+            <div class="search-header">
+                <h3 class="search-title">Search</h3>
+                <button class="close-popup" id="close-search-popup">&times;</button>
+            </div>
+            <form class="search-form" id="search-form">
+                <input type="text" class="search-input" placeholder="What are you looking for?" id="search-input">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+            <div class="search-suggestions">
+                <div class="suggestion-title">Popular searches:</div>
+                <div class="suggestion-list">
+                    <div class="suggestion-tag">Microhabits</div>
+                    <div class="suggestion-tag">Productivity</div>
+                    <div class="suggestion-tag">Mindfulness</div>
+                    <div class="suggestion-tag">Exercise</div>
+                    <div class="suggestion-tag">Reading</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Popup for navigation buttons -->
@@ -561,6 +795,160 @@
         </div>
     </div>
 
+    <!-- Article Pages (hidden by default) -->
+    <div id="microhabits-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">The Power of Microhabits</h1>
+            <div class="article-meta">Published on November 13, 2023 • 10 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Microhabits are small, consistent actions that require minimal effort but yield significant results over time. Unlike traditional goal-setting approaches that often lead to burnout, microhabits focus on sustainable progress through tiny, manageable steps.</p>
+            
+            <h2>Why Microhabits Work</h2>
+            <p>The human brain is wired to resist drastic changes. When we set ambitious goals like "exercise for an hour every day" or "read 50 pages daily," we often fail because these changes are too overwhelming for our neural pathways.</p>
+            
+            <p>Microhabits bypass this resistance by being so small that they feel almost effortless. Want to build a reading habit? Start with just one paragraph per day. Want to exercise regularly? Begin with two minutes of stretching.</p>
+            
+            <h2>The Science Behind Microhabits</h2>
+            <p>Research in neuroscience shows that consistent repetition of small actions creates new neural pathways. Each time you perform a microhabit, you strengthen these pathways, making the behavior more automatic over time.</p>
+            
+            <p>This process, known as neuroplasticity, means that your brain literally rewires itself to make the new habit easier to perform. What starts as a conscious effort eventually becomes an automatic behavior.</p>
+            
+            <h2>Getting Started with Microhabits</h2>
+            <p>To implement microhabits successfully:</p>
+            <ol>
+                <li>Choose one specific behavior</li>
+                <li>Make it incredibly small (1-2 minutes maximum)</li>
+                <li>Attach it to an existing habit</li>
+                <li>Track your consistency</li>
+                <li>Celebrate small wins</li>
+            </ol>
+            
+            <p>Remember, the goal isn't perfection but consistency. Even if you miss a day, simply return to your microhabit the next day without self-judgment.</p>
+        </div>
+    </div>
+
+    <div id="benefits-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Benefits of Microhabits</h1>
+            <div class="article-meta">Published on November 10, 2023 • 8 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Microhabits offer numerous advantages over traditional goal-setting methods. By focusing on small, consistent actions, you can achieve lasting change without the stress and overwhelm that often accompanies bigger goals.</p>
+            
+            <h2>Reduced Mental Resistance</h2>
+            <p>When a task feels too large or intimidating, our brains naturally resist it. Microhabits eliminate this resistance by being so small that they feel almost trivial. This makes it much easier to get started and maintain consistency.</p>
+            
+            <h2>Sustainable Progress</h2>
+            <p>Unlike crash diets or intense workout regimens that often lead to burnout, microhabits create sustainable change. Because they require minimal time and energy, you're more likely to stick with them long-term.</p>
+            
+            <h2>Compound Effect</h2>
+            <p>Just like compound interest in finance, microhabits create a compound effect over time. Reading just one page per day adds up to 365 pages in a year. Doing two minutes of exercise daily results in over 12 hours of activity annually.</p>
+            
+            <h2>Building Identity</h2>
+            <p>Microhabits help you build a new identity gradually. Instead of "trying to exercise," you become "someone who exercises regularly." This identity shift makes the behavior more natural and automatic over time.</p>
+            
+            <h2>Reduced Decision Fatigue</h2>
+            <p>When habits become automatic, they require less mental energy. You don't need to decide whether to do your microhabit—it just becomes part of your routine, preserving willpower for more important decisions.</p>
+        </div>
+    </div>
+
+    <div id="getting-started-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Getting Started with Microhabits</h1>
+            <div class="article-meta">Published on November 5, 2023 • 12 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Starting your microhabits journey is simple but requires careful planning. Follow these steps to set yourself up for success and create lasting change through small, consistent actions.</p>
+            
+            <h2>Step 1: Identify Your Goal</h2>
+            <p>What area of your life would you like to improve? Common categories include health, productivity, learning, relationships, and mindfulness. Be specific about what you want to achieve.</p>
+            
+            <h2>Step 2: Break It Down</h2>
+            <p>Take your goal and break it down into the smallest possible action. If you want to read more, start with one paragraph. If you want to exercise, begin with two minutes of movement.</p>
+            
+            <p>The key is to make the action so small that it feels almost too easy. This eliminates resistance and makes it more likely you'll actually do it.</p>
+            
+            <h2>Step 3: Choose a Trigger</h2>
+            <p>Attach your microhabit to an existing routine. For example:</p>
+            <ul>
+                <li>After brushing my teeth, I will do one push-up</li>
+                <li>After my morning coffee, I will read one paragraph</li>
+                <li>Before checking my phone in the morning, I will meditate for one minute</li>
+            </ul>
+            
+            <h2>Step 4: Track Your Progress</h2>
+            <p>Use a habit tracker or calendar to mark each day you complete your microhabit. Visual progress is motivating and helps build momentum.</p>
+            
+            <h2>Step 5: Gradually Increase</h2>
+            <p>Once your microhabit feels automatic (usually after 2-4 weeks), you can gradually increase the difficulty. Add one more minute, one more page, or one more repetition.</p>
+            
+            <p>Remember, the increase should still feel manageable. The goal is sustainable progress, not rapid transformation.</p>
+            
+            <h2>Common Mistakes to Avoid</h2>
+            <p>Many people fail with microhabits because they:</p>
+            <ul>
+                <li>Start too big</li>
+                <li>Try to change too many habits at once</li>
+                <li>Get discouraged by occasional misses</li>
+                <li>Don't have a clear trigger</li>
+            </ul>
+            
+            <p>Be patient with yourself and focus on consistency over perfection. Even 80% consistency with a microhabit will yield significant results over time.</p>
+        </div>
+    </div>
+
+    <div id="success-stories-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Success Stories: Transforming Lives with Microhabits</h1>
+            <div class="article-meta">Published on October 28, 2023 • 15 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Thousands of people have transformed their lives through the power of microhabits. Here are some inspiring stories from our community members who started small and achieved remarkable results.</p>
+            
+            <h2>Sarah's Reading Revolution</h2>
+            <p>Sarah had always wanted to be "a reader" but struggled to find time for books. She started with a microhabit of reading just one paragraph every night before bed.</p>
+            
+            <p>"At first, it felt almost silly," Sarah recalls. "But after a week, I found myself naturally reading more. Some nights I'd read a whole page or even a chapter. Within three months, I'd finished my first book in years."</p>
+            
+            <p>Two years later, Sarah has read 24 books and started a book club with friends. "The microhabit approach removed the pressure and made reading enjoyable again."</p>
+            
+            <h2>Mark's Fitness Journey</h2>
+            <p>After years of failed gym memberships and abandoned workout plans, Mark decided to try a different approach. His microhabit: two minutes of exercise every morning.</p>
+            
+            <p>"I started with simple stretches and a couple of push-ups," Mark explains. "The two-minute rule was magical—it was so easy that I never skipped a day."</p>
+            
+            <p>After a month, Mark naturally increased to five minutes, then ten. Within six months, he was exercising for 30 minutes daily and had lost 25 pounds.</p>
+            
+            <p>"The best part was that it never felt like a chore. I actually looked forward to my morning movement."</p>
+            
+            <h2>Lisa's Mindfulness Practice</h2>
+            <p>Lisa struggled with anxiety and a constantly racing mind. She tried meditation apps but found sitting still for 10-20 minutes overwhelming.</p>
+            
+            <p>Her microhabit: one minute of mindful breathing after brushing her teeth each morning.</p>
+            
+            <p>"One minute felt manageable, even on my most anxious days," Lisa says. "Some days I'd do more, but the commitment was always just one minute."</p>
+            
+            <p>After three months, Lisa's anxiety had significantly decreased, and she naturally extended her practice to 10 minutes. "The microhabit approach taught me that consistency matters more than duration."</p>
+            
+            <h2>James' Writing Dream</h2>
+            <p>James had always wanted to write a novel but could never find the time or motivation. He started with a microhabit of writing one sentence each day.</p>
+            
+            <p>"Some days I wrote just one sentence, other days I wrote pages," James shares. "The key was removing the pressure to produce."</p>
+            
+            <p>Eighteen months later, James completed his first novel. "I would have never believed that writing one sentence a day could lead to a finished book, but it did."</p>
+            
+            <h2>Your Success Story</h2>
+            <p>These stories demonstrate that significant change doesn't require dramatic actions—just small, consistent steps. What microhabit will you start today?</p>
+            
+            <p>Remember, the journey of a thousand miles begins with a single step. Or in the case of microhabits, with a single sentence, a single push-up, or a single mindful breath.</p>
+        </div>
+    </div>
+
     <script>
         // 图片轮播功能
         const sliderWrapper = document.querySelector('.slider-image-wrapper');
@@ -617,40 +1005,71 @@
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
                 // 移除所有链接的active类
                 navLinks.forEach(l => l.classList.remove('active'));
                 // 为点击的链接添加active类
                 e.target.classList.add('active');
                 
-                // 显示对应的弹出消息
-                const navText = e.target.textContent;
-                document.getElementById('popup-title').textContent = navText;
-                
-                // 设置不同的弹出消息内容
-                let message = "";
-                switch(navText) {
-                    case "MICROHABITS":
-                        message = "Discover how small, consistent actions can lead to significant life changes. Our microhabits approach focuses on sustainable progress.";
-                        break;
-                    case "BENEFITS":
-                        message = "Learn about the proven benefits of microhabits: increased consistency, reduced overwhelm, and lasting behavioral change.";
-                        break;
-                    case "GETTING STARTED":
-                        message = "Ready to begin your microhabits journey? We'll guide you through simple steps to build habits that stick.";
-                        break;
-                    case "SUCCESS STORIES":
-                        message = "Read inspiring stories from our community members who have transformed their lives through microhabits.";
-                        break;
-                }
-                
-                document.getElementById('popup-message').textContent = message;
-                document.getElementById('nav-popup').classList.add('active');
+                // 显示对应的文章页面
+                const targetId = e.target.getAttribute('href').substring(1);
+                showArticlePage(targetId);
             });
         });
+        
+        // 显示文章页面
+        function showArticlePage(pageId) {
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // 隐藏主页内容
+            document.querySelector('.page-container').style.display = 'none';
+            
+            // 显示目标文章页面
+            document.getElementById(pageId).style.display = 'block';
+        }
+        
+        // 隐藏文章页面，返回主页
+        function hideArticlePage() {
+            // 显示主页内容
+            document.querySelector('.page-container').style.display = 'flex';
+            
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+        }
         
         // 客户证明点击事件
         document.getElementById('customer-proof').addEventListener('click', function() {
             document.getElementById('customer-popup').classList.add('active');
+        });
+        
+        // 搜索按钮点击事件
+        document.getElementById('search-button').addEventListener('click', function() {
+            document.getElementById('search-popup').classList.add('active');
+            document.getElementById('search-input').focus();
+        });
+        
+        // 搜索表单提交
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('search-input').value;
+            if (searchTerm.trim() !== '') {
+                alert(`Searching for: ${searchTerm}`);
+                // 在实际应用中，这里会执行搜索操作
+                document.getElementById('search-popup').classList.remove('active');
+            }
+        });
+        
+        // 搜索建议标签点击事件
+        document.querySelectorAll('.suggestion-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.getElementById('search-input').value = this.textContent;
+            });
         });
         
         // 关闭弹出窗口
@@ -662,10 +1081,24 @@
             document.getElementById('customer-popup').classList.remove('active');
         });
         
+        document.getElementById('close-search-popup').addEventListener('click', function() {
+            document.getElementById('search-popup').classList.remove('active');
+        });
+        
         // 点击弹出窗口外部关闭
         window.addEventListener('click', function(e) {
             if (e.target.classList.contains('popup')) {
                 e.target.classList.remove('active');
+            }
+            if (e.target.classList.contains('search-popup')) {
+                e.target.classList.remove('active');
+            }
+        });
+        
+        // 按ESC键关闭搜索弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('search-popup').classList.remove('active');
             }
         });
     </script>
