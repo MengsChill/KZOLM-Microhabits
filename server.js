@@ -57,6 +57,19 @@ db.run(`
   )
 `)
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS posts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    display_image TEXT,
+    description TEXT,
+    likes INTEGER,
+    comments INTEGER,
+    username STRING NOT NULL,
+    datePosted TEXT,
+    FOREIGN KEY (username) REFERENCES users (display_name)
+    )
+    `)
+
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public/html/index.html")))
 app.get("/signin", (req, res) => res.sendFile(path.join(__dirname, "public/html/signin.html")))
 app.get("/signup", (req, res) => res.sendFile(path.join(__dirname, "public/html/signup.html")))
@@ -65,21 +78,26 @@ app.get("/community", (req, res) => res.sendFile(path.join(__dirname, "public/ht
 app.get("/add-habit", (req, res) => res.sendFile(path.join(__dirname, "public/html/addhabit.html")))
 app.get("/explore-now", (req, res) => res.sendFile(path.join(__dirname, "public/html/mainpage.html")))
 
+
+//menu
 app.get("/menu", (req, res) => {
     if (!req.session.userId) return res.redirect("/signin")
     res.sendFile(path.join(__dirname, "public/html/dashboard.html"))
 })
 
+//profile
 app.get("/profile", (req, res) => {
     if (!req.session.userId) return res.redirect("/signin")
     res.sendFile(path.join(__dirname, "public/html/profile.html"))
 })
 
+//edit profile
 app.get("/edit-profile.html", (req, res) => {
     if (!req.session.userId) return res.redirect("/signin")
     res.sendFile(path.join(__dirname, "public/html/edit-profile.html"))
 })
 
+//signup
 app.post("/signup", async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) return res.status(400).send("Please fill all fields.")
@@ -102,6 +120,7 @@ app.post("/signup", async (req, res) => {
     }
 })
 
+//signin
 app.post("/signin", (req, res) => {
     const { email, password } = req.body
     db.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, user) => {
@@ -116,6 +135,8 @@ app.post("/signin", (req, res) => {
     })
 })
 
+
+//user API's
 app.get("/api/user", (req, res) => {
     if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" })
     
