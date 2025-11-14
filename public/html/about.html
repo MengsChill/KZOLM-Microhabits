@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About MicroHabits - Small Steps, Big Changes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+       
+        .header {
+            background-color: #0e6b4b;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+       
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+       
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+       
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+       
+        .intro {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #0e6b4b;
+        }
+       
+        .intro h2 {
+            color: #0e6b4b;
+            margin-bottom: 1.2rem;
+            font-size: 1.9rem;
+        }
+       
+        .intro p {
+            margin-bottom: 1rem;
+        }
+       
+        .definition-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .definition-section h2 {
+            color: #0e6b4b;
+            margin-bottom: 1.8rem;
+            font-size: 1.9rem;
+            text-align: center;
+        }
+       
+        .definition-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+        }
+       
+        .definition-text {
+            flex: 1;
+            min-width: 300px;
+        }
+       
+        .definition-visual {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f0f7f4;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+        }
+       
+        .micro-vs-macro {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+        }
+       
+        .micro, .macro {
+            text-align: center;
+            padding: 1rem;
+        }
+       
+        .micro {
+            color: #0e6b4b;
+        }
+       
+        .macro {
+            color: #666;
+        }
+       
+        .benefits-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .benefits-section h2 {
+            color: #0e6b4b;
+            margin-bottom: 1.8rem;
+            font-size: 1.9rem;
+            text-align: center;
+        }
+       
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+       
+        .benefit-item {
+            background-color: #f0f7f4;
+            border-radius: 8px;
+            padding: 1.8rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+       
+        .benefit-item:hover {
+            transform: translateY(-5px);
+        }
+       
+        .benefit-item h3 {
+            color: #0e6b4b;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+       
+        .examples-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .examples-section h2 {
+            color: #0e6b4b;
+            margin-bottom: 1.8rem;
+            font-size: 1.9rem;
+        }
+       
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+        }
+       
+        .example-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.8rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #0e6b4b;
+        }
+       
+        .example-card h3 {
+            color: #0e6b4b;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+       
+        .example-card ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+       
+        .example-card li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+       
+        .example-card li:before {
+            content: "•";
+            color: #0e6b4b;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+       
+        .process-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .process-section h2 {
+            color: #0e6b4b;
+            margin-bottom: 1.8rem;
+            font-size: 1.9rem;
+            text-align: center;
+        }
+       
+        .process-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+       
+        .step {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 1.5rem;
+        }
+       
+        .step-number {
+            background-color: #0e6b4b;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: bold;
+        }
+       
+        .step h3 {
+            color: #0e6b4b;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+       
+        .quote-section {
+            background-color: #0e6b4b;
+            color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+       
+        .quote-section blockquote {
+            font-size: 1.6rem;
+            font-style: italic;
+            margin-bottom: 1.2rem;
+            line-height: 1.8;
+        }
+       
+        .quote-section cite {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+       
+        .footer {
+            background-color: #0e6b4b;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+       
+        .footer p {
+            opacity: 0.9;
+        }
+       
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+           
+            .container {
+                padding: 1.5rem;
+            }
+           
+            .benefits-grid, .examples-grid {
+                grid-template-columns: 1fr;
+            }
+           
+            .definition-content, .micro-vs-macro {
+                flex-direction: column;
+            }
+           
+            .process-steps {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>About MicroHabits</h1>
+        <p>Small, consistent actions that lead to remarkable transformations over time.</p>
+    </header>
+   
+    <div class="container">
+        <section class="intro">
+            <h2>What Are MicroHabits?</h2>
+            <p>MicroHabits are tiny, easy-to-perform behaviors that require minimal motivation or willpower to complete. They are the building blocks of significant life changes, designed to be so small that they're almost impossible to skip.</p>
+            <p>Unlike traditional goal-setting that often leads to frustration and burnout, the MicroHabits approach focuses on consistency over intensity. By starting with actions that take less than two minutes to complete, you build momentum and create neural pathways that make lasting change possible.</p>
+        </section>
+       
+        <section class="definition-section">
+            <h2>The Power of Small</h2>
+            <div class="definition-content">
+                <div class="definition-text">
+                    <p>MicroHabits work because they bypass the resistance that often comes with larger behavioral changes. When an action feels too small to fail, you're more likely to do it consistently.</p>
+                    <p>This approach is based on the principle that frequency is more important than duration when establishing new patterns. Doing something for just one minute every day creates a stronger habit than doing it for an hour once a week.</p>
+                    <div class="micro-vs-macro">
+                        <div class="micro">
+                            <h3>MicroHabits</h3>
+                            <p>Read 1 page</p>
+                            <p>Do 2 push-ups</p>
+                            <p>Meditate for 1 minute</p>
+                        </div>
+                        <div class="macro">
+                            <h3>Traditional Goals</h3>
+                            <p>Read 1 book per week</p>
+                            <p>Work out for 1 hour</p>
+                            <p>Meditate for 30 minutes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="definition-visual">
+                    <h3 style="color: #0e6b4b; margin-bottom: 1rem;">The Compound Effect</h3>
+                    <p style="margin-bottom: 1rem;">Small actions repeated consistently create exponential results:</p>
+                    <div style="background-color: white; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+                        <p><strong>1% better every day</strong></p>
+                        <p>1.01<sup>365</sup> = 37.78</p>
+                    </div>
+                    <p>37x improvement over one year</p>
+                </div>
+            </div>
+        </section>
+       
+        <section class="benefits-section">
+            <h2>Why MicroHabits Work</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <h3>Overcome Resistance</h3>
+                    <p>MicroHabits are too small to trigger procrastination or avoidance behaviors.</p>
+                </div>
+               
+                <div class="benefit-item">
+                    <h3>Build Consistency</h3>
+                    <p>Daily repetition creates stronger neural pathways than occasional intense effort.</p>
+                </div>
+               
+                <div class="benefit-item">
+                    <h3>Create Momentum</h3>
+                    <p>Completing a MicroHabbit often leads to doing more than the minimum requirement.</p>
+                </div>
+               
+                <div class="benefit-item">
+                    <h3>Reduce Overwhelm</h3>
+                    <p>Breaking big goals into tiny steps makes progress feel achievable and sustainable.</p>
+                </div>
+            </div>
+        </section>
+       
+        <section class="examples-section">
+            <h2>MicroHabits in Practice</h2>
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h3>Health & Wellness</h3>
+                    <ul>
+                        <li>Drink one glass of water after waking up</li>
+                        <li>Do two stretches while waiting for coffee</li>
+                        <li>Take the stairs instead of elevator one floor</li>
+                        <li>Eat one vegetable with lunch</li>
+                        <li>Stand up for one minute every hour</li>
+                    </ul>
+                </div>
+               
+                <div class="example-card">
+                    <h3>Productivity</h3>
+                    <ul>
+                        <li>Write one sentence for your report</li>
+                        <li>Clear one item from your desk</li>
+                        <li>Spend one minute planning your day</li>
+                        <li>Read one professional article</li>
+                        <li>Reply to one email immediately</li>
+                    </ul>
+                </div>
+               
+                <div class="example-card">
+                    <h3>Personal Growth</h3>
+                    <ul>
+                        <li>Read one page of a book</li>
+                        <li>Practice one vocabulary word</li>
+                        <li>Write one sentence in a journal</li>
+                        <li>Listen to one educational podcast</li>
+                        <li>Meditate for one breath</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+       
+        <section class="process-section">
+            <h2>How to Implement MicroHabits</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Identify</h3>
+                    <p>Choose one small behavior that aligns with your larger goals.</p>
+                </div>
+               
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Simplify</h3>
+                    <p>Make it so easy you can't say no. Less than 2 minutes is ideal.</p>
+                </div>
+               
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Anchor</h3>
+                    <p>Attach it to an existing habit or daily trigger.</p>
+                </div>
+               
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Celebrate</h3>
+                    <p>Acknowledge each completion to reinforce the behavior.</p>
+                </div>
+               
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h3>Expand</h3>
+                    <p>Gradually increase once the habit becomes automatic.</p>
+                </div>
+            </div>
+        </section>
+       
+        <section class="quote-section">
+            <blockquote>
+                "Small, daily, seemingly insignificant improvements, when done consistently over time, yield staggering results."
+            </blockquote>
+            <cite>— Darren Hardy, The Compound Effect</cite>
+        </section>
+    </div>
+   
+    <footer class="footer">
+        <p>© 2023 MicroHabits - Small Steps, Big Changes</p>
+    </footer>
+</body>
+</html>
