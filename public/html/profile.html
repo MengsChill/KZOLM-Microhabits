@@ -60,7 +60,26 @@
             background: var(--primary-color); color: white; padding: 10px 25px; border: none; border-radius: 20px;
             font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
         }
-        
+        .back-to-main-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: var(--card-color);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s ease;
+        }
+        .back-to-main-btn:hover {
+            background: var(--background-color);
+        }
+        .back-to-main-btn i {
+            margin-right: 6px;
+        }
         .profile-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 25px; text-align: center; }
         .stat-item h3 { font-size: 24px; font-weight: 700; color: var(--primary-dark); }
         .stat-item p { font-size: 14px; color: var(--text-light); }
@@ -79,6 +98,7 @@
 </head>
 <body class="theme-green">
     <div class="main-content">
+        <a href="/menu" class="back-to-main-btn"><i class="fas fa-arrow-left"></i> Back to Main</a>
         <div class="card profile-header">
             <div class="profile-banner">
                 <img id="bannerImage" class="profile-banner-img" src="" alt="Banner">
