@@ -60,12 +60,12 @@ db.run(`
 db.run(`
     CREATE TABLE IF NOT EXISTS posts(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username STRING NOT NULL,
+    datePosted TEXT,
     display_image TEXT,
     description TEXT,
     likes INTEGER,
     comments INTEGER,
-    username STRING NOT NULL,
-    datePosted TEXT,
     FOREIGN KEY (username) REFERENCES users (display_name)
     )
     `)
