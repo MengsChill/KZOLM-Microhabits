@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker - Achievements</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --secondary-bg: #f8f9fa;
+            --progress-bg: #f0f4f8;
+            
+            /* Green theme specific */
+            --green-light: #e8f5e9;
+            --green-medium: #c8e6c9;
+            --green-dark: #2e7d32;
+        }
+
+        /* Dark Theme Variables */
+        .dark-mode {
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-light: #b0b0b0;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --secondary-bg: #2d2d2d;
+            --progress-bg: #2a2a2a;
+            
+            /* Dark green theme */
+            --green-light: #1b5e20;
+            --green-medium: #2e7d32;
+            --green-dark: #4caf50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .category {
+            background: var(--card-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .category-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+        
+        .category-name {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+        
+        .achievement {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background: var(--secondary-bg);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .achievement:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            position: relative;
+            color: white;
+            background: #cccccc; /* Default gray for inactive */
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .achievement-progress {
+            width: 100%;
+            height: 6px;
+            background: var(--progress-bg);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .locked {
+            opacity: 0.7;
+        }
+        
+        .locked .achievement-icon {
+            background: #cccccc !important;
+            color: #666666 !important;
+        }
+        
+        .locked .achievement-name {
+            color: var(--text-light);
+        }
+        
+        .completed .achievement-icon {
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.3);
+        }
+        
+        .completed .achievement-name {
+            color: var(--primary-color);
+        }
+
+        /* Color classes for completed achievements */
+        .streak-icon {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+        }
+        
+        .social-icon {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+        
+        .consistency-icon {
+            background: linear-gradient(135deg, #45b7d1, #96c93d);
+        }
+        
+        .variety-icon {
+            background: linear-gradient(135deg, #96ceb4, #4caf50);
+        }
+        
+        .milestone-icon {
+            background: linear-gradient(135deg, #feca57, #ff9a00);
+        }
+        
+        .special-icon {
+            background: linear-gradient(135deg, #ff9ff3, #fd79a8);
+        }
+
+        /* Simple animations for completed achievements only */
+        .globe-spin {
+            animation: spinGlobe 8s linear infinite;
+        }
+
+        @keyframes spinGlobe {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .shiny-trophy {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shiny-trophy::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+        }
+
+        .sun-spin {
+            animation: spinSun 5s linear infinite;
+        }
+
+        @keyframes spinSun {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .moon-cloud {
+            position: relative;
+        }
+
+        .moon-cloud::before {
+            content: '☁️';
+            position: absolute;
+            font-size: 0.8rem;
+            top: -5px;
+            right: -5px;
+            animation: cloudFloat 4s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes cloudFloat {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(5px) translateY(-3px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        .infinity-shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .infinity-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: infinityShine 4s infinite;
+        }
+
+        @keyframes infinityShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+        }
+
+        /* Celebration Animation */
+        .celebration {
+            position: relative;
+        }
+
+        .celebration::before {
+            content: '🎉';
+            position: absolute;
+            font-size: 1.2rem;
+            top: -10px;
+            right: -10px;
+            animation: celebrate 1.5s ease-out;
+            z-index: 10;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            text-decoration: none;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .back-btn svg {
+            margin-right: 8px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Achievement Counter */
+        .achievement-counter {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-bar {
+                flex-wrap: wrap;
+            }
+            
+            .stat {
+                width: 50%;
+                margin-bottom: 15px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-green">
+    <div class="container">
+        <a href="#" class="back-btn" onclick="goBack()">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="white"/>
+            </svg>
+            Back to Main
+        </a>
+        
+        <button class="theme-toggle" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i> Toggle Dark Mode
+        </button>
+        
+        <header>
+            <h1>MicroHabit Achievements</h1>
+            <p class="subtitle">Track your progress and unlock rewards for your dedication</p>
+        </header>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="achievementCounter">12/24</div>
+                <div class="stat-label">Achievements</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">67%</div>
+                <div class="stat-label">Completion</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">15</div>
+                <div class="stat-label">Social Posts</div>
+            </div>
+        </div>
+        
+        <div class="achievements-grid">
+            <!-- Streak Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h2 class="category-name">Streak Masters</h2>
+                </div>
+                
+                <div class="achievement completed celebration">
+                    <div class="achievement-icon streak-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">10 Day Streak</div>
+                        <div class="achievement-desc">Maintain your habit for 10 consecutive days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon streak-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">30 Day Streak</div>
+                        <div class="achievement-desc">Maintain your habit for 30 consecutive days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">60 Day Streak</div>
+                        <div class="achievement-desc">Maintain your habit for 60 consecutive days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">100 Day Streak</div>
+                        <div class="achievement-desc">Maintain your habit for 100 consecutive days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 42%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2 class="category-name">Social Stars</h2>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon social-icon globe-spin">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">First Post</div>
+                        <div class="achievement-desc">Share your progress for the first time</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Social Butterfly</div>
+                        <div class="achievement-desc">Share your progress 10 times</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Community Champion</div>
+                        <div class="achievement-desc">Share your progress 50 times</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Consistency Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h2 class="category-name">Consistency Champions</h2>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon consistency-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Perfect Week</div>
+                        <div class="achievement-desc">Complete your habit every day for a week</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Month Master</div>
+                        <div class="achievement-desc">Complete your habit every day for a month</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Unstoppable</div>
+                        <div class="achievement-desc">Complete your habit for 3 months without skipping</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Variety Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h2 class="category-name">Habit Variety</h2>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon variety-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Habit Explorer</div>
+                        <div class="achievement-desc">Try 3 different microhabits</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Habit Adventurer</div>
+                        <div class="achievement-desc">Try 7 different microhabits</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 57%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Habit Master</div>
+                        <div class="achievement-desc">Try 15 different microhabits</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Milestone Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <h2 class="category-name">Milestone Markers</h2>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon milestone-icon shiny-trophy">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">First Step</div>
+                        <div class="achievement-desc">Complete your first microhabit</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Habit Summit</div>
+                        <div class="achievement-desc">Reach 500 total habit completions</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 72%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Legendary Status</div>
+                        <div class="achievement-desc">Reach 1000 total habit completions</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 36%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special Achievements -->
+            <div class="category">
+                <div class="category-title">
+                    <div class="category-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h2 class="category-name">Special Achievements</h2>
+                </div>
+                
+                <div class="achievement completed">
+                    <div class="achievement-icon special-icon sun-spin">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Early Bird</div>
+                        <div class="achievement-desc">Complete your habit before 8 AM for 7 days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Night Owl</div>
+                        <div class="achievement-desc">Complete your habit after 10 PM for 7 days</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 43%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Community Helper</div>
+                        <div class="achievement-desc">Encourage 5 other users</div>
+                        <div class="achievement-progress">
+                            <div class="progress-bar" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple animation for progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.5s ease-in-out';
+                    bar.style.width = width;
+                }, 300);
+            });
+            
+            // Add celebration effect to newly completed achievements
+            const completedAchievements = document.querySelectorAll('.completed');
+            completedAchievements.forEach(achievement => {
+                if (!achievement.classList.contains('celebration')) {
+                    achievement.classList.add('celebration');
+                    setTimeout(() => {
+                        achievement.classList.remove('celebration');
+                    }, 1500);
+                }
+            });
+            
+            // Update achievement counter
+            updateAchievementCounter();
+        });
+
+        // Function to go back to main page
+        function goBack() {
+            window.history.back();
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            // Update button text
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (isDarkMode) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Toggle Light Mode';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Toggle Dark Mode';
+            }
+        }
+
+        // Update achievement counter
+        function updateAchievementCounter() {
+            const completed = document.querySelectorAll('.completed').length;
+            const total = document.querySelectorAll('.achievement').length;
+            document.getElementById('achievementCounter').textContent = `${completed}/${total}`;
+        }
+
+        // Initialize dark mode if previously set
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                const themeToggle = document.querySelector('.theme-toggle');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Toggle Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
