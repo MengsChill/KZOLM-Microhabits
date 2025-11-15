@@ -292,6 +292,232 @@
       padding-left: 5px;
     }
 
+    /* === NEW: Popup Page Styles === */
+    .popup-page {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #5b8765;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .popup-content {
+      background: #2f5d44;
+      margin: 40px auto;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 600px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+      animation: popupSlideIn 0.5s ease-out;
+    }
+
+    @keyframes popupSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .popup-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .popup-header h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #9ef86c;
+    }
+
+    .popup-header p {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+    }
+
+    .popup-body {
+      line-height: 1.6;
+    }
+
+    .popup-body p {
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .popup-features {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+
+    .popup-features h3 {
+      color: #9ef86c;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      margin-bottom: 10px;
+      padding-left: 25px;
+      position: relative;
+    }
+
+    .feature-list li:before {
+      content: "✓";
+      color: #9ef86c;
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .popup-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .btn.popup-primary {
+      background: #9ef86c;
+      color: #204b33;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      flex: 1;
+    }
+
+    .btn.popup-primary:hover {
+      background: #8be35f;
+      transform: scale(1.05);
+    }
+
+    .btn.popup-secondary {
+      background: transparent;
+      color: #9ef86c;
+      font-weight: 600;
+      border: 2px solid #9ef86c;
+      border-radius: 30px;
+      padding: 14px 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      flex: 1;
+    }
+
+    .btn.popup-secondary:hover {
+      background: rgba(158, 248, 108, 0.1);
+    }
+
+    .close-popup {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .3s ease;
+    }
+
+    .close-popup:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    /* Health Assessment Specific Styles */
+    .assessment-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .assessment-option {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s ease;
+      border: 2px solid transparent;
+    }
+
+    .assessment-option:hover {
+      background: rgba(255,255,255,0.15);
+      border-color: #9ef86c;
+      transform: translateY(-5px);
+    }
+
+    .assessment-option i {
+      font-size: 2rem;
+      color: #9ef86c;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .assessment-option h4 {
+      color: #9ef86c;
+      margin-bottom: 10px;
+    }
+
+    /* Demo Tutorial Specific Styles */
+    .demo-steps {
+      counter-reset: step-counter;
+      margin: 25px 0;
+    }
+
+    .demo-step {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      position: relative;
+      padding-left: 70px;
+    }
+
+    .demo-step:before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #9ef86c;
+      color: #204b33;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
     /* === Responsive === */
     @media (max-width:900px){
       .signin-container{ 
@@ -308,6 +534,15 @@
       }
       .signin-image { 
         min-height: 350px;
+      }
+      
+      .popup-content {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+      
+      .popup-actions {
+        flex-direction: column;
       }
     }
   </style>
@@ -357,15 +592,16 @@
         <p class="or">or try these options</p>
         
         <div class="alternative-options">
-          <a href="#" class="option-card" onclick="showOptionPage('guest')">
+          <!-- UPDATED: Now opens popup pages -->
+          <a href="#" class="option-card" onclick="showGuestPage()">
             <i class="fas fa-user-clock"></i>
             <span>Continue as Guest</span>
           </a>
-          <a href="#" class="option-card" onclick="showOptionPage('demo')">
+          <a href="#" class="option-card" onclick="showDemoPage()">
             <i class="fas fa-rocket"></i>
             <span>Quick Start Demo</span>
           </a>
-          <a href="#" class="option-card" onclick="showOptionPage('assessment')">
+          <a href="#" class="option-card" onclick="showAssessmentPage()">
             <i class="fas fa-heartbeat"></i>
             <span>Take Health Assessment</span>
           </a>
@@ -435,6 +671,117 @@
     </section>
   </main>
 
+  <!-- NEW: Guest Dashboard Popup Page -->
+  <div id="guest-page" class="popup-page">
+    <div class="popup-content">
+      <button class="close-popup" onclick="closeAllPopups()">&times;</button>
+      <div class="popup-header">
+        <h2>Continue as Guest</h2>
+        <p>Explore Kzolm with limited access</p>
+      </div>
+      <div class="popup-body">
+        <p>As a guest, you can explore our platform and get a feel for how Kzolm can help you build better habits and achieve your fitness goals.</p>
+        
+        <div class="popup-features">
+          <h3>Guest Access Includes:</h3>
+          <ul class="feature-list">
+            <li>Browse workout routines and exercises</li>
+            <li>View sample meal plans and nutrition tips</li>
+            <li>Access basic fitness calculators</li>
+            <li>Explore community features</li>
+            <li>Try limited demo features</li>
+          </ul>
+        </div>
+        
+        <p><strong>Note:</strong> Some features like saving progress, personalized plans, and advanced analytics require a full account.</p>
+      </div>
+      <div class="popup-actions">
+        <button class="btn popup-primary" onclick="startGuestSession()">Start Guest Session</button>
+        <button class="btn popup-secondary" onclick="closeAllPopups()">Back to Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Quick Start Demo Popup Page -->
+  <div id="demo-page" class="popup-page">
+    <div class="popup-content">
+      <button class="close-popup" onclick="closeAllPopups()">&times;</button>
+      <div class="popup-header">
+        <h2>Quick Start Demo</h2>
+        <p>See how Kzolm works in 5 minutes</p>
+      </div>
+      <div class="popup-body">
+        <p>This interactive demo will walk you through the key features of Kzolm and show you how to get started with your fitness journey.</p>
+        
+        <div class="demo-steps">
+          <div class="demo-step">
+            <h4>Step 1: Set Your Goals</h4>
+            <p>Define what you want to achieve - weight loss, muscle gain, or general fitness.</p>
+          </div>
+          <div class="demo-step">
+            <h4>Step 2: Explore Workouts</h4>
+            <p>Browse through our curated workout routines for all fitness levels.</p>
+          </div>
+          <div class="demo-step">
+            <h4>Step 3: Track Progress</h4>
+            <p>Learn how to log your workouts and monitor your improvements.</p>
+          </div>
+          <div class="demo-step">
+            <h4>Step 4: Join Community</h4>
+            <p>Connect with others and share your fitness journey.</p>
+          </div>
+        </div>
+        
+        <p>Ready to see Kzolm in action?</p>
+      </div>
+      <div class="popup-actions">
+        <button class="btn popup-primary" onclick="startDemo()">Start Demo</button>
+        <button class="btn popup-secondary" onclick="closeAllPopups()">Maybe Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Health Assessment Popup Page -->
+  <div id="assessment-page" class="popup-page">
+    <div class="popup-content">
+      <button class="close-popup" onclick="closeAllPopups()">&times;</button>
+      <div class="popup-header">
+        <h2>Health Assessment</h2>
+        <p>Get personalized recommendations based on your health profile</p>
+      </div>
+      <div class="popup-body">
+        <p>Our comprehensive health assessment helps us understand your current fitness level, goals, and preferences to create the perfect plan for you.</p>
+        
+        <div class="assessment-options">
+          <div class="assessment-option" onclick="startBasicAssessment()">
+            <i class="fas fa-chart-line"></i>
+            <h4>Basic Assessment</h4>
+            <p>Quick 5-minute assessment for general fitness recommendations</p>
+          </div>
+          <div class="assessment-option" onclick="startComprehensiveAssessment()">
+            <i class="fas fa-chart-bar"></i>
+            <h4>Comprehensive Assessment</h4>
+            <p>Detailed 15-minute assessment for personalized workout and nutrition plans</p>
+          </div>
+        </div>
+        
+        <div class="popup-features">
+          <h3>What we'll assess:</h3>
+          <ul class="feature-list">
+            <li>Current fitness level and activity</li>
+            <li>Health goals and preferences</li>
+            <li>Dietary habits and restrictions</li>
+            <li>Available equipment and time</li>
+            <li>Motivation and challenges</li>
+          </ul>
+        </div>
+      </div>
+      <div class="popup-actions">
+        <button class="btn popup-secondary" onclick="closeAllPopups()">Not Now</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="tagline">
     You Don't Need A New Life, Just New Habits.
   </footer>
@@ -442,6 +789,49 @@
   <script>
     // Common passwords list
     const commonPasswords = ['123456', 'password', 'Password123', '123456789', 'qwerty'];
+    
+    // NEW: Popup Page Functions
+    function showGuestPage() {
+      document.getElementById('guest-page').style.display = 'block';
+    }
+    
+    function showDemoPage() {
+      document.getElementById('demo-page').style.display = 'block';
+    }
+    
+    function showAssessmentPage() {
+      document.getElementById('assessment-page').style.display = 'block';
+    }
+    
+    function closeAllPopups() {
+      document.querySelectorAll('.popup-page').forEach(popup => {
+        popup.style.display = 'none';
+      });
+    }
+    
+    function startGuestSession() {
+      alert('Starting guest session! You can now explore Kzolm with limited access.');
+      closeAllPopups();
+      // Here you would typically redirect to the guest dashboard
+    }
+    
+    function startDemo() {
+      alert('Starting interactive demo! This would launch the actual demo experience.');
+      closeAllPopups();
+      // Here you would typically start the demo flow
+    }
+    
+    function startBasicAssessment() {
+      alert('Starting basic health assessment! This would begin the 5-minute assessment.');
+      closeAllPopups();
+      // Here you would typically start the basic assessment
+    }
+    
+    function startComprehensiveAssessment() {
+      alert('Starting comprehensive health assessment! This would begin the 15-minute detailed assessment.');
+      closeAllPopups();
+      // Here you would typically start the comprehensive assessment
+    }
     
     // Password validation function
     function validatePassword() {
@@ -662,7 +1052,7 @@
         successMessage.style.display = 'block';
         setTimeout(() => {
           // Redirect to dashboard
-          window.location.href = '/menu';
+          window.location.href = '../html/dashboard.html';
         }, 1500);
       } else {
         // Failed login
