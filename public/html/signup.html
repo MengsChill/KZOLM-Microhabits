@@ -4,16 +4,191 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kzolm – Sign Up</title>
-  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* === Global reset === */
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:"Poppins",sans-serif;
+      background:#f9f9f9;
+      color:#333;
+      overflow-x: hidden;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      background:#2f5d44;
+      padding:15px 40px;
+      display:flex;
+      align-items:center;
+      position: relative;
+      z-index: 10;
+    }
+    .logo { font-size:1.8rem; font-weight:bold; color:#fff;  text-decoration: none; }
+
+    /* === Sign Up Page === */
+    .signup-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 60px);
+      background: #5b8765;
+      gap: 0;
+      padding: 20px 0;
+    }
+
+    /* Sign-up Box */
+    .signup-box {
+      background: #2f5d44;
+      border-radius: 24px;
+      padding: 40px;
+      flex: 0 1 500px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 2;
+      margin: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .signup-box h2 { 
+      margin-bottom:25px; 
+      font-size: 1.8rem;
+      text-align: center;
+    }
+    .signup-box label { 
+      display:block; 
+      font-weight:600; 
+      margin:12px 0 6px;
+      font-size: 1rem;
+    }
+    .signup-box input, .signup-box select {
+      width:100%; 
+      padding:12px;
+      border:none; 
+      border-radius:10px;
+      margin-bottom:12px;
+      font-size: 0.95rem;
+    }
+    .password-field { position:relative; }
+    .password-field .toggle {
+      position:absolute; right:12px; top:12px; cursor:pointer;
+    }
+    .btn.signup {
+      background:#9ef86c;
+      color:#204b33;
+      font-weight:600;
+      width:100%;
+      border: none;
+      border-radius: 30px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all .3s ease;
+      margin-top: 8px;
+    }
+    .btn.signup:hover { background:#8be35f; transform:scale(1.05); }
+
+    /* Password Requirements */
+    .password-requirements {
+      list-style: none;
+      margin: 10px 0 20px;
+      padding: 0;
+      font-size: 0.85rem;
+    }
+
+    .password-requirements li {
+      margin-bottom: 5px;
+      padding-left: 5px;
+    }
+
+    /* Error message styling */
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin: 5px 0 15px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+      background: rgba(255, 107, 107, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #ff6b6b;
+    }
+
+    /* Success message styling */
+    .success-msg {
+      color: #9ef86c;
+      font-size: 0.9rem;
+      margin: 5px 0 15px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+      background: rgba(158, 248, 108, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #9ef86c;
+    }
+
+    /* Image section */
+    .signup-image {
+      flex: 0 1 550px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 24px;
+      min-height: 550px;
+      margin: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .signup-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+
+    /* === Footer Tagline === */
+    .tagline {
+      background:#5b8765;
+      color:#fff;
+      text-align:center;
+      padding:20px;
+      font-weight:600;
+      font-size: 1rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width:900px){
+      .signup-container{ 
+        flex-direction:column;
+        padding: 10px;
+      }
+      .signup-box, .signup-image{ 
+        flex:1 1 100%; 
+        min-height: auto;
+        margin: 10px;
+      }
+      .signup-box { 
+        padding: 30px 25px;
+      }
+      .signup-image { 
+        min-height: 350px;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="navbar">
-    <div class="logo">Kzolm</div>
-  </header>
+  <a href="../html/index.html" class="logo">Kzolm</a>
+</header>
 
   <main class="signup-container">
     <section class="signup-box">
-      <h2>Sign Up</h2>
+      <h2>Create Your Account</h2>
 
       <form id="signup-form" action="/signup" method="POST">
         <label>Your email</label>
@@ -23,7 +198,6 @@
         <div class="password-field">
           <input type="password" name="password" id="password" placeholder="Enter your password" required />
           <span class="toggle">
-            <!-- Default Eye icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -42,7 +216,6 @@
         <div class="password-field">
           <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Re-enter your password" required />
           <span class="toggle">
-            <!-- Default Eye icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -50,18 +223,36 @@
           </span>
         </div>
 
-        <div id="error-msg" class="error-msg" style="color:red; display:none;"></div>
+        <!-- Security Question Section -->
+        <label>Security Question</label>
+        <select name="securityQuestion" id="securityQuestion" required>
+          <option value="">Select a security question</option>
+          <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+          <option value="What city were you born in?">What city were you born in?</option>
+          <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+          <option value="What was the name of your elementary school?">What was the name of your elementary school?</option>
+          <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+        </select>
+
+        <label>Your Answer</label>
+        <input type="text" name="securityAnswer" id="securityAnswer" placeholder="Enter your answer" required />
+
+        <div id="error-msg" class="error-msg"></div>
+        <div id="success-msg" class="success-msg"></div>
 
         <button type="submit" class="btn signup">Sign Up</button>
-        <p>Already have an account? <a href="/signin">Sign in here</a></p>
+        <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="../html/signin.html" style="color: #9ef86c;">Sign in here</a></p>
       </form>
     </section>
 
-    <!-- Added image section -->
     <section class="signup-image">
       <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Person drinking water and reading">
     </section>
   </main>
+
+  <footer class="tagline">
+    You Don't Need A New Life, Just New Habits.
+  </footer>
 
   <script>
     const passwordField = document.getElementById('password');
@@ -69,6 +260,7 @@
     const toggles = document.querySelectorAll('.toggle');
     const form = document.getElementById('signup-form');
     const errorMsg = document.getElementById('error-msg');
+    const successMsg = document.getElementById('success-msg');
 
     const requirements = {
       uppercase: document.getElementById('req-uppercase'),
@@ -87,7 +279,6 @@
         if (input.type === 'password') {
           input.type = 'text';
           toggle.innerHTML = `
-            <!-- Eye-off icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.94 17.94L6.06 6.06M1 1l22 22"></path>
               <path d="M10.59 10.59a3 3 0 0 1 4.24 4.24"></path>
@@ -96,7 +287,6 @@
         } else {
           input.type = 'password';
           toggle.innerHTML = `
-            <!-- Eye icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -146,22 +336,56 @@
 
     // Form submission validation
     form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Hide previous messages
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+      
       const allValid = Object.values(requirements).every(req => req.textContent.startsWith('✅'));
       if (!allValid) {
-        e.preventDefault();
         errorMsg.textContent = 'Password does not meet all requirements.';
         errorMsg.style.display = 'block';
         return;
       }
 
       if (passwordField.value !== confirmField.value) {
-        e.preventDefault();
         errorMsg.textContent = 'Passwords do not match.';
         errorMsg.style.display = 'block';
         return;
       }
 
-      errorMsg.style.display = 'none';
+      if (!document.getElementById('securityQuestion').value) {
+        errorMsg.textContent = 'Please select a security question.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      if (!document.getElementById('securityAnswer').value.trim()) {
+        errorMsg.textContent = 'Please provide an answer to the security question.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      // All validations passed - store user data
+      const userData = {
+        email: document.getElementById('email').value,
+        password: passwordField.value,
+        securityQuestion: document.getElementById('securityQuestion').value,
+        securityAnswer: document.getElementById('securityAnswer').value.trim().toLowerCase()
+      };
+
+      // Store user data in localStorage (in a real app, this would be sent to a server)
+      localStorage.setItem('userData', JSON.stringify(userData));
+      
+      // Show success message
+      successMsg.textContent = 'Account created successfully! Redirecting to sign in...';
+      successMsg.style.display = 'block';
+      
+      // Redirect to sign in page after 2 seconds
+      setTimeout(() => {
+        window.location.href = '/signin';
+      }, 2000);
     });
   </script>
 </body>

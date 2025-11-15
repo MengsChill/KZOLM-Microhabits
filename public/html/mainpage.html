@@ -6,9 +6,9 @@
     <title>Task Tracker - Stay Productive</title>
     <style>
         :root {
-            --primary-color: #2e7d32;
+            --primary-color: #0e6b4b; /* Updated to requested color */
             --primary-light: #4caf50;
-            --primary-dark: #1b5e20;
+            --primary-dark: #0a4f36;
             --secondary-color: #ff9800;
             --background-color: #f5f7fa;
             --card-color: #ffffff;
@@ -20,9 +20,9 @@
             --secondary-bg: #f8f9fa;
             --progress-bg: #f0f4f8;
             
-            /* Sidebar specific variables - KEEPING GREEN COLOR */
-            --sidebar-bg: #1b5e20; /* Green background */
-            --sidebar-card: #2e7d32;
+            /* Sidebar specific variables - USING REQUESTED COLOR #0e6b4b */
+            --sidebar-bg: #0e6b4b; /* Updated to requested color */
+            --sidebar-card: #0a4f36;
             --sidebar-text: #ffffff; /* White text for contrast */
             --sidebar-border: #4caf50;
         }
@@ -38,9 +38,9 @@
             --secondary-bg: #2d2d2d;
             --progress-bg: #2a2a2a;
             
-            /* Dark sidebar - KEEPING GREEN COLOR */
-            --sidebar-bg: #1b5e20;
-            --sidebar-card: #2e7d32;
+            /* Dark sidebar - USING REQUESTED COLOR #0e6b4b */
+            --sidebar-bg: #0e6b4b;
+            --sidebar-card: #0a4f36;
             --sidebar-text: #ffffff;
             --sidebar-border: #4caf50;
         }
@@ -179,7 +179,6 @@
             object-fit: contain;
             cursor: pointer;
             transition: all 0.3s ease;
-            /* REMOVED border-radius and background */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -411,11 +410,20 @@
             opacity: 0.9;
             cursor: pointer;
             transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            outline: none; /* Remove blue outline when editing */
         }
         
         .header-subtitle:hover {
             opacity: 1;
-            text-decoration: underline;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-subtitle.editing {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px dashed rgba(255, 255, 255, 0.5);
         }
         
         .profile-section {
@@ -469,8 +477,6 @@
             gap: 15px;
         }
         
-        /* REMOVED theme-btn styles */
-        
         .back-btn {
             padding: 8px 15px;
             background: rgba(255, 255, 255, 0.2);
@@ -510,6 +516,7 @@
             padding: 25px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: var(--transition);
+            position: relative;
         }
         
         .section:hover {
@@ -542,7 +549,7 @@
             gap: 10px;
             padding-bottom: 10px;
             border-bottom: 2px solid var(--border-color);
-            cursor: pointer;
+            /* REMOVED cursor: pointer; */
             transition: var(--transition);
         }
         
@@ -623,6 +630,12 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             border-color: var(--primary-color);
+        }
+        
+        .streak-item.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(14, 107, 75, 0.1);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
         }
         
         .streak-icon {
@@ -787,7 +800,7 @@
         }
 
         .streak-count:hover {
-            background: rgba(46, 125, 50, 0.1);
+            background: rgba(14, 107, 75, 0.1);
         }
 
         .quick-actions {
@@ -819,7 +832,238 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
-        /* Modal Styles */
+        /* Task Input Styles */
+        .task-input-container {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--card-color);
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .task-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
+        }
+
+        .task-input-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .task-input-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .task-input-cancel {
+            background: var(--secondary-bg);
+            color: var(--text-color);
+        }
+
+        .task-input-cancel:hover {
+            background: var(--border-color);
+        }
+
+        .task-input-add {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .task-input-add:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Motivation Message */
+        .motivation-message {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(14, 107, 75, 0.1);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--primary-dark);
+            text-align: center;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        /* Task List Styles */
+        .task-list {
+            margin-top: 20px;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .task-name {
+            flex: 1;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-color);
+            padding: 5px;
+            border-radius: 4px;
+            outline: none; /* Remove blue outline */
+        }
+        
+        .task-name:hover {
+            color: var(--primary-color);
+            background-color: var(--secondary-bg);
+        }
+        
+        .task-name.editing {
+            background-color: var(--secondary-bg);
+            border: 1px dashed var(--border-color);
+        }
+        
+        .task-completed {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+        
+        /* Add-on Selection Styles */
+        .addon-selection {
+            display: none;
+            position: absolute;
+            top: 120px;
+            left: 25px;
+            right: 25px;
+            padding: 15px;
+            background: var(--card-color);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .addon-option {
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .addon-option:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .addon-icon-small {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .addon-description {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .addon-option:hover .addon-description {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        /* Active Add-on Bar */
+        .active-addon-bar {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .active-addon-bar:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Selected Add-ons Display */
+        .selected-addons {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .selected-addon {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .selected-addon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .selected-addon-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Statistics Modal */
         .modal {
             display: none;
             position: fixed;
@@ -837,20 +1081,20 @@
             background: var(--card-color);
             border-radius: 16px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            animation: modalAppear 0.3s ease;
+            animation: modalAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         @keyframes modalAppear {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: scale(0.8) translateY(-20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
         
@@ -887,12 +1131,6 @@
         
         .modal-body {
             padding: 25px;
-            text-align: center;
-        }
-
-        .modal-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
         }
 
         .modal-title {
@@ -902,274 +1140,163 @@
             color: var(--primary-dark);
         }
 
-        .modal-description {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .modal-features {
-            text-align: left;
-            background: var(--secondary-bg);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .modal-features ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .modal-features li {
-            padding: 5px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-color);
-        }
-
-        .modal-features li:before {
-            content: "✓";
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-        
-        /* REMOVED theme-options styles */
-        
-        .modal-footer {
-            padding: 15px 25px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: var(--secondary-bg);
-            color: var(--text-color);
-            margin-right: 10px;
-        }
-        
-        .btn-secondary:hover {
-            background: var(--border-color);
-            transform: translateY(-2px);
-        }
-
-        /* Celebration Modal */
-        .celebration-modal .modal-content {
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-            animation: confetti-fall 2s ease-in-out forwards;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(500px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        /* Task List Styles */
-        .task-list {
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-top: 20px;
         }
-        
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .task-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            cursor: pointer;
-        }
-        
-        .task-name {
-            flex: 1;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-color);
-        }
-        
-        .task-name:hover {
-            color: var(--primary-color);
-        }
-        
-        .task-completed {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-        
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: var(--transition);
-            background-color: var(--card-color);
-            color: var(--text-color);
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
-        }
-        
-        .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            min-height: 100px;
-            resize: vertical;
-            transition: var(--transition);
-            background-color: var(--card-color);
-            color: var(--text-color);
-        }
-        
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
-        }
-        
-        /* Settings Page Styles */
-        .settings-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        
-        .settings-section {
+
+        .stat-card {
             background: var(--secondary-bg);
             border-radius: 8px;
             padding: 20px;
+            text-align: center;
+            transition: var(--transition);
         }
-        
-        .settings-section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
-        .settings-option {
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .task-breakdown {
+            margin-top: 20px;
+        }
+
+        .breakdown-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        
-        .settings-option:last-child {
-            border-bottom: none;
+
+        .breakdown-name {
+            font-weight: 500;
+        }
+
+        .breakdown-status {
+            font-weight: 600;
+            color: var(--primary-color);
         }
         
-        .settings-label {
-            font-weight: 500;
+        /* Share Progress Modal Styles */
+        .share-progress-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
             color: var(--text-color);
         }
-        
-        .settings-toggle {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-        
-        .settings-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .settings-slider {
-            position: absolute;
+
+        .image-upload-container {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
+            transition: var(--transition);
+            background-color: var(--secondary-bg);
         }
-        
-        .settings-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
+
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(14, 107, 75, 0.05);
         }
-        
-        input:checked + .settings-slider {
-            background-color: var(--primary-color);
+
+        .image-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
         }
-        
-        input:checked + .settings-slider:before {
-            transform: translateX(26px);
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .image-preview.has-image img {
+            display: block;
+        }
+
+        .image-preview.has-image svg,
+        .image-preview.has-image p {
+            display: none;
+        }
+
+        #progressThoughts {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--card-color);
+            color: var(--text-color);
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        #progressThoughts:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
+        }
+
+        .progress-summary {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .progress-summary h3 {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-size: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
         }
         
         /* Responsive adjustments */
@@ -1185,6 +1312,18 @@
             
             .streak-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .statistics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .addon-selection {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                margin-top: 15px;
             }
         }
         
@@ -1301,6 +1440,95 @@
         <span id="toastMessage"></span>
     </div>
 
+    <!-- Statistics Modal -->
+    <div class="modal" id="statisticsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Task Statistics</h2>
+                <button class="modal-close" id="closeStatisticsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="statistics-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotalTasks">0</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCompletedTasks">0</div>
+                        <div class="stat-label">Completed Tasks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCompletionRate">0%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCurrentStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                </div>
+                
+                <div class="task-breakdown">
+                    <h3>Task Breakdown</h3>
+                    <div id="taskBreakdownList">
+                        <!-- Task breakdown will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Progress Modal -->
+    <div class="modal" id="shareProgressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Share Your Progress</h2>
+                <button class="modal-close" id="closeShareProgressModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="share-progress-form">
+                    <div class="form-group">
+                        <label for="progressImage">Upload Image</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="progressImage" accept="image/*" style="display: none;">
+                            <div class="image-preview" id="imagePreview">
+                                <svg class="icon icon-large" viewBox="0 0 24 24">
+                                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                                </svg>
+                                <p>Click to upload an image</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="progressThoughts">Share your thoughts</label>
+                        <textarea id="progressThoughts" placeholder="What have you accomplished? How do you feel about your progress? Share your journey with the community..." rows="5"></textarea>
+                    </div>
+                    
+                    <div class="progress-summary">
+                        <h3>Your Progress Summary</h3>
+                        <div class="summary-item">
+                            <span>Tasks Completed:</span>
+                            <span id="shareCompletedTasks">1</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Total Tasks:</span>
+                            <span id="shareTotalTasks">3</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Current Streak:</span>
+                            <span id="shareCurrentStreak">245</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="task-input-btn task-input-cancel" id="cancelShareProgress">Cancel</button>
+                        <button class="task-input-btn task-input-add" id="submitShareProgress">Share to Community</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sidebar - Starts minimized, expands on hover -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -1387,7 +1615,7 @@
         <div class="container">
             <header>
                 <h1>Task Tracker</h1>
-                <p class="header-subtitle">Stay productive and build healthy habits</p>
+                <div class="header-subtitle" id="headerSubtitle" contenteditable="true">Stay productive and build healthy habits</div>
                 
                 <div class="profile-section">
                     <div class="profile-info">
@@ -1395,7 +1623,6 @@
                         <div class="profile-name">John Doe</div>
                     </div>
                     <div class="header-actions">
-                        <!-- REMOVED theme button -->
                         <a href="/menu" class="back-btn">
                             <svg class="icon icon-small" viewBox="0 0 24 24">
                                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -1410,19 +1637,19 @@
                 <div class="section">
                     <h2 class="section-title">Quick Actions</h2>
                     <div class="quick-actions">
-                        <button class="action-btn" onclick="addNewTask()">
+                        <button class="action-btn" id="addNewTaskBtn">
                             <svg class="icon icon-small" viewBox="0 0 24 24">
                                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                             </svg>
                             Add New Task
                         </button>
-                        <button class="action-btn" onclick="viewStatistics()">
+                        <button class="action-btn" id="viewStatisticsBtn">
                             <svg class="icon icon-small" viewBox="0 0 24 24">
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                             </svg>
                             View Statistics
                         </button>
-                        <button class="action-btn" onclick="shareProgress()">
+                        <button class="action-btn" id="shareProgressBtn">
                             <svg class="icon icon-small" viewBox="0 0 24 24">
                                 <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
                             </svg>
@@ -1434,6 +1661,19 @@
                             </svg>
                             Achievements
                         </button>
+                    </div>
+                    
+                    <!-- Task Input Container -->
+                    <div class="task-input-container" id="taskInputContainer">
+                        <input type="text" class="task-input" id="taskInput" placeholder="Enter task name...">
+                        <div class="task-input-actions">
+                            <button class="task-input-btn task-input-cancel" id="cancelTaskBtn">Cancel</button>
+                            <button class="task-input-btn task-input-add" id="addTaskBtn">Add Task</button>
+                        </div>
+                        <!-- Motivation Message -->
+                        <div class="motivation-message">
+                            <strong>Remember:</strong> Once a task is added, it can't be deleted. Please complete it!
+                        </div>
                     </div>
                 </div>
                 
@@ -1449,26 +1689,26 @@
                         </div>
                     </div>
                     
-                    <div class="task-list">
+                    <div class="task-list" id="taskList">
                         <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task1" onchange="updateTaskProgress()" checked>
-                            <label for="task1" class="task-name task-completed">Morning routine</label>
+                            <input type="checkbox" class="task-checkbox" id="task1" checked>
+                            <label for="task1" class="task-name" contenteditable="true">Morning routine</label>
                         </div>
                         <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task2" onchange="updateTaskProgress()">
-                            <label for="task2" class="task-name">Work project</label>
+                            <input type="checkbox" class="task-checkbox" id="task2">
+                            <label for="task2" class="task-name" contenteditable="true">Work project</label>
                         </div>
                         <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task3" onchange="updateTaskProgress()">
-                            <label for="task3" class="task-name">Gym session</label>
+                            <input type="checkbox" class="task-checkbox" id="task3">
+                            <label for="task3" class="task-name" contenteditable="true">Gym session</label>
                         </div>
                     </div>
                 </div>
                 
-                <div class="section">
+                <div class="section" id="streakSection">
                     <h2 class="section-title">Streak</h2>
                     <div class="streak-container">
-                        <a href="addons.html" class="streak-item">
+                        <div class="streak-item" id="addonItem">
                             <div class="streak-icon addon-icon">
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -1476,7 +1716,65 @@
                             </div>
                             <div class="streak-name">Add-ons</div>
                             <div class="streak-status">Discover new features</div>
-                        </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Selected Add-ons Display -->
+                    <div class="selected-addons" id="selectedAddons">
+                        <!-- Selected add-ons will be displayed here -->
+                    </div>
+                    
+                    <!-- Add-on Selection -->
+                    <div class="addon-selection" id="addonSelection">
+                        <div class="addon-option" data-addon="focus-timer">
+                            <div class="addon-icon-small">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div>Focus Timer</div>
+                                <div class="addon-description">Stay focused with timed work sessions</div>
+                            </div>
+                        </div>
+                        <div class="addon-option" data-addon="habit-tracker">
+                            <div class="addon-icon-small">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div>Habit Tracker</div>
+                                <div class="addon-description">Build and track daily habits</div>
+                            </div>
+                        </div>
+                        <div class="addon-option" data-addon="pomodoro">
+                            <div class="addon-icon-small">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div>Pomodoro Timer</div>
+                                <div class="addon-description">Work in focused intervals with breaks</div>
+                            </div>
+                        </div>
+                        <div class="addon-option" data-addon="goal-setter">
+                            <div class="addon-icon-small">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div>Goal Setter</div>
+                                <div class="addon-description">Set and track long-term goals</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Add-on Bar -->
+                    <div class="active-addon-bar" id="activeAddonBar">
+                        Click to use your selected add-on!
                     </div>
                 </div>
                 
@@ -1494,7 +1792,6 @@
                                     <div class="user-avatar">JD</div>
                                     <div>You</div>
                                 </div>
-                                <!-- CHANGED from pts to streak -->
                                 <div class="streak-count">245 streak</div>
                             </li>
                             <li class="leaderboard-item">
@@ -1503,7 +1800,6 @@
                                     <div class="user-avatar">AS</div>
                                     <div>Alex Smith</div>
                                 </div>
-                                <!-- CHANGED from pts to streak -->
                                 <div class="streak-count">198 streak</div>
                             </li>
                             <li class="leaderboard-item">
@@ -1512,7 +1808,6 @@
                                     <div class="user-avatar">MJ</div>
                                     <div>Maria Johnson</div>
                                 </div>
-                                <!-- CHANGED from pts to streak -->
                                 <div class="streak-count">176 streak</div>
                             </li>
                             <li class="leaderboard-item">
@@ -1521,7 +1816,6 @@
                                     <div class="user-avatar">TW</div>
                                     <div>Taylor Wilson</div>
                                 </div>
-                                <!-- CHANGED from pts to streak -->
                                 <div class="streak-count">154 streak</div>
                             </li>
                         </ul>
@@ -1534,7 +1828,11 @@
     <script>
         // Task tracking
         let completedTasks = 1;
-        const totalTasks = 3;
+        let totalTasks = 3;
+        let taskIdCounter = 4;
+        let currentStreak = 245;
+        let activeAddon = null;
+        let selectedAddons = [];
         
         // Initialize progress
         updateProgressBar();
@@ -1567,35 +1865,436 @@
             document.getElementById('sidebarProgressText').textContent = `${completedTasks} of ${totalTasks} completed`;
         }
 
-        // Simple functions for action buttons (no popups)
-        function addNewTask() {
-            // You can add functionality here without popup
-            console.log('Add new task clicked');
+        // Add new task functionality
+        document.getElementById('addNewTaskBtn').addEventListener('click', function() {
+            const taskInputContainer = document.getElementById('taskInputContainer');
+            taskInputContainer.style.display = 'block';
+            document.getElementById('taskInput').focus();
+        });
+
+        document.getElementById('cancelTaskBtn').addEventListener('click', function() {
+            document.getElementById('taskInputContainer').style.display = 'none';
+            document.getElementById('taskInput').value = '';
+        });
+
+        document.getElementById('addTaskBtn').addEventListener('click', function() {
+            const taskInput = document.getElementById('taskInput');
+            const taskName = taskInput.value.trim();
+            
+            if (taskName) {
+                // Create new task element
+                const taskList = document.getElementById('taskList');
+                const newTaskId = `task${taskIdCounter++}`;
+                
+                const newTask = document.createElement('div');
+                newTask.className = 'task-item';
+                newTask.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" id="${newTaskId}">
+                    <label for="${newTaskId}" class="task-name" contenteditable="true">${taskName}</label>
+                `;
+                
+                taskList.appendChild(newTask);
+                
+                // Add event listeners to new task
+                const newCheckbox = document.getElementById(newTaskId);
+                const newTaskName = newCheckbox.nextElementSibling;
+                
+                newCheckbox.addEventListener('change', updateTaskProgress);
+                
+                // Set up task name editing
+                setupTaskNameEditing(newTaskName);
+                
+                // Reset input and hide container
+                taskInput.value = '';
+                document.getElementById('taskInputContainer').style.display = 'none';
+                
+                // Update total tasks count
+                totalTasks++;
+                updateProgressBar();
+                
+                // Show success message
+                showToast('Task added successfully!', 'success');
+            }
+        });
+
+        // Allow Enter key to add task
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('addTaskBtn').click();
+            }
+        });
+
+        // Setup task name editing
+        function setupTaskNameEditing(taskNameElement) {
+            taskNameElement.addEventListener('focus', function() {
+                this.classList.add('editing');
+            });
+            
+            taskNameElement.addEventListener('blur', function() {
+                this.classList.remove('editing');
+            });
+            
+            taskNameElement.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
+            
+            // Right-click to edit
+            taskNameElement.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                this.focus();
+                // Select all text for easy editing
+                const range = document.createRange();
+                range.selectNodeContents(this);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            });
         }
 
-        function viewStatistics() {
-            // You can add functionality here without popup
-            console.log('View statistics clicked');
-        }
-
-        function shareProgress() {
-            // You can add functionality here without popup
-            console.log('Share progress clicked');
-        }
-
-        function showAchievements() {
-            // You can add functionality here without popup
-            console.log('Show achievements clicked');
-        }
-
-        // Sidebar functionality
+        // Initialize task name editing for existing tasks
         document.addEventListener('DOMContentLoaded', function() {
-            // Make the sidebar image clickable (link to home)
-            const sidebarImage = document.getElementById('sidebarImage');
-            sidebarImage.addEventListener('click', function() {
-                window.location.href = 'home.html';
+            const taskNames = document.querySelectorAll('.task-name');
+            
+            taskNames.forEach(taskName => {
+                setupTaskNameEditing(taskName);
+            });
+            
+            // Add event listeners to existing checkboxes
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateTaskProgress);
+            });
+            
+            // Close add-on selection when clicking outside
+            document.addEventListener('click', function(e) {
+                const addonSelection = document.getElementById('addonSelection');
+                const addonItem = document.getElementById('addonItem');
+                
+                if (addonSelection.style.display === 'block' && 
+                    !addonSelection.contains(e.target) && 
+                    !addonItem.contains(e.target)) {
+                    addonSelection.style.display = 'none';
+                }
+            });
+
+            // Share Progress Modal functionality
+            setupShareProgressModal();
+        });
+
+        // Header subtitle editing - Remove blue outline
+        document.getElementById('headerSubtitle').addEventListener('focus', function() {
+            this.classList.add('editing');
+            // Remove any browser default outline
+            this.style.outline = 'none';
+        });
+        
+        document.getElementById('headerSubtitle').addEventListener('blur', function() {
+            this.classList.remove('editing');
+            localStorage.setItem('taskTrackerSubtitle', this.textContent);
+            showToast('Subtitle updated!', 'success');
+        });
+        
+        document.getElementById('headerSubtitle').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
+        });
+        
+        // Load saved subtitle
+        const savedSubtitle = localStorage.getItem('taskTrackerSubtitle');
+        if (savedSubtitle) {
+            document.getElementById('headerSubtitle').textContent = savedSubtitle;
+        }
+
+        // Add-on selection functionality
+        document.getElementById('addonItem').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const addonSelection = document.getElementById('addonSelection');
+            if (addonSelection.style.display === 'block') {
+                addonSelection.style.display = 'none';
+            } else {
+                addonSelection.style.display = 'block';
+            }
+        });
+
+        // Add-on option selection
+        document.querySelectorAll('.addon-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const addonType = this.getAttribute('data-addon');
+                const addonName = this.querySelector('div > div:first-child').textContent;
+                
+                // Check if addon is already selected
+                if (!selectedAddons.includes(addonType)) {
+                    selectedAddons.push(addonType);
+                    updateSelectedAddonsDisplay();
+                }
+                
+                // Mark the addon item as selected
+                document.getElementById('addonItem').classList.add('selected');
+                
+                // Update the active add-on bar
+                const activeAddonBar = document.getElementById('activeAddonBar');
+                activeAddonBar.textContent = `Active: ${addonName} - Click to use!`;
+                activeAddonBar.style.display = 'block';
+                
+                // Hide the selection
+                document.getElementById('addonSelection').style.display = 'none';
+                
+                showToast(`${addonName} activated!`, 'success');
             });
         });
+
+        // Update selected add-ons display
+        function updateSelectedAddonsDisplay() {
+            const selectedAddonsContainer = document.getElementById('selectedAddons');
+            selectedAddonsContainer.innerHTML = '';
+            
+            selectedAddons.forEach(addonType => {
+                const addonOption = document.querySelector(`.addon-option[data-addon="${addonType}"]`);
+                const addonName = addonOption.querySelector('div > div:first-child').textContent;
+                const addonIcon = addonOption.querySelector('.addon-icon-small').innerHTML;
+                
+                const selectedAddon = document.createElement('div');
+                selectedAddon.className = 'selected-addon';
+                selectedAddon.innerHTML = `
+                    <div class="selected-addon-icon">${addonIcon}</div>
+                    <div>${addonName}</div>
+                `;
+                
+                selectedAddonsContainer.appendChild(selectedAddon);
+            });
+            
+            // Show the container if there are selected add-ons
+            if (selectedAddons.length > 0) {
+                selectedAddonsContainer.style.display = 'grid';
+            }
+        }
+
+        // Active add-on bar functionality
+        document.getElementById('activeAddonBar').addEventListener('click', function() {
+            if (selectedAddons.length > 0) {
+                // Show a modal or perform action based on the active add-on
+                const activeAddon = selectedAddons[selectedAddons.length - 1]; // Get the last selected addon
+                switch(activeAddon) {
+                    case 'focus-timer':
+                        showToast('Focus Timer started! Work for 25 minutes.', 'success');
+                        break;
+                    case 'habit-tracker':
+                        showToast('Habit Tracker opened! Track your daily habits.', 'success');
+                        break;
+                    case 'pomodoro':
+                        showToast('Pomodoro session started! 25 minutes work, 5 minutes break.', 'success');
+                        break;
+                    case 'goal-setter':
+                        showToast('Goal Setter opened! Set your long-term goals.', 'success');
+                        break;
+                }
+            }
+        });
+
+        // Statistics functionality - Remove congratulations animation
+        document.getElementById('viewStatisticsBtn').addEventListener('click', function() {
+            showStatistics();
+        });
+
+        document.getElementById('closeStatisticsModal').addEventListener('click', function() {
+            document.getElementById('statisticsModal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('statisticsModal')) {
+                document.getElementById('statisticsModal').style.display = 'none';
+            }
+            if (e.target === document.getElementById('shareProgressModal')) {
+                document.getElementById('shareProgressModal').style.display = 'none';
+                resetShareProgressForm();
+            }
+        });
+
+        function showStatistics() {
+            // Calculate statistics
+            const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            // Update statistics display
+            document.getElementById('statTotalTasks').textContent = totalTasks;
+            document.getElementById('statCompletedTasks').textContent = completedTasks;
+            document.getElementById('statCompletionRate').textContent = `${completionRate}%`;
+            document.getElementById('statCurrentStreak').textContent = currentStreak;
+            
+            // Update task breakdown
+            const taskBreakdownList = document.getElementById('taskBreakdownList');
+            taskBreakdownList.innerHTML = '';
+            
+            const taskItems = document.querySelectorAll('.task-item');
+            taskItems.forEach(item => {
+                const checkbox = item.querySelector('.task-checkbox');
+                const taskName = item.querySelector('.task-name');
+                
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = 'breakdown-item';
+                breakdownItem.innerHTML = `
+                    <span class="breakdown-name">${taskName.textContent}</span>
+                    <span class="breakdown-status">${checkbox.checked ? 'Completed' : 'Pending'}</span>
+                `;
+                
+                taskBreakdownList.appendChild(breakdownItem);
+            });
+            
+            // Show modal with animation
+            document.getElementById('statisticsModal').style.display = 'flex';
+        }
+
+        // Simple functions for action buttons
+        function showAchievements() {
+            showToast('Achievements viewed!', 'success');
+        }
+
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            // Set icon and color based on type
+            if (type === 'success') {
+                toastIcon.innerHTML = '✓';
+                toast.className = 'toast toast-success';
+            } else if (type === 'error') {
+                toastIcon.innerHTML = '⚠';
+                toast.className = 'toast toast-error';
+            } else {
+                toastIcon.innerHTML = 'ℹ';
+                toast.className = 'toast';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Share Progress Modal functionality
+        function setupShareProgressModal() {
+            const shareProgressBtn = document.getElementById('shareProgressBtn');
+            const closeShareProgressModal = document.getElementById('closeShareProgressModal');
+            const cancelShareProgress = document.getElementById('cancelShareProgress');
+            const submitShareProgress = document.getElementById('submitShareProgress');
+            const progressImage = document.getElementById('progressImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const progressThoughts = document.getElementById('progressThoughts');
+
+            // Open share progress modal
+            shareProgressBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update the progress summary in the modal
+                document.getElementById('shareCompletedTasks').textContent = completedTasks;
+                document.getElementById('shareTotalTasks').textContent = totalTasks;
+                document.getElementById('shareCurrentStreak').textContent = currentStreak;
+                
+                document.getElementById('shareProgressModal').style.display = 'flex';
+            });
+
+            // Close share progress modal
+            closeShareProgressModal.addEventListener('click', function() {
+                document.getElementById('shareProgressModal').style.display = 'none';
+                resetShareProgressForm();
+            });
+
+            cancelShareProgress.addEventListener('click', function() {
+                document.getElementById('shareProgressModal').style.display = 'none';
+                resetShareProgressForm();
+            });
+
+            // Image upload functionality
+            imagePreview.addEventListener('click', function() {
+                progressImage.click();
+            });
+
+            progressImage.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.classList.add('has-image');
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Submit share progress
+            submitShareProgress.addEventListener('click', function() {
+                const thoughts = progressThoughts.value.trim();
+                
+                if (!thoughts) {
+                    showToast('Please share your thoughts about your progress!', 'error');
+                    return;
+                }
+                
+                // Create the shared progress object
+                const sharedProgress = {
+                    id: Date.now(), // Unique ID based on timestamp
+                    date: new Date().toISOString(),
+                    user: {
+                        name: "John Doe",
+                        avatar: "JD"
+                    },
+                    progress: {
+                        completedTasks: completedTasks,
+                        totalTasks: totalTasks,
+                        currentStreak: currentStreak,
+                        selectedAddons: selectedAddons
+                    },
+                    thoughts: thoughts,
+                    image: progressImage.files.length > 0 ? imagePreview.querySelector('img').src : null,
+                    likes: 0,
+                    comments: []
+                };
+                
+                // Save to localStorage to use in community.html
+                let communityPosts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+                communityPosts.unshift(sharedProgress); // Add new post to beginning of array
+                localStorage.setItem('communityPosts', JSON.stringify(communityPosts));
+                
+                // Save current progress data as well
+                localStorage.setItem('shareProgressData', JSON.stringify({
+                    completedTasks: completedTasks,
+                    totalTasks: totalTasks,
+                    currentStreak: currentStreak,
+                    selectedAddons: selectedAddons
+                }));
+                
+                // Close modal and reset form
+                document.getElementById('shareProgressModal').style.display = 'none';
+                resetShareProgressForm();
+                
+                // Show success message
+                showToast('Progress shared successfully! You can view it in the Community section.', 'success');
+            });
+        }
+
+        // Reset share progress form
+        function resetShareProgressForm() {
+            document.getElementById('progressThoughts').value = '';
+            document.getElementById('imagePreview').innerHTML = `
+                <svg class="icon icon-large" viewBox="0 0 24 24">
+                    <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/>
+                </svg>
+                <p>Click to upload an image</p>
+            `;
+            document.getElementById('imagePreview').classList.remove('has-image');
+            document.getElementById('progressImage').value = '';
+        }
     </script>
 </body>
 </html>
