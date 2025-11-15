@@ -97,8 +97,11 @@
     </style>
 </head>
 <body class="theme-green">
-    <div class="main-content">
-        <a href="/menu" class="back-to-main-btn"><i class="fas fa-arrow-left"></i> Back to Main</a>
+<div class="main-content">
+        <div class="top-nav-buttons" style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <a href="/menu" class="back-to-main-btn" style="margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back to Main</a>
+            <a href="/community" class="back-to-main-btn" style="margin-bottom: 0;"><i class="fas fa-users"></i> Community</a>
+        </div>
         <div class="card profile-header">
             <div class="profile-banner">
                 <img id="bannerImage" class="profile-banner-img" src="" alt="Banner">
@@ -132,25 +135,50 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
+            const urlParams = new URLSearchParams(window.location.search)
+            const userId = urlParams.get('user_id')
+
+            let apiUrl = '/api/user'
+            if (userId) {
+                apiUrl = `/api/user/${userId}`
+                document.querySelector('.edit-profile-btn').style.display = 'none'
+            } else {
+                document.querySelector('.edit-profile-btn').style.display = 'inline-block'
+            }
+
             try {
-                const response = await fetch('/api/user');
-                if (!response.ok) { window.location.href = '/signin'; return; }
-                const user = await response.json();
-                
-                document.getElementById('profileName').textContent = user.display_name;
-                document.getElementById('profileBio').textContent = user.bio || "No bio set.";
-                
-                const avatarDiv = document.getElementById('profileAvatar');
-                if (user.profile_image) avatarDiv.innerHTML = `<img src="/uploads/${user.profile_image}" alt="Profile">`;
-                else avatarDiv.textContent = (user.display_name || "U")[0].toUpperCase();
-                
-                const bannerImg = document.getElementById('bannerImage');
-                if (user.banner_image) {
-                    bannerImg.src = '/uploads/' + user.banner_image;
-                    bannerImg.style.display = 'block';
+                const response = await fetch(apiUrl)
+                if (!response.ok) { 
+                    if (!userId) window.location.href = '/signin'
+                    else throw new Error('User not found')
+                    return 
                 }
-            } catch (error) { window.location.href = '/signin'; }
-        });
+                const user = await response.json()
+                
+                document.getElementById('profileName').textContent = user.display_name
+                document.getElementById('profileBio').textContent = user.bio || "No bio set."
+                
+                const avatarDiv = document.getElementById('profileAvatar')
+                if (user.profile_image) {
+                    avatarDiv.innerHTML = `<img src="/uploads/${user.profile_image}" alt="Profile">`
+                } else {
+                    avatarDiv.textContent = (user.display_name || "U")[0].toUpperCase()
+                }
+                
+                const bannerImg = document.getElementById('bannerImage')
+                if (user.banner_image) {
+                    bannerImg.src = '/uploads/' + user.banner_image
+                    bannerImg.style.display = 'block'
+                }
+            } catch (error) {
+                if (userId) {
+                    document.getElementById('profileName').textContent = "User Not Found"
+                    document.getElementById('profileBio').textContent = "This user profile does not exist."
+                } else {
+                    window.location.href = '/signin'
+                }
+            }
+        })
     </script>
 </body>
 </html>
