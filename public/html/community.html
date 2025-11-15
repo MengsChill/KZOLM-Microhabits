@@ -5,62 +5,1265 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kzolm - Community</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/community.css">
+    <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --secondary-bg: #f8f9fa;
+            --progress-bg: #f0f4f8;
+            
+            /* Sidebar specific variables - USING REQUESTED COLOR #0e6b4b */
+            --sidebar-bg: #0e6b4b; /* Using the requested color */
+            --sidebar-card: #0a4f36;
+            --sidebar-text: #ffffff; /* White text for contrast */
+            --sidebar-border: #4caf50;
+        }
+
+        /* Dark Theme Variables */
+        .dark-mode {
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-light: #b0b0b0;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --secondary-bg: #2d2d2d;
+            --progress-bg: #2a2a2a;
+            
+            /* Dark sidebar - USING REQUESTED COLOR #0e6b4b */
+            --sidebar-bg: #0e6b4b;
+            --sidebar-card: #0a4f36;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #4caf50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+        
+        /* Icon Styles */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            stroke: currentColor;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-small {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-large {
+            width: 32px;
+            height: 32px;
+        }
+
+        .icon-xlarge {
+            width: 48px;
+            height: 48px;
+        }
+
+        .nav-icon .icon,
+        .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+
+        .dark-mode .nav-icon .icon,
+        .dark-mode .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-color);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-left-color: #4caf50;
+        }
+
+        .toast-error {
+            border-left-color: #f44336;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+        
+        /* Sidebar Styles - IMPROVED MINIMIZED LAYOUT */
+        .sidebar {
+            width: 70px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+            border-right: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar:hover {
+            width: 280px;
+        }
+
+        /* Sidebar Header - FIXED FOR MINIMIZED STATE */
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            min-height: 60px;
+        }
+
+        .sidebar:hover .sidebar-header {
+            padding: 20px 24px;
+            justify-content: flex-start;
+            min-height: 80px;
+        }
+
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .sidebar:hover .sidebar-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0; /* Remove auto margin when expanded */
+        }
+
+        .sidebar-icon:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* Progress Section - VISIBLE IN BOTH STATES */
+        .progress-section {
+            padding: 0 15px 15px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar:hover .progress-section {
+            padding: 0 24px 24px;
+            align-items: stretch;
+        }
+
+        .progress-bar-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .sidebar:hover .progress-bar-container {
+            max-width: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--sidebar-text);
+            width: 33.33%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--sidebar-text);
+            display: none; /* Hidden by default in minimized state */
+        }
+
+        .sidebar:hover .progress-title {
+            display: block; /* Show when expanded */
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .sidebar:hover .progress-text {
+            font-size: 14px;
+            text-align: left;
+        }
+
+        /* Navigation Menu - IMPROVED MINIMIZED LAYOUT */
+        .nav-menu {
+            flex: 1;
+            padding: 0 5px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar:hover .nav-menu {
+            padding: 0 16px;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+            text-decoration: none; /* Added for links */
+        }
+
+        .sidebar:hover .nav-item {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--sidebar-text);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            font-size: 16px;
+            transition: var(--transition);
+            margin-left: 0;
+            opacity: 0;
+            visibility: hidden;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar:hover .nav-text {
+            margin-left: 12px;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Sidebar Footer - IMPROVED MINIMIZED LAYOUT */
+        .sidebar-footer {
+            padding: 10px 5px 0;
+            border-top: 1px solid var(--sidebar-border);
+            transition: var(--transition);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar:hover .sidebar-footer {
+            padding: 16px 24px 0;
+        }
+
+        .exit-button {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+            text-decoration: none; /* Added for links */
+        }
+
+        .sidebar:hover .exit-button {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .exit-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            margin-left: 70px;
+        }
+
+        .sidebar:hover ~ .main-content {
+            margin-left: 280px;
+        }
+
+        .container {
+            flex: 1;
+            background: var(--card-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: inline-block;
+            transition: var(--transition);
+        }
+        
+        h1:hover {
+            transform: translateY(-2px);
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .header-subtitle:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-subtitle.editing {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px dashed rgba(255, 255, 255, 0.5);
+        }
+        
+        .profile-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .profile-name {
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-name:hover {
+            text-decoration: underline;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Community Content Styles */
+        .content {
+            padding: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .section {
+            background: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .section:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .section-title:hover {
+            color: var(--primary-color);
+        }
+        
+        .section-title::before {
+            content: "";
+            display: block;
+            width: 6px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        /* Post Styles */
+        .post {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            margin-bottom: 16px;
+            line-height: 1.5;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .post-content.editing {
+            background-color: var(--secondary-bg);
+            border: 1px dashed var(--border-color);
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            max-height: 400px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            margin-bottom: 16px;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .action-button:hover {
+            color: var(--primary-color);
+        }
+
+        .action-button.active {
+            color: var(--primary-color);
+        }
+
+        .action-button i {
+            margin-right: 6px;
+        }
+
+        /* Delete Button Styles */
+        .post-menu-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+        }
+
+        .post-menu-button:hover {
+            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.05);
+            opacity: 1;
+        }
+
+        .post-menu {
+            position: absolute;
+            top: 40px;
+            right: 20px;
+            background: var(--card-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 8px 0;
+            z-index: 10;
+            display: none;
+            min-width: 150px;
+            border: 1px solid var(--border-color);
+        }
+
+        .post-menu.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item:hover {
+            background-color: var(--secondary-bg);
+        }
+
+        .menu-item.delete:hover {
+            color: #f44336;
+        }
+
+        /* Comments Styles */
+        .comments-section {
+            margin-top: 16px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--secondary-bg);
+            padding: 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comment-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .comment-text {
+            line-height: 1.4;
+        }
+
+        .comment-menu-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+            font-size: 12px;
+        }
+
+        .comment-menu-button:hover {
+            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.05);
+            opacity: 1;
+        }
+
+        .comment-menu {
+            position: absolute;
+            top: 30px;
+            right: 8px;
+            background: var(--card-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 8px 0;
+            z-index: 10;
+            display: none;
+            min-width: 120px;
+            border: 1px solid var(--border-color);
+        }
+
+        .comment-menu.show {
+            display: block;
+        }
+
+        .add-comment {
+            display: flex;
+            margin-top: 16px;
+        }
+
+        .comment-input {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 10px 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+
+        .comment-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .comment-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin-left: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .comment-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Share Button */
+        .share-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .share-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .share-button i {
+            margin-right: 8px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.2s ease;
+        }
+
+        .close-button:hover {
+            color: var(--text-color);
+        }
+
+        .form-group {
+            padding: 24px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s ease;
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .image-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            margin: 0 24px;
+            transition: border-color 0.2s ease;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary-color);
+        }
+
+        .image-upload i {
+            font-size: 48px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .image-upload p {
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+            margin: 0 auto;
+        }
+
+        .submit-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 24px;
+            width: calc(100% - 48px);
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dialog-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .dialog-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .dialog-message {
+            margin-bottom: 24px;
+            color: var(--text-light);
+        }
+
+        .dialog-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .dialog-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .dialog-cancel {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+        }
+
+        .dialog-cancel:hover {
+            background-color: var(--border-color);
+        }
+
+        .dialog-confirm {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .dialog-confirm:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+           
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px 0;
+            }
+
+            .sidebar:hover {
+                width: 100%;
+            }
+
+            .sidebar .nav-text {
+                display: block;
+                opacity: 1;
+                visibility: visible;
+                margin-left: 12px;
+            }
+
+            .sidebar .progress-section {
+                opacity: 1;
+                visibility: visible;
+                height: auto;
+                padding: 0 24px 20px;
+            }
+
+            .sidebar .nav-item {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+
+            .sidebar .sidebar-footer {
+                padding: 16px 24px 0;
+            }
+
+            .sidebar .exit-button {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+           
+            .main-content {
+                padding: 20px;
+                margin-left: 0;
+            }
+            
+            .sidebar:hover ~ .main-content {
+                margin-left: 0;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .profile-section {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 12px;
+            }
+            
+            header {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fas fa-leaf"></i>
-            <h1>Kzolm</h1>
-        </div>
-        
-        <ul class="nav-links">
-            <li>
-                <a href="/menu">
-                    <i class="fas fa-home"></i> Home
-                </a>
-            </li>
-            <li>
-                <a href="/progress">
-                <i class="fas fa-chart-line">
-                </i> Progress
-                </a>
-            </li>
-            <li><i class="fas fa-footsteps"></i> TinySteps</li>
-            <li class="active">
-                <a href="/community">
-                <i class="fas fa-users">
-                </i> Community
-                </a>
-            </li>
-            <li><i class="fas fa-cog"></i> Settings</li>
-            <li><i class="fas fa-question-circle"></i> Help/Feedback</li>
-        </ul>
-        
-        <div class="progress-section">
-            <div class="progress-title">
-                <span>Your Progress</span>
-                <span>25%</span>
+<body class="theme-green">
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <div class="dialog-content">
+            <h3 class="dialog-title" id="dialogTitle">Delete Post</h3>
+            <p class="dialog-message" id="dialogMessage">Are you sure you want to delete this post? This action cannot be undone.</p>
+            <div class="dialog-actions">
+                <button class="dialog-button dialog-cancel" id="cancelDelete">Cancel</button>
+                <button class="dialog-button dialog-confirm" id="confirmDelete">Delete</button>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-            <div class="progress-text">1 of 4 completed</div>
         </div>
     </div>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="header">
-            <h2>Community</h2>
-            <button class="share-button" id="shareButton">
-                <i class="fas fa-plus"></i> Share Thought
-            </button>
+
+    <!-- Sidebar - Starts minimized, expands on hover -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-kzolm">
+                <!-- Updated logo image to use local image.png file -->
+                <img src="../image/kzolm-logo.png" alt="kzolm" class="sidebar-icon" id="sidebarImage">
+            </div>
         </div>
-        
-        <div class="posts-container" id="postsContainer">
-            <!-- Posts will be dynamically added here -->
+       
+        <div class="progress-section">
+            <div class="progress-title">Task Progress</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="sidebarProgressBar"></div>
+            </div>
+            <div class="progress-text" id="sidebarProgressText">1 of 3 completed</div>
+        </div>
+       
+        <div class="nav-menu">
+            <!-- Updated sidebar items to be actual links -->
+            <a href="../html/dashboard.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Home</div>
+            </a>
+            <a href="../html/progress.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Progress</div>
+            </a>
+            <a href="tinysteps.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M18.5 9.51L14.5 5.51V7c0 1.1-.9 2-2 2H4v2h8.5c1.1 0 2 .9 2 2v1.49l4-4zM5.5 14.49L9.5 18.49V17c0-1.1.9-2 2-2H20v-2h-8.5c-1.1 0-2-.9-2-2v-1.49l-4 4z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">TinySteps</div>
+            </a>
+            <a href="community.html" class="nav-item active">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Community</div>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Settings</div>
+            </a>
+            <a href="help.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Help/Feedback</div>
+            </a>
+        </div>
+       
+        <div class="sidebar-footer">
+            <a href="exit.html" class="exit-button">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Exit</div>
+            </a>
+        </div>
+    </div>
+   
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <h1>Kzolm Community</h1>
+                <div class="header-subtitle" id="headerSubtitle" contenteditable="true">Connect, share, and grow together</div>
+                
+                <div class="profile-section">
+                    <div class="profile-info">
+                        <div class="profile-pic">JD</div>
+                        <div class="profile-name">John Doe</div>
+                    </div>
+                    <div class="header-actions">
+                        <a href="/menu" class="back-btn">
+                            <svg class="icon icon-small" viewBox="0 0 24 24">
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            </svg>
+                            Back to Main
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="section">
+                    <h2 class="section-title">Community Posts</h2>
+                    <button class="share-button" id="shareButton">
+                        <i class="fas fa-plus"></i> Share Thought
+                    </button>
+                    
+                    <div class="posts-container" id="postsContainer">
+                        <!-- Posts will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -89,46 +1292,74 @@
     </div>
 
     <script>
-        // Sample initial posts
+        // Sample initial posts - Removed inappropriate content
         const initialPosts = [
             {
                 id: 1,
-                username: "jamurgod",
-                time: "6 hours ago",
-                content: "Spot me emotionally.",
-                likes: 12,
-                comments: [
-                    { username: "greenleaf", time: "5 hours ago", content: "I feel you! Sending positive vibes your way." },
-                    { username: "naturelover", time: "4 hours ago", content: "You've got this! Remember to take deep breaths." }
-                ],
-                liked: false
-            },
-            {
-                id: 2,
                 username: "wellnesswarrior",
                 time: "1 day ago",
                 content: "Just completed my 30-day meditation streak! Feeling so centered and peaceful. 🌿",
                 image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
                 likes: 24,
                 comments: [
-                    { username: "mindfulmike", time: "22 hours ago", content: "Congratulations! That's an amazing achievement." },
-                    { username: "serenityseek", time: "20 hours ago", content: "Any tips for someone just starting out?" }
+                    { 
+                        id: 1, 
+                        username: "mindfulmike", 
+                        time: "22 hours ago", 
+                        content: "Congratulations! That's an amazing achievement." 
+                    },
+                    { 
+                        id: 2, 
+                        username: "You", 
+                        time: "20 hours ago", 
+                        content: "Any tips for someone just starting out?" 
+                    }
                 ],
                 liked: true
             },
             {
-                id: 3,
-                username: "growthguru",
+                id: 2,
+                username: "You",
                 time: "2 days ago",
                 content: "Remember: Progress isn't always linear. Celebrate the small wins along the way!",
                 likes: 18,
                 comments: [],
+                liked: false
+            },
+            {
+                id: 3,
+                username: "naturelover",
+                time: "3 days ago",
+                content: "Spent the morning hiking in the forest. Nothing beats the fresh air and peaceful sounds of nature! 🌲",
+                likes: 32,
+                comments: [
+                    { 
+                        id: 1, 
+                        username: "outdoorfan", 
+                        time: "2 days ago", 
+                        content: "Which trail did you take? I'm always looking for new places to explore!" 
+                    },
+                    { 
+                        id: 2, 
+                        username: "You", 
+                        time: "1 day ago", 
+                        content: "I love hiking too! What's your favorite trail?" 
+                    }
+                ],
                 liked: false
             }
         ];
 
         let posts = JSON.parse(localStorage.getItem('posts')) || initialPosts;
         let postIdCounter = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 4;
+        let commentIdCounter = posts.reduce((max, post) => {
+            const maxCommentId = post.comments.length > 0 ? Math.max(...post.comments.map(c => c.id)) : 0;
+            return Math.max(max, maxCommentId);
+        }, 0) + 1;
+        let itemToDelete = null;
+        let deleteType = null; // 'post' or 'comment'
+        let editingItem = null;
+        let editingType = null; // 'post' or 'comment'
 
         // DOM Elements
         const postsContainer = document.getElementById('postsContainer');
@@ -139,6 +1370,10 @@
         const imageUpload = document.getElementById('imageUpload');
         const imageInput = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
+        const confirmationDialog = document.getElementById('confirmationDialog');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const headerSubtitle = document.getElementById('headerSubtitle');
 
         // Initialize the app
         function initApp() {
@@ -168,7 +1403,67 @@
                     shareModal.style.display = 'none';
                     resetForm();
                 }
+                if (e.target === confirmationDialog) {
+                    confirmationDialog.style.display = 'none';
+                }
+                
+                // Close all menus when clicking outside
+                if (!e.target.closest('.post-menu-button') && !e.target.closest('.post-menu')) {
+                    document.querySelectorAll('.post-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+                if (!e.target.closest('.comment-menu-button') && !e.target.closest('.comment-menu')) {
+                    document.querySelectorAll('.comment-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
             });
+            
+            // Confirmation dialog event listeners
+            cancelDelete.addEventListener('click', () => {
+                confirmationDialog.style.display = 'none';
+            });
+            
+            confirmDelete.addEventListener('click', () => {
+                if (itemToDelete !== null && deleteType) {
+                    if (deleteType === 'post') {
+                        deletePost(itemToDelete);
+                    } else if (deleteType === 'comment') {
+                        deleteComment(itemToDelete.postId, itemToDelete.commentId);
+                    }
+                    confirmationDialog.style.display = 'none';
+                    itemToDelete = null;
+                    deleteType = null;
+                }
+            });
+            
+            // Header subtitle editing
+            headerSubtitle.addEventListener('blur', () => {
+                localStorage.setItem('communitySubtitle', headerSubtitle.textContent);
+                showToast('Subtitle updated!', 'success');
+            });
+            
+            headerSubtitle.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    headerSubtitle.blur();
+                }
+            });
+            
+            headerSubtitle.addEventListener('focus', () => {
+                headerSubtitle.classList.add('editing');
+            });
+            
+            headerSubtitle.addEventListener('blur', () => {
+                headerSubtitle.classList.remove('editing');
+            });
+            
+            // Load saved subtitle
+            const savedSubtitle = localStorage.getItem('communitySubtitle');
+            if (savedSubtitle) {
+                headerSubtitle.textContent = savedSubtitle;
+            }
         }
 
         // Render all posts
@@ -179,7 +1474,7 @@
                 postsContainer.innerHTML = `
                     <div class="post">
                         <div class="post-content" style="text-align: center; padding: 40px;">
-                            <i class="fas fa-comments" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
+                            <i class="fas fa-comments" style="font-size: 48px; color: var(--text-light); margin-bottom: 16px;"></i>
                             <h3>No posts yet</h3>
                             <p>Be the first to share something with the community!</p>
                         </div>
@@ -205,7 +1500,24 @@
                             <div class="post-time">${post.time}</div>
                         </div>
                     </div>
-                    <div class="post-content">
+                    <button class="post-menu-button" data-id="${post.id}">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="post-menu" id="post-menu-${post.id}">
+                        ${post.username === "You" ? `
+                            <div class="menu-item edit-post" data-id="${post.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </div>
+                            <div class="menu-item delete delete-post" data-id="${post.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </div>
+                        ` : `
+                            <div class="menu-item report-post" data-id="${post.id}">
+                                <i class="fas fa-flag"></i> Report
+                            </div>
+                        `}
+                    </div>
+                    <div class="post-content" id="post-content-${post.id}">
                         ${post.content}
                     </div>
                     ${post.image ? `<img src="${post.image}" class="post-image" alt="Post image">` : ''}
@@ -221,7 +1533,7 @@
                         </button>
                     </div>
                     <div class="comments-section" id="comments-${post.id}">
-                        ${renderComments(post.comments)}
+                        ${renderComments(post.id, post.comments)}
                         <div class="add-comment">
                             <input type="text" class="comment-input" placeholder="Add a comment..." data-id="${post.id}">
                             <button class="comment-button" data-id="${post.id}">
@@ -242,6 +1554,13 @@
                 });
             });
             
+            document.querySelectorAll('.action-button[data-action="share"]').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    sharePost(postId);
+                });
+            });
+            
             document.querySelectorAll('.comment-button').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const postId = parseInt(e.currentTarget.getAttribute('data-id'));
@@ -257,10 +1576,54 @@
                     }
                 });
             });
+            
+            // Add event listeners to post menu buttons
+            document.querySelectorAll('.post-menu-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const postId = e.currentTarget.getAttribute('data-id');
+                    const menu = document.getElementById(`post-menu-${postId}`);
+                    
+                    // Close all other menus
+                    document.querySelectorAll('.post-menu').forEach(m => {
+                        if (m.id !== `post-menu-${postId}`) {
+                            m.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current menu
+                    menu.classList.toggle('show');
+                    e.stopPropagation();
+                });
+            });
+            
+            // Add event listeners to post menu items
+            document.querySelectorAll('.edit-post').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    editPost(postId);
+                    e.stopPropagation();
+                });
+            });
+            
+            document.querySelectorAll('.delete-post').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    showDeleteConfirmation(postId, 'post');
+                    e.stopPropagation();
+                });
+            });
+            
+            document.querySelectorAll('.report-post').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const postId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    showToast('Post reported to moderators', 'success');
+                    e.stopPropagation();
+                });
+            });
         }
 
         // Render comments for a post
-        function renderComments(comments) {
+        function renderComments(postId, comments) {
             if (comments.length === 0) return '';
             
             return comments.map(comment => {
@@ -275,7 +1638,20 @@
                                 <div class="comment-username">${comment.username}</div>
                                 <div class="comment-time">${comment.time}</div>
                             </div>
-                            <div>${comment.content}</div>
+                            <div class="comment-text" id="comment-text-${comment.id}">${comment.content}</div>
+                            ${comment.username === "You" ? `
+                                <button class="comment-menu-button" data-id="${comment.id}" data-post-id="${postId}">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="comment-menu" id="comment-menu-${comment.id}">
+                                    <div class="menu-item edit-comment" data-id="${comment.id}" data-post-id="${postId}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </div>
+                                    <div class="menu-item delete delete-comment" data-id="${comment.id}" data-post-id="${postId}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </div>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -314,6 +1690,9 @@
             
             // Update UI
             renderPosts();
+            
+            // Show success message
+            showToast('Post shared successfully!', 'success');
         }
 
         // Handle image upload
@@ -353,6 +1732,14 @@
             renderPosts();
         }
 
+        // Share a post
+        function sharePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            showToast('Post shared successfully!', 'success');
+        }
+
         // Add comment to a post
         function addComment(postId) {
             const post = posts.find(p => p.id === postId);
@@ -364,6 +1751,7 @@
             if (!content) return;
             
             const newComment = {
+                id: commentIdCounter++,
                 username: "You", // In a real app, this would be the logged-in user
                 time: "Just now",
                 content: content
@@ -377,12 +1765,186 @@
             
             // Update UI
             renderPosts();
+            
+            // Show success message
+            showToast('Comment added!', 'success');
+        }
+
+        // Edit a post
+        function editPost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post || post.username !== "You") return;
+            
+            const postContent = document.getElementById(`post-content-${postId}`);
+            
+            // If already editing, save changes
+            if (editingItem === postId && editingType === 'post') {
+                const newContent = postContent.textContent.trim();
+                if (newContent) {
+                    post.content = newContent;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    postContent.contentEditable = false;
+                    postContent.classList.remove('editing');
+                    editingItem = null;
+                    editingType = null;
+                    showToast('Post updated!', 'success');
+                }
+            } else {
+                // Start editing
+                postContent.contentEditable = true;
+                postContent.classList.add('editing');
+                postContent.focus();
+                editingItem = postId;
+                editingType = 'post';
+                
+                // Set up event listeners for saving
+                const saveEdit = () => {
+                    const newContent = postContent.textContent.trim();
+                    if (newContent) {
+                        post.content = newContent;
+                        localStorage.setItem('posts', JSON.stringify(posts));
+                        postContent.contentEditable = false;
+                        postContent.classList.remove('editing');
+                        editingItem = null;
+                        editingType = null;
+                        showToast('Post updated!', 'success');
+                    }
+                };
+                
+                postContent.addEventListener('blur', saveEdit);
+                postContent.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveEdit();
+                    }
+                });
+            }
+        }
+
+        // Edit a comment
+        function editComment(postId, commentId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const comment = post.comments.find(c => c.id === commentId);
+            if (!comment || comment.username !== "You") return;
+            
+            const commentText = document.getElementById(`comment-text-${commentId}`);
+            
+            // If already editing, save changes
+            if (editingItem === commentId && editingType === 'comment') {
+                const newContent = commentText.textContent.trim();
+                if (newContent) {
+                    comment.content = newContent;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    commentText.contentEditable = false;
+                    commentText.classList.remove('editing');
+                    editingItem = null;
+                    editingType = null;
+                    showToast('Comment updated!', 'success');
+                }
+            } else {
+                // Start editing
+                commentText.contentEditable = true;
+                commentText.classList.add('editing');
+                commentText.focus();
+                editingItem = commentId;
+                editingType = 'comment';
+                
+                // Set up event listeners for saving
+                const saveEdit = () => {
+                    const newContent = commentText.textContent.trim();
+                    if (newContent) {
+                        comment.content = newContent;
+                        localStorage.setItem('posts', JSON.stringify(posts));
+                        commentText.contentEditable = false;
+                        commentText.classList.remove('editing');
+                        editingItem = null;
+                        editingType = null;
+                        showToast('Comment updated!', 'success');
+                    }
+                };
+                
+                commentText.addEventListener('blur', saveEdit);
+                commentText.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveEdit();
+                    }
+                });
+            }
+        }
+
+        // Show delete confirmation dialog
+        function showDeleteConfirmation(id, type) {
+            itemToDelete = id;
+            deleteType = type;
+            
+            const dialogTitle = document.getElementById('dialogTitle');
+            const dialogMessage = document.getElementById('dialogMessage');
+            
+            if (type === 'post') {
+                dialogTitle.textContent = 'Delete Post';
+                dialogMessage.textContent = 'Are you sure you want to delete this post? This action cannot be undone.';
+            } else if (type === 'comment') {
+                dialogTitle.textContent = 'Delete Comment';
+                dialogMessage.textContent = 'Are you sure you want to delete this comment? This action cannot be undone.';
+            }
+            
+            confirmationDialog.style.display = 'flex';
+        }
+
+        // Delete a post
+        function deletePost(postId) {
+            posts = posts.filter(p => p.id !== postId);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts();
+            showToast('Post deleted successfully!', 'success');
+        }
+
+        // Delete a comment
+        function deleteComment(postId, commentId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            post.comments = post.comments.filter(c => c.id !== commentId);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPosts();
+            showToast('Comment deleted successfully!', 'success');
+        }
+
+        // Show toast notification
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            // Set icon and color based on type
+            if (type === 'success') {
+                toastIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                toast.className = 'toast toast-success';
+            } else if (type === 'error') {
+                toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                toast.className = 'toast toast-error';
+            } else {
+                toastIcon.innerHTML = '<i class="fas fa-info-circle"></i>';
+                toast.className = 'toast';
+            }
+            
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         // Generate color from username (for avatars)
         function getColorFromUsername(username) {
             const colors = [
-                '#4caf50', '#2e7d32', '#388e3c', '#1b5e20', 
+                '#0e6b4b', '#0a4f36', '#4caf50', '#2e7d32', 
                 '#689f38', '#33691e', '#827717', '#f57f17'
             ];
             const index = username.length % colors.length;
@@ -390,13 +1952,50 @@
         }
 
         // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            
+            // Add event listeners to comment menu buttons after rendering
+            setTimeout(() => {
+                document.querySelectorAll('.comment-menu-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const commentId = e.currentTarget.getAttribute('data-id');
+                        const postId = e.currentTarget.getAttribute('data-post-id');
+                        const menu = document.getElementById(`comment-menu-${commentId}`);
+                        
+                        // Close all other menus
+                        document.querySelectorAll('.comment-menu').forEach(m => {
+                            if (m.id !== `comment-menu-${commentId}`) {
+                                m.classList.remove('show');
+                            }
+                        });
+                        
+                        // Toggle current menu
+                        menu.classList.toggle('show');
+                        e.stopPropagation();
+                    });
+                });
+                
+                // Add event listeners to comment menu items
+                document.querySelectorAll('.edit-comment').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const commentId = parseInt(e.currentTarget.getAttribute('data-id'));
+                        const postId = parseInt(e.currentTarget.getAttribute('data-post-id'));
+                        editComment(postId, commentId);
+                        e.stopPropagation();
+                    });
+                });
+                
+                document.querySelectorAll('.delete-comment').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const commentId = parseInt(e.currentTarget.getAttribute('data-id'));
+                        const postId = parseInt(e.currentTarget.getAttribute('data-post-id'));
+                        showDeleteConfirmation({ postId, commentId }, 'comment');
+                        e.stopPropagation();
+                    });
+                });
+            }, 100);
+        });
     </script>
 </body>
 </html>
-
-<style>
-.nav-links a {
-    text-decoration: none;
-    color: inherit;}
-</style>

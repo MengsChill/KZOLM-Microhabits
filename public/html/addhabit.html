@@ -6,6 +6,94 @@
     <title>TinySteps - Green Habit Tracker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --secondary-bg: #f8f9fa;
+            --progress-bg: #f0f4f8;
+            
+            /* Sidebar specific variables */
+            --sidebar-bg: #1b5e20;
+            --sidebar-card: #2e7d32;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #4caf50;
+        }
+
+        /* Dark Theme Variables */
+        .dark-mode {
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-light: #b0b0b0;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --secondary-bg: #2d2d2d;
+            --progress-bg: #2a2a2a;
+            
+            /* Dark sidebar */
+            --sidebar-bg: #1a1a1a;
+            --sidebar-card: #2d2d2d;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #333333;
+        }
+
+        .theme-green {
+            --primary-color: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            
+            /* Green sidebar */
+            --sidebar-bg: #1b5e20;
+            --sidebar-card: #2e7d32;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #4caf50;
+        }
+
+        .theme-blue {
+            --primary-color: #1565c0;
+            --primary-light: #42a5f5;
+            --primary-dark: #0d47a1;
+            
+            /* Blue sidebar */
+            --sidebar-bg: #0d47a1;
+            --sidebar-card: #1565c0;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #42a5f5;
+        }
+
+        .theme-purple {
+            --primary-color: #6a1b9a;
+            --primary-light: #9c27b0;
+            --primary-dark: #4a148c;
+            
+            /* Purple sidebar */
+            --sidebar-bg: #4a148c;
+            --sidebar-card: #6a1b9a;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #9c27b0;
+        }
+
+        .theme-orange {
+            --primary-color: #e65100;
+            --primary-light: #ff9800;
+            --primary-dark: #bf360c;
+            
+            /* Orange sidebar */
+            --sidebar-bg: #bf360c;
+            --sidebar-card: #e65100;
+            --sidebar-text: #ffffff;
+            --sidebar-border: #ff9800;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,18 +102,304 @@
         }
         
         body {
+            display: flex;
+            min-height: 100vh;
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
             color: #1b5e20;
-            min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        /* Icon Styles */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            stroke: currentColor;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-small {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-large {
+            width: 32px;
+            height: 32px;
+        }
+
+        .icon-xlarge {
+            width: 48px;
+            height: 48px;
+        }
+
+        .nav-icon .icon,
+        .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+
+        .dark-mode .nav-icon .icon,
+        .dark-mode .streak-icon .icon {
+            color: var(--sidebar-text);
+        }
+        
+        /* Sidebar Styles - IMPROVED MINIMIZED LAYOUT */
+        .sidebar {
+            width: 70px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+            border-right: 1px solid var(--sidebar-border);
+            flex-shrink: 0;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar:hover {
+            width: 280px;
+        }
+
+        /* Sidebar Header - FIXED FOR MINIMIZED STATE */
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 5px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            min-height: 60px;
+        }
+
+        .sidebar:hover .sidebar-header {
+            padding: 20px 24px;
+            justify-content: flex-start;
+            min-height: 80px;
+        }
+
+        .sidebar-kzolm {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .sidebar:hover .sidebar-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0;
+        }
+
+        .sidebar-icon:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Progress Section - VISIBLE IN BOTH STATES */
+        .progress-section {
+            padding: 0 15px 15px;
+            border-bottom: 1px solid var(--sidebar-border);
+            margin-bottom: 20px;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
+        .sidebar:hover .progress-section {
+            padding: 0 24px 24px;
+            align-items: stretch;
+        }
+
+        .sidebar-progress-bar-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .sidebar:hover .sidebar-progress-bar-container {
+            max-width: none;
+        }
+
+        .sidebar-progress-bar {
+            height: 100%;
+            background-color: var(--sidebar-text);
+            width: 33.33%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .sidebar-progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--sidebar-text);
+            display: none;
+        }
+
+        .sidebar:hover .sidebar-progress-title {
+            display: block;
+        }
+
+        .sidebar-progress-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .sidebar:hover .sidebar-progress-text {
+            font-size: 14px;
+            text-align: left;
+        }
+
+        /* Navigation Menu - IMPROVED MINIMIZED LAYOUT */
+        .nav-menu {
+            flex: 1;
+            padding: 0 5px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar:hover .nav-menu {
+            padding: 0 16px;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .sidebar:hover .nav-item {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--sidebar-text);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            font-size: 16px;
+            transition: var(--transition);
+            margin-left: 0;
+            opacity: 0;
+            visibility: hidden;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar:hover .nav-text {
+            margin-left: 12px;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Sidebar Footer - IMPROVED MINIMIZED LAYOUT */
+        .sidebar-footer {
+            padding: 10px 5px 0;
+            border-top: 1px solid var(--sidebar-border);
+            transition: var(--transition);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar:hover .sidebar-footer {
+            padding: 16px 24px 0;
+        }
+
+        .exit-button {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--sidebar-text);
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .sidebar:hover .exit-button {
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .exit-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
         
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            margin-left: 70px;
+        }
+
+        .sidebar:hover ~ .main-content {
+            margin-left: 280px;
+        }
+
         .container {
             max-width: 1200px;
             width: 100%;
+            margin: 0 auto;
         }
         
         header {
@@ -161,7 +535,7 @@
             color: white;
         }
         
-        .progress-section {
+        .app-progress-section {
             background-color: white;
             border-radius: 16px;
             padding: 25px;
@@ -169,7 +543,7 @@
             margin-bottom: 30px;
         }
         
-        .progress-title {
+        .app-progress-title {
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 20px;
@@ -206,14 +580,14 @@
             justify-content: space-between;
         }
         
-        .progress-bar-container {
+        .app-progress-bar-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
         }
         
-        .progress-bar {
+        .app-progress-bar {
             width: 40px;
             height: 120px;
             background-color: #e8f5e9;
@@ -222,7 +596,7 @@
             position: relative;
         }
         
-        .progress-fill {
+        .app-progress-fill {
             position: absolute;
             bottom: 0;
             width: 100%;
@@ -231,7 +605,7 @@
             transition: height 0.5s ease;
         }
         
-        .progress-percent {
+        .app-progress-percent {
             font-size: 12px;
             font-weight: 600;
             color: #2e7d32;
@@ -391,6 +765,54 @@
         }
         
         @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px 0;
+            }
+
+            .sidebar:hover {
+                width: 100%;
+            }
+
+            .sidebar .nav-text {
+                display: block;
+                opacity: 1;
+                visibility: visible;
+                margin-left: 12px;
+            }
+
+            .sidebar .progress-section {
+                opacity: 1;
+                visibility: visible;
+                height: auto;
+                padding: 0 24px 20px;
+            }
+
+            .sidebar .nav-item {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+
+            .sidebar .sidebar-footer {
+                padding: 16px 24px 0;
+            }
+
+            .sidebar .exit-button {
+                justify-content: flex-start;
+                padding: 12px 16px;
+            }
+           
+            .main-content {
+                padding: 20px;
+                margin-left: 0;
+            }
+            
+            .sidebar:hover ~ .main-content {
+                margin-left: 0;
+            }
+
             .habits-container {
                 flex-direction: column;
             }
@@ -405,56 +827,138 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <h1>TinySteps</h1>
-            </div>
-            <button class="add-button" id="addHabitButton">
-                <i class="fas fa-plus"></i> Add Habit
-            </button>
-        </header>
-        
-        <div class="habits-container" id="habitsContainer">
-            <!-- Habit cards will be dynamically added here -->
-        </div>
-        
-        <div class="stats-container">
-            <div class="stat-card">
-                <i class="fas fa-fire stat-icon" style="font-size: 32px; color: #4caf50;"></i>
-                <div class="stat-value" id="currentStreak">0</div>
-                <div class="stat-label">Current Streak</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-calendar-check stat-icon" style="font-size: 32px; color: #4caf50;"></i>
-                <div class="stat-value" id="completedToday">0</div>
-                <div class="stat-label">Completed Today</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-trophy stat-icon" style="font-size: 32px; color: #4caf50;"></i>
-                <div class="stat-value" id="totalHabits">0</div>
-                <div class="stat-label">Total Habits</div>
+<body class="theme-green">
+    <!-- Sidebar - Starts minimized, expands on hover -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-kzolm">
+                <img src="https://via.placeholder.com/80x80/56b881/ffffff?text=kzolm" alt="kzolm" class="sidebar-icon" id="sidebarImage">
             </div>
         </div>
-        
+       
         <div class="progress-section">
-            <div class="progress-title">
-                <i class="fas fa-chart-line"></i> Weekly Progress
+            <div class="sidebar-progress-title">Task Progress</div>
+            <div class="sidebar-progress-bar-container">
+                <div class="sidebar-progress-bar" id="sidebarProgressBar" style="width: 33.3333%;"></div>
             </div>
-            <div class="week-container">
-                <div class="week-days">
-                    <div class="day">Mon</div>
-                    <div class="day">Tue</div>
-                    <div class="day">Wed</div>
-                    <div class="day">Thu</div>
-                    <div class="day">Fri</div>
-                    <div class="day">Sat</div>
-                    <div class="day">Sun</div>
+            <div class="sidebar-progress-text" id="sidebarProgressText">1 of 3 completed</div>
+        </div>
+       
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="navigateTo('home')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                    </svg>
                 </div>
-                <div class="progress-bars">
-                    <!-- Progress bars will be dynamically added here -->
+                <div class="nav-text">Home</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('progress')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">Progress</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('tinysteps')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M18.5 9.51L14.5 5.51V7c0 1.1-.9 2-2 2H4v2h8.5c1.1 0 2 .9 2 2v1.49l4-4zM5.5 14.49L9.5 18.49V17c0-1.1.9-2 2-2H20v-2h-8.5c-1.1 0-2-.9-2-2v-1.49l-4 4z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">TinySteps</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('community')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">Community</div>
+            </div>
+            <div class="nav-item" onclick="openSettings()">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">Settings</div>
+            </div>
+            <div class="nav-item" onclick="navigateTo('help')">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">Help/Feedback</div>
+            </div>
+        </div>
+       
+        <div class="sidebar-footer">
+            <div class="exit-button" onclick="exitApp()">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path>
+                    </svg>
+                </div>
+                <div class="nav-text">Exit</div>
+            </div>
+        </div>
+    </div>   
+    
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <h1>TinySteps</h1>
+                </div>
+                <button class="add-button" id="addHabitButton">
+                    <i class="fas fa-plus"></i> Add Habit
+                </button>
+            </header>
+            
+            <div class="habits-container" id="habitsContainer">
+                <!-- Habit cards will be dynamically added here -->
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fas fa-fire stat-icon" style="font-size: 32px; color: #4caf50;"></i>
+                    <div class="stat-value" id="currentStreak">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check stat-icon" style="font-size: 32px; color: #4caf50;"></i>
+                    <div class="stat-value" id="completedToday">0</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy stat-icon" style="font-size: 32px; color: #4caf50;"></i>
+                    <div class="stat-value" id="totalHabits">0</div>
+                    <div class="stat-label">Total Habits</div>
+                </div>
+            </div>
+            
+            <div class="app-progress-section">
+                <div class="app-progress-title">
+                    <i class="fas fa-chart-line"></i> Weekly Progress
+                </div>
+                <div class="week-container">
+                    <div class="week-days">
+                        <div class="day">Mon</div>
+                        <div class="day">Tue</div>
+                        <div class="day">Wed</div>
+                        <div class="day">Thu</div>
+                        <div class="day">Fri</div>
+                        <div class="day">Sat</div>
+                        <div class="day">Sun</div>
+                    </div>
+                    <div class="progress-bars">
+                        <!-- Progress bars will be dynamically added here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -701,17 +1205,17 @@
                 const progress = Math.floor(Math.random() * 100);
                 
                 const progressContainer = document.createElement('div');
-                progressContainer.className = 'progress-bar-container';
+                progressContainer.className = 'app-progress-bar-container';
                 
                 const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
+                progressBar.className = 'app-progress-bar';
                 
                 const progressFill = document.createElement('div');
-                progressFill.className = 'progress-fill';
+                progressFill.className = 'app-progress-fill';
                 progressFill.style.height = `${progress}%`;
                 
                 const progressPercent = document.createElement('div');
-                progressPercent.className = 'progress-percent';
+                progressPercent.className = 'app-progress-percent';
                 progressPercent.textContent = `${progress}%`;
                 
                 progressBar.appendChild(progressFill);
@@ -731,6 +1235,38 @@
                 notification.classList.remove('show');
             }, 3000);
         }
+
+        // Sidebar functionality
+        function navigateTo(page) {
+            // Update active nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Your navigation logic here
+            console.log(`Navigating to: ${page}`);
+            // You can replace this with your actual navigation logic
+        }
+
+        function exitApp() {
+            if (confirm('Are you sure you want to exit the application?')) {
+                // Your exit logic here
+                console.log('Exiting application...');
+                // You can replace this with your actual exit logic
+            }
+        }
+
+        // Initialize sidebar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the sidebar image clickable
+            const sidebarImage = document.getElementById('sidebarImage');
+           
+            sidebarImage.addEventListener('click', function() {
+                // Your sidebar image click logic here
+                console.log('Sidebar image clicked');
+                // You can replace this with your actual logic
+            });
+        });
 
         // Initialize the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', initApp);
