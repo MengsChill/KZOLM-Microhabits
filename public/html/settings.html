@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microhabits Settings | Kzolm</title>
+    <title>Settings - Microhabits</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,135 +27,305 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #2f5d44;
-            --secondary: #5b8765;
-            --accent: #9ef86c;
-            --light: #f9f9f9;
-            --dark: #204b33;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
         body {
-            background: #f5f7fa;
-            color: var(--text);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 30px;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .page-title {
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
             margin-bottom: 30px;
         }
 
-        .page-title h1 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 8px;
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .page-title p {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        .settings-section {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-        }
-
-        .section-header {
+        .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
         }
 
-        .section-icon {
+        .logo-icon {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
-            background: var(--primary);
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
             color: white;
-            font-size: 1.2rem;
         }
 
-        .section-title {
-            font-size: 1.3rem;
-            color: var(--primary);
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
         }
 
-        .setting-item {
+        /* Settings Page */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .settings-sidebar {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px 0;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .settings-title {
+            padding: 0 25px 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .settings-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-title h1 i {
+            color: var(--primary-color);
+        }
+
+        .settings-menu {
+            list-style: none;
+        }
+
+        .settings-menu-item {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .settings-menu-item:hover {
+            background-color: rgba(14, 107, 75, 0.05);
+        }
+
+        .settings-menu-item.active {
+            background-color: rgba(14, 107, 75, 0.1);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .settings-menu-item i {
+            width: 20px;
+            font-size: 18px;
+        }
+
+        .settings-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+        .settings-section {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 i {
+            color: var(--primary-color);
+        }
+
+        .section-description {
+            color: var(--text-light);
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
+        }
+
+        .form-text {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .toggle-group {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid #f5f5f5;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .setting-item:last-child {
+        .toggle-group:last-child {
             border-bottom: none;
         }
 
-        .setting-info {
-            flex: 1;
-        }
-
-        .setting-name {
+        .toggle-label {
             font-weight: 500;
-            margin-bottom: 5px;
         }
 
-        .setting-description {
-            font-size: 0.9rem;
-            color: #666;
+        .toggle-description {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 5px;
         }
 
-        .toggle-switch {
+        .toggle {
             position: relative;
             display: inline-block;
             width: 50px;
-            height: 26px;
+            height: 24px;
         }
 
-        .toggle-switch input {
+        .toggle input {
             opacity: 0;
             width: 0;
             height: 0;
@@ -155,364 +339,536 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
+            transition: var(--transition);
+            border-radius: 24px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 16px;
+            width: 16px;
             left: 4px;
             bottom: 4px;
             background-color: white;
-            transition: .4s;
+            transition: var(--transition);
             border-radius: 50%;
         }
 
         input:checked + .slider {
-            background-color: var(--accent);
+            background-color: var(--primary-color);
         }
 
         input:checked + .slider:before {
-            transform: translateX(24px);
+            transform: translateX(26px);
         }
 
-        .select-setting {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            min-width: 150px;
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
         }
 
-        .time-setting {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            width: 120px;
-        }
-
-        .progress-container {
+        .radio-option {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            flex: 1;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 1s ease-in-out;
-        }
-
-        .progress-text {
-            font-size: 0.9rem;
-            color: #666;
-            min-width: 120px;
-        }
-
-        .save-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            gap: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
         }
 
-        .save-btn:hover {
-            background: var(--dark);
+        .radio-option input {
+            margin: 0;
         }
 
-        .save-btn:active {
-            transform: scale(0.98);
-        }
-
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .select-control {
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
         }
 
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(158, 248, 108, 0.05);
-            animation: float 25s infinite linear;
+        .select-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
         }
 
-        .shape:nth-child(1) {
-            width: 100px;
-            height: 100px;
-            top: 10%;
-            left: 5%;
-            animation-duration: 30s;
+        .card {
+            background-color: var(--background-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
         }
 
-        .shape:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 70%;
-            left: 80%;
-            animation-duration: 35s;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .shape:nth-child(3) {
-            width: 70px;
-            height: 70px;
-            top: 40%;
-            left: 3%;
-            animation-duration: 25s;
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-dark);
         }
 
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(10px, 20px) rotate(90deg);
-            }
-            50% {
-                transform: translate(0, 40px) rotate(180deg);
-            }
-            75% {
-                transform: translate(-10px, 20px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
+        .card-description {
+            color: var(--text-light);
+            font-size: 14px;
         }
 
-        @media (max-width: 600px) {
-            .setting-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+        .danger-zone {
+            border-left-color: #f44336;
+            background-color: rgba(244, 67, 54, 0.05);
+        }
+
+        .danger-zone .card-title {
+            color: #f44336;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: white;
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+        }
+
+        .copyright {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .settings-container {
+                grid-template-columns: 1fr;
             }
             
-            .progress-container {
-                width: 100%;
+            .settings-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .settings-content {
+                padding: 20px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating background shapes -->
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <div class="container">
-        <!-- Back Button -->
-        <a href="mainpage.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Main Page
-        </a>
-
-        <!-- Page Title -->
-        <div class="page-title">
-            <h1>Microhabits Settings</h1>
-            <p>Customize your habit tracking experience</p>
-        </div>
-
-        <!-- Notifications Section -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <h2 class="section-title">Notifications</h2>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Daily Reminders</div>
-                    <div class="setting-description">Get notified about your daily habits</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Weekly Progress Reports</div>
-                    <div class="setting-description">Receive a summary of your weekly progress</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Reminder Time</div>
-                    <div class="setting-description">When to send daily habit reminders</div>
-                </div>
-                <input type="time" class="time-setting" value="09:00">
-            </div>
-        </div>
-
-        <!-- Habit Settings Section -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon">
-                    <i class="fas fa-tasks"></i>
-                </div>
-                <h2 class="section-title">Habit Settings</h2>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Default Habit Duration</div>
-                    <div class="setting-description">Default time for new habits</div>
-                </div>
-                <select class="select-setting">
-                    <option>5 minutes</option>
-                    <option selected>10 minutes</option>
-                    <option>15 minutes</option>
-                    <option>30 minutes</option>
-                </select>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Difficulty Level</div>
-                    <div class="setting-description">Default difficulty for new habits</div>
-                </div>
-                <select class="select-setting">
-                    <option>Beginner</option>
-                    <option selected>Intermediate</option>
-                    <option>Advanced</option>
-                </select>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Auto-create streaks</div>
-                    <div class="setting-description">Automatically create streak challenges</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <!-- Privacy Section -->
-        <div class="settings-section">
-            <div class="section-header">
-                <div class="section-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h2 class="section-title">Privacy & Data</h2>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Share Progress</div>
-                    <div class="setting-description">Allow friends to see your habit progress</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-name">Personalized Recommendations</div>
-                    <div class="setting-description">Get habit suggestions based on your activity</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="setting-item">
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 65%"></div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-leaf"></i>
                     </div>
-                    <div class="progress-text">Storage: 1.3MB / 2MB</div>
+                    <div class="logo-text">Micro<span>habits</span></div>
+                </a>
+                <div class="nav-links">
+                    <a href="#" class="nav-link">Dashboard</a>
+                    <a href="#" class="nav-link">Habits</a>
+                    <a href="#" class="nav-link">Community</a>
+                    <a href="#" class="nav-link active">Settings</a>
+                </div>
+                <div class="user-actions">
+                    <button class="btn btn-outline">Help</button>
+                    <button class="btn btn-primary">Upgrade</button>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Save Button -->
-        <button class="save-btn" id="saveSettings">
-            <i class="fas fa-save"></i> Save Settings
-        </button>
+    <!-- Settings Page -->
+    <div class="container">
+        <div class="settings-container">
+            <!-- Settings Sidebar -->
+            <div class="settings-sidebar">
+                <div class="settings-title">
+                    <h1><i class="fas fa-cog"></i> Settings</h1>
+                </div>
+                <ul class="settings-menu">
+                    <li class="settings-menu-item active" data-section="account">
+                        <i class="fas fa-user"></i>
+                        <span>Account</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="privacy">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Privacy & Security</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="appearance">
+                        <i class="fas fa-palette"></i>
+                        <span>Appearance</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="language">
+                        <i class="fas fa-globe"></i>
+                        <span>Language & Region</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="billing">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Billing & Plans</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="integrations">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <span>Integrations</span>
+                    </li>
+                    <li class="settings-menu-item" data-section="advanced">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Advanced</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- Account Settings -->
+                <div class="settings-section active" id="account">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user"></i> Account Settings</h2>
+                        <p class="section-description">Manage your account information and preferences</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="profileName">Full Name</label>
+                        <input type="text" class="form-control" id="profileName" value="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="profileEmail">Email Address</label>
+                        <input type="email" class="form-control" id="profileEmail" value="john.doe@example.com">
+                        <div class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="profileUsername">Username</label>
+                        <input type="text" class="form-control" id="profileUsername" value="johndoe">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="profileBio">Bio</label>
+                        <textarea class="form-control" id="profileBio" rows="4" placeholder="Tell us a little about yourself">I'm passionate about building healthy habits and improving my daily routine. Currently working on morning meditation and regular exercise.</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Profile Visibility</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="visibility" checked>
+                                Public
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="visibility">
+                                Private
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="visibility">
+                                Friends Only
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-outline">Cancel</button>
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security Settings -->
+                <div class="settings-section" id="privacy">
+                    <div class="section-header">
+                        <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+                        <p class="section-description">Control your privacy and security settings</p>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Two-Factor Authentication</div>
+                            <div class="toggle-description">Add an extra layer of security to your account</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Login Notifications</div>
+                            <div class="toggle-description">Get notified when someone logs into your account</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Data Sharing</div>
+                            <div class="toggle-description">Allow us to use your data to improve our services</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Personalized Ads</div>
+                            <div class="toggle-description">See ads that are more relevant to you</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="sessionTimeout">Session Timeout</label>
+                        <select class="select-control" id="sessionTimeout">
+                            <option>15 minutes</option>
+                            <option>30 minutes</option>
+                            <option selected>1 hour</option>
+                            <option>4 hours</option>
+                            <option>Until I log out</option>
+                        </select>
+                    </div>
+
+                    <div class="card danger-zone">
+                        <div class="card-header">
+                            <div class="card-title">Danger Zone</div>
+                        </div>
+                        <div class="card-description">
+                            Once you delete your account, there is no going back. Please be certain.
+                        </div>
+                        <button class="btn btn-danger" style="margin-top: 15px;">Delete Account</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-outline">Cancel</button>
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div class="settings-section" id="notifications">
+                    <div class="section-header">
+                        <h2><i class="fas fa-bell"></i> Notification Settings</h2>
+                        <p class="section-description">Choose how and when you want to be notified</p>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Email Notifications</div>
+                            <div class="toggle-description">Receive notifications via email</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">Push Notifications</div>
+                            <div class="toggle-description">Receive notifications in your browser</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <div>
+                            <div class="toggle-label">SMS Notifications</div>
+                            <div class="toggle-description">Receive notifications via text message</div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Notification Types</div>
+                        </div>
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Reminders</div>
+                                <div class="toggle-description">Get reminded about your daily habits</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Progress Updates</div>
+                                <div class="toggle-description">Receive updates on your habit progress</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-group">
+                            <div>
+                                <div class="toggle-label">Community Activity</div>
+                                <div class="toggle-description">Notifications about your friends' activities</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-outline">Cancel</button>
+                        <button class="btn btn-primary">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Additional sections would go here -->
+                
+            </div>
+        </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="#" class="footer-link">Contact Us</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2023 Microhabits. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Animate progress bars on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 300);
+        // Settings navigation
+        document.querySelectorAll('.settings-menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all menu items
+                document.querySelectorAll('.settings-menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // Add active class to clicked menu item
+                this.classList.add('active');
+                
+                // Hide all settings sections
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show the selected settings section
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
             });
         });
 
-        // Save settings button
-        document.getElementById('saveSettings').addEventListener('click', function() {
-            // Add loading animation
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            this.disabled = true;
-            
-            // Simulate saving process
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-check"></i> Settings Saved!';
-                this.style.background = '#4CAF50';
+        // Form submission handling
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('click', function() {
+                const section = this.closest('.settings-section');
+                const sectionName = section.id.charAt(0).toUpperCase() + section.id.slice(1);
                 
-                // Reset button after 2 seconds
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.style.background = '';
-                    this.disabled = false;
-                }, 2000);
-            }, 1000);
-        });
-
-        // Toggle switch animation
-        document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const slider = this.nextElementSibling;
-                slider.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    slider.style.transform = 'scale(1)';
-                }, 200);
+                // Show a simple success message
+                alert(`${sectionName} settings saved successfully!`);
             });
         });
     </script>
