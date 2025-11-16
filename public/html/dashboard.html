@@ -1,2989 +1,1996 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Tracker - Stay Productive</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Small Steps, Big Change</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #0e6b4b; /* Updated to requested color */
-            --primary-light: #4caf50;
-            --primary-dark: #0a4f36;
-            --secondary-color: #ff9800;
-            --background-color: #f5f7fa;
-            --card-color: #ffffff;
-            --text-color: #333333;
-            --text-light: #666666;
-            --border-color: #e0e0e0;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --secondary-bg: #f8f9fa;
-            --progress-bg: #f0f4f8;
-            
-            /* Sidebar specific variables - USING REQUESTED COLOR #0e6b4b */
-            --sidebar-bg: #0e6b4b; /* Updated to requested color */
-            --sidebar-card: #0a4f36;
-            --sidebar-text: #ffffff; /* White text for contrast */
-            --sidebar-border: #4caf50;
-        }
-
-        /* Dark Theme Variables */
-        .dark-mode {
-            --background-color: #121212;
-            --card-color: #1e1e1e;
-            --text-color: #ffffff;
-            --text-light: #b0b0b0;
-            --border-color: #333333;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            --secondary-bg: #2d2d2d;
-            --progress-bg: #2a2a2a;
-            
-            /* Dark sidebar - USING REQUESTED COLOR #0e6b4b */
-            --sidebar-bg: #0e6b4b;
-            --sidebar-card: #0a4f36;
-            --sidebar-text: #ffffff;
-            --sidebar-border: #4caf50;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+       
         body {
-            display: flex;
-            min-height: 100vh;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: #0e6b4b;
+            color: #fff;
             line-height: 1.6;
-            transition: var(--transition);
-        }
-        
-        /* Icon Styles */
-        .icon {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-            stroke: currentColor;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        .icon-small {
-            width: 20px;
-            height: 20px;
-        }
-
-        .icon-large {
-            width: 32px;
-            height: 32px;
-        }
-
-        .icon-xlarge {
-            width: 48px;
-            height: 48px;
-        }
-
-        .nav-icon .icon,
-        .streak-icon .icon {
-            color: var(--sidebar-text);
-        }
-
-        .dark-mode .nav-icon .icon,
-        .dark-mode .streak-icon .icon {
-            color: var(--sidebar-text);
-        }
-        
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card-color);
-            color: var(--text-color);
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast-success {
-            border-left-color: #4caf50;
-        }
-
-        .toast-error {
-            border-left-color: #f44336;
-        }
-
-        .toast-icon {
-            font-size: 18px;
-        }
-        
-        /* Sidebar Styles - IMPROVED MINIMIZED LAYOUT */
-        .sidebar {
-            width: 70px;
-            background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            display: flex;
-            flex-direction: column;
-            padding: 15px 0;
-            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-            border-right: 1px solid var(--sidebar-border);
-            flex-shrink: 0;
-            transition: var(--transition);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar:hover {
-            width: 280px;
-        }
-
-        /* Sidebar Header - FIXED FOR MINIMIZED STATE */
-        .sidebar-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 5px;
-            border-bottom: 1px solid var(--sidebar-border);
-            margin-bottom: 20px;
-            transition: var(--transition);
-            min-height: 60px;
-        }
-
-        .sidebar:hover .sidebar-header {
-            padding: 20px 24px;
-            justify-content: flex-start;
-            min-height: 80px;
-        }
-
-        .sidebar-icon {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto;
-        }
-
-        .sidebar:hover .sidebar-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0; /* Remove auto margin when expanded */
-        }
-
-        .sidebar-icon:hover {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-
-        /* Progress Section - VISIBLE IN BOTH STATES */
-        .progress-section {
-            padding: 0 15px 15px;
-            border-bottom: 1px solid var(--sidebar-border);
-            margin-bottom: 20px;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar:hover .progress-section {
-            padding: 0 24px 24px;
-            align-items: stretch;
-        }
-
-        .progress-bar-container {
-            background-color: rgba(255, 255, 255, 0.2);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            width: 100%;
-            max-width: 200px;
-        }
-
-        .sidebar:hover .progress-bar-container {
-            max-width: none;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: var(--sidebar-text);
-            width: 33.33%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--sidebar-text);
-            display: none; /* Hidden by default in minimized state */
-        }
-
-        .sidebar:hover .progress-title {
-            display: block; /* Show when expanded */
-        }
-
-        .progress-text {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 0;
-            text-align: center;
-        }
-
-        .sidebar:hover .progress-text {
-            font-size: 14px;
-            text-align: left;
-        }
-
-        /* Navigation Menu - IMPROVED MINIMIZED LAYOUT */
-        .nav-menu {
-            flex: 1;
-            padding: 0 5px;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .sidebar:hover .nav-menu {
-            padding: 0 16px;
-            gap: 8px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--sidebar-text);
-            justify-content: center;
-            min-height: 44px;
-            text-decoration: none; /* Added for links */
-        }
-
-        .sidebar:hover .nav-item {
-            justify-content: flex-start;
-            padding: 12px 16px;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: var(--sidebar-text);
-            font-weight: 600;
-        }
-
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .nav-text {
-            font-size: 16px;
-            transition: var(--transition);
-            margin-left: 0;
-            opacity: 0;
-            visibility: hidden;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .sidebar:hover .nav-text {
-            margin-left: 12px;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Sidebar Footer - IMPROVED MINIMIZED LAYOUT */
-        .sidebar-footer {
-            padding: 10px 5px 0;
-            border-top: 1px solid var(--sidebar-border);
-            transition: var(--transition);
-            margin-top: auto;
-            flex-shrink: 0;
-        }
-
-        .sidebar:hover .sidebar-footer {
-            padding: 16px 24px 0;
-        }
-
-        .exit-button {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            color: var(--sidebar-text);
-            justify-content: center;
-            min-height: 44px;
-            text-decoration: none; /* Added for links */
-        }
-
-        .sidebar:hover .exit-button {
-            justify-content: flex-start;
-            padding: 12px 16px;
-        }
-
-        .exit-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition);
-            margin-left: 70px;
-        }
-
-        .sidebar:hover ~ .main-content {
-            margin-left: 280px;
-        }
-
-        .container {
-            flex: 1;
-            background: var(--card-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 25px 30px;
             position: relative;
-        }
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            display: inline-block;
-            transition: var(--transition);
-        }
-        
-        h1:hover {
-            transform: translateY(-2px);
-        }
-        
-        .header-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .header-subtitle:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-        
-        .profile-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-        }
-        
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .profile-pic {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: hidden;
         }
 
-        .profile-pic:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .profile-name {
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .profile-name:hover {
-            text-decoration: underline;
-            color: rgba(255, 255, 255, 0.9);
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .back-btn {
-            padding: 8px 15px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: var(--transition);
-            text-decoration: none;
-        }
-        
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .content {
-            padding: 30px;
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 25px;
-            grid-template-areas: 
-                "quick-actions quick-actions"
-                "timysteps streak"
-                "profile profile";
-        }
-        
-        .section {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-        }
-        
-        .section:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .section:nth-child(1) {
-            grid-area: quick-actions;
-        }
-        
-        .section:nth-child(2) {
-            grid-area: timysteps;
-        }
-        
-        .section:nth-child(3) {
-            grid-area: streak;
-        }
-        
-        .section:nth-child(4) {
-            grid-area: profile;
-        }
-        
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-color);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .section-title:hover {
-            color: var(--primary-color);
-        }
-        
-        .section-title::before {
-            content: "";
-            display: block;
-            width: 6px;
-            height: 20px;
-            background: var(--primary-color);
-            border-radius: 3px;
-        }
-        
-        .progress-container {
-            background: var(--progress-bg);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .progress-container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .progress-bar-main {
-            height: 12px;
-            background: var(--secondary-bg);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-            width: 33.33%;
-            border-radius: 6px;
-            transition: width 0.5s ease;
-        }
-        
-        .streak-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            height: 100%;
-        }
-        
-        .streak-item {
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            border: 2px solid var(--border-color);
-            transition: var(--transition);
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            height: 140px;
-        }
-        
-        .streak-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-        
-        .streak-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        
-        .streak-name {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        
-        .streak-status {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        
-        .leaderboard {
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            padding: 25px;
-        }
-        
-        .leaderboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .leaderboard-title {
-            font-weight: 600;
-            color: var(--primary-dark);
-            font-size: 18px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .leaderboard-title:hover {
-            text-decoration: underline;
-            color: var(--primary-color);
-        }
-        
-        .leaderboard-badge {
-            background: var(--secondary-color);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .leaderboard-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-        }
-        
-        .leaderboard-list {
-            list-style: none;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: var(--card-color);
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .leaderboard-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .rank {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin-right: 15px;
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .rank:hover {
-            transform: scale(1.1);
-        }
-        
-        .rank-1 {
-            background: linear-gradient(135deg, #ffd700, #ffa500);
-        }
-        
-        .rank-2 {
-            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
-        }
-        
-        .rank-3 {
-            background: linear-gradient(135deg, #cd7f32, #a56a2a);
-        }
-        
-        .rank-other {
-            background: var(--primary-color);
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-        
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--secondary-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--primary-color);
-            flex-shrink: 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-        }
-        
-        .streak-count {
-            font-weight: 600;
-            color: var(--primary-color);
-            font-size: 16px;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: var(--transition);
-        }
-
-        .streak-count:hover {
-            background: rgba(14, 107, 75, 0.1);
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .action-btn {
-            padding: 18px 20px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: var(--transition);
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: #0e6b4b; /* Updated to match primary color */
-            min-height: 60px;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            opacity: 0.9;
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
+        /* Background Animation Container */
+        .background-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+
+        .background-animation.active {
+            opacity: 1;
+        }
+
+        /* MICROHABITS - Particle Animation */
+        #microhabits-bg {
+            background: linear-gradient(135deg, #0e6b4b 0%, #1a9c6e 100%);
+        }
+
+        .microhabits-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: floatParticle 8s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* BENEFITS - Wave Animation */
+        #benefits-bg {
+            background: linear-gradient(135deg, #0e6b4b 0%, #2ecc71 100%);
+        }
+
+        .benefits-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23ffffff"/></svg>');
+            background-size: 1200px 100px;
+            animation: waveAnimation 12s linear infinite;
+        }
+
+        .benefits-wave:nth-child(2) {
+            animation-delay: -6s;
+            opacity: 0.5;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1200px;
+            }
+        }
+
+        /* GETTING STARTED - Geometric Pattern */
+        #getting-started-bg {
+            background: linear-gradient(135deg, #0e6b4b 0%, #27ae60 100%);
+        }
+
+        .getting-started-geometry {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+            background-size: 50px 50px;
+            animation: geometricMove 20s linear infinite;
+        }
+
+        @keyframes geometricMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+
+        /* SUCCESS STORIES - Sparkle Animation */
+        #success-stories-bg {
+            background: linear-gradient(135deg, #0e6b4b 0%, #229954 100%);
+        }
+
+        .success-sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: sparkle 4s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Floating Elements for All Backgrounds */
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(10px) rotate(240deg);
+            }
+        }
+       
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+       
+        /* Header Styles */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+       
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+       
+        .logo-text {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+       
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+       
+        .nav-link {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .nav-link:hover, .nav-link.active {
+            color: #0e6b4b;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+       
+        /* Animation for MICROHABITS */
+        .nav-link.microhabits.active {
+            animation: microhabitsAnimation 0.8s ease-out;
+        }
+       
+        @keyframes microhabitsAnimation {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+       
+        /* Animation for BENEFITS */
+        .nav-link.benefits.active {
+            animation: benefitsAnimation 0.8s ease-out;
+        }
+       
+        @keyframes benefitsAnimation {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(-2deg);
+            }
+            50% {
+                transform: translateY(5px) rotate(2deg);
+            }
+            75% {
+                transform: translateY(-3px) rotate(-1deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+       
+        /* Animation for GETTING STARTED */
+        .nav-link.getting-started.active {
+            animation: gettingStartedAnimation 0.8s ease-out;
+        }
+       
+        @keyframes gettingStartedAnimation {
+            0% {
+                letter-spacing: normal;
+            }
+            50% {
+                letter-spacing: 3px;
+            }
+            100% {
+                letter-spacing: normal;
+            }
+        }
+       
+        /* Animation for SUCCESS STORIES */
+        .nav-link.success-stories.active {
+            animation: successStoriesAnimation 0.8s ease-out;
+        }
+       
+        @keyframes successStoriesAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+       
+        .nav-link.success-stories.active {
+            background: linear-gradient(90deg, #0e6b4b, #fff, #0e6b4b);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+       
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+       
+        .icon-button {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+       
+        .icon-button:hover {
+            color: #c8e6d3;
+        }
+       
+        /* Hero Content Styles */
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            padding: 50px 0;
+        }
+       
+        .hero-text {
+            flex: 1;
+            max-width: 500px;
+        }
+       
+        .new-tag {
+            display: inline-block;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+       
+        .new-tag:hover {
+            background-color: #c8e6d3;
+        }
+       
+        h1 {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+       
+        .hero-text p {
+            font-size: 18px;
+            color: #e0f0e7;
+            margin-bottom: 30px;
+        }
+       
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-left: 20px;
+        }
+       
+        .cta-button:hover {
+            background-color: #c8e6d3;
+            transform: translateY(-3px);
+        }
+       
+        .cta-button span {
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+       
+        .cta-button:hover span {
+            transform: translateX(5px);
+        }
+       
+        /* Hero Slider Styles */
+        .hero-slider {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+        }
+       
+        .slider-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+       
+        .slider-image-wrapper {
+            display: flex;
+            width: 400%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+       
+        .slide {
+            width: 25%;
+            height: 100%;
+        }
+       
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+       
+        /* Footer Styles */
+        .hero-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+       
+        .customer-proof {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+       
+        .avatars {
+            display: flex;
+        }
+       
+        .avatars img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #0e6b4b;
+            margin-left: -10px;
+        }
+       
+        .avatars img:first-child {
+            margin-left: 0;
+        }
+       
+        .customer-proof p {
+            font-size: 14px;
+            color: #fff;
+        }
+       
+        .customer-proof strong {
+            font-size: 18px;
+            color: #fff;
+        }
+       
+        .slider-controls-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+       
+        .slider-controls {
+            display: flex;
+            gap: 10px;
+        }
+       
+        .slider-arrow {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #0e6b4b;
         }
-        
-        .modal-content {
-            background: var(--card-color);
-            border-radius: 16px;
+       
+        .slider-arrow:hover {
+            background-color: #fff;
+            color: #0e6b4b;
+            border-color: #fff;
+        }
+       
+        .slider-pagination {
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+        }
+       
+        .divider {
+            margin: 0 5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+       
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+       
+        .popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+       
+        .popup-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
+            color: #333;
+        }
+       
+        .popup.active .popup-content {
+            transform: translateY(0);
+        }
+       
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+       
+        .popup-title {
+            font-size: 24px;
+            color: #0e6b4b;
+        }
+       
+        .close-popup {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+       
+        .close-popup:hover {
+            color: #0e6b4b;
+        }
+       
+        .user-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+       
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+       
+        .user-item:last-child {
+            border-bottom: none;
+        }
+       
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+       
+        .user-info h4 {
+            margin-bottom: 5px;
+            color: #0e6b4b;
+        }
+       
+        .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+       
+        /* Search Popup Styles */
+        .search-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+       
+        .search-popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+       
+        .search-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            animation: modalAppear 0.3s ease;
+            margin-top: 100px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s;
         }
-        
-        @keyframes modalAppear {
-            from {
+       
+        .search-popup.active .search-content {
+            transform: translateY(0);
+        }
+       
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+       
+        .search-title {
+            font-size: 20px;
+            color: #0e6b4b;
+        }
+       
+        .search-form {
+            display: flex;
+            margin-bottom: 15px;
+        }
+       
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+       
+        .search-input:focus {
+            border-color: #0e6b4b;
+        }
+       
+        .search-button {
+            background-color: #0e6b4b;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+       
+        .search-button:hover {
+            background-color: #0a4d35;
+        }
+       
+        .search-suggestions {
+            margin-top: 15px;
+        }
+       
+        .suggestion-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+       
+        .suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+       
+        .suggestion-tag {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+       
+        .suggestion-tag:hover {
+            background-color: #e0e0e0;
+        }
+       
+        /* Article Page Styles */
+        .article-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #333;
+        }
+       
+        .article-header {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .article-title {
+            font-size: 32px;
+            color: #0e6b4b;
+            margin-bottom: 15px;
+        }
+       
+        .article-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+       
+        .article-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            line-height: 1.8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+       
+        .article-content h2 {
+            color: #0e6b4b;
+            margin: 25px 0 15px;
+        }
+       
+        .article-content p {
+            margin-bottom: 15px;
+        }
+       
+        .article-content ul, .article-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+       
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #0e6b4b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+       
+        .back-button:hover {
+            background-color: #0a4d35;
+        }
+       
+        /* Simple Footer Styles */
+        .simple-footer {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: auto;
+        }
+       
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+       
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0e6b4b;
+            margin-bottom: 10px;
+        }
+       
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+       
+        .footer-links a {
+            color: #b8b8b8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+       
+        .footer-links a:hover {
+            color: #0e6b4b;
+        }
+       
+        .footer-bottom {
+            text-align: center;
+            color: #b8b8b8;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #2d2d44;
+            width: 100%;
+        }
+       
+        .kzolm-link {
+            color: #0e6b4b;
+            font-weight: 600;
+        }
+       
+        /* 页面内容动画效果 */
+        .animate-microhabits .article-title,
+        .animate-microhabits .article-meta,
+        .animate-microhabits .article-content > * {
+            animation: fadeInScale 1s ease-out forwards;
+            opacity: 0;
+        }
+       
+        .animate-microhabits .article-title {
+            animation-delay: 0.2s;
+        }
+       
+        .animate-microhabits .article-meta {
+            animation-delay: 0.4s;
+        }
+       
+        .animate-microhabits .article-content > * {
+            animation-delay: 0.6s;
+        }
+       
+        @keyframes fadeInScale {
+            0% {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: scale(0.9);
             }
-            to {
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+       
+        .animate-benefits .article-title,
+        .animate-benefits .article-meta,
+        .animate-benefits .article-content > * {
+            animation: slideInLeft 1s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+       
+        .animate-benefits .article-title {
+            animation-delay: 0.2s;
+        }
+       
+        .animate-benefits .article-meta {
+            animation-delay: 0.4s;
+        }
+       
+        .animate-benefits .article-content > * {
+            animation-delay: 0.6s;
+        }
+       
+        @keyframes slideInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+       
+        /* 新增：GETTING STARTED页面波浪式逐行动效 */
+        .animate-getting-started .article-header,
+        .animate-getting-started .article-content > * {
+            opacity: 0;
+            animation: waveIn 0.8s ease-out forwards;
+        }
+       
+        .animate-getting-started .article-header {
+            animation-delay: 0.2s;
+        }
+       
+        .animate-getting-started .article-content > * {
+            animation-delay: calc(0.4s + (var(--item-index, 0) * 0.1s));
+        }
+       
+        @keyframes waveIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+       
+        .animate-success-stories .article-title,
+        .animate-success-stories .article-meta,
+        .animate-success-stories .article-content > * {
+            animation: bounceIn 1s ease-out forwards;
+            opacity: 0;
         }
-        
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
+       
+        .animate-success-stories .article-title {
+            animation-delay: 0.2s;
         }
-        
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+       
+        .animate-success-stories .article-meta {
+            animation-delay: 0.4s;
         }
-        
-        .modal-body {
-            padding: 25px;
-            text-align: center;
+       
+        .animate-success-stories .article-content > * {
+            animation-delay: 0.6s;
         }
-
-        .modal-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--primary-dark);
-        }
-
-        .modal-description {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .modal-features {
-            text-align: left;
-            background: var(--secondary-bg);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .modal-features ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .modal-features li {
-            padding: 5px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-color);
-        }
-
-        .modal-features li:before {
-            content: "✓";
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-        
-        .modal-footer {
-            padding: 15px 25px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: var(--secondary-bg);
-            color: var(--text-color);
-            margin-right: 10px;
-        }
-        
-        .btn-secondary:hover {
-            background: var(--border-color);
-            transform: translateY(-2px);
-        }
-
-        /* Celebration Modal */
-        .celebration-modal .modal-content {
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-            animation: confetti-fall 2s ease-in-out forwards;
-        }
-
-        @keyframes confetti-fall {
+       
+        @keyframes bounceIn {
             0% {
-                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
                 opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
             }
             100% {
-                transform: translateY(500px) rotate(360deg);
-                opacity: 0;
+                opacity: 1;
+                transform: scale(1);
             }
         }
-        
-        /* Task List Styles */
-        .task-list {
-            margin-top: 20px;
+       
+        /* Privacy Policy & Terms of Use Page Styles */
+        .policy-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #fff;
         }
-        
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
+       
+        .policy-header {
+            text-align: center;
+            margin-bottom: 40px;
         }
-        
-        .task-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            cursor: pointer;
-        }
-        
-        .task-name {
-            flex: 1;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-color);
-        }
-        
-        .task-name:hover {
-            color: var(--primary-color);
-        }
-        
-        .task-completed {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-        
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            transition: var(--transition);
-            background-color: var(--card-color);
-            color: var(--text-color);
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
-        }
-        
-        .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            min-height: 100px;
-            resize: vertical;
-            transition: var(--transition);
-            background-color: var(--card-color);
-            color: var(--text-color);
-        }
-        
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
-        }
-        
-        /* Settings Page Styles */
-        .settings-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        
-        .settings-section {
-            background: var(--secondary-bg);
-            border-radius: 8px;
-            padding: 20px;
-        }
-        
-        .settings-section-title {
-            font-size: 18px;
-            font-weight: 600;
+       
+        .policy-title {
+            font-size: 36px;
             margin-bottom: 15px;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: #fff;
         }
-        
-        .settings-option {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
+       
+        .policy-subtitle {
+            font-size: 18px;
+            color: #e0f0e7;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        
-        .settings-option:last-child {
-            border-bottom: none;
+       
+        .policy-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 40px;
         }
-        
-        .settings-label {
-            font-weight: 500;
-            color: var(--text-color);
+       
+        .policy-section {
+            margin-bottom: 30px;
         }
-        
-        .settings-toggle {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
+       
+        .policy-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
         }
-        
-        .settings-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+       
+        .policy-section p {
+            margin-bottom: 15px;
+            color: #e0f0e7;
         }
-        
-        .settings-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
+       
+        .policy-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
         }
-        
-        .settings-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .settings-slider {
-            background-color: var(--primary-color);
-        }
-        
-        input:checked + .settings-slider:before {
-            transform: translateX(26px);
-        }
-        
-        /* NEW: Feature Pages Styles */
-        .feature-page {
-            display: none;
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            margin-left: 70px;
-            background-color: #f5f7fa;
-            color: #333333;
-            transition: var(--transition);
-        }
-
-        .sidebar:hover ~ .feature-page {
-            margin-left: 280px;
-        }
-
-        .feature-container {
-            flex: 1;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .feature-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 25px 30px;
-            position: relative;
-        }
-
-        .feature-header h1 {
-            font-size: 28px;
+       
+        .policy-section li {
             margin-bottom: 10px;
-            cursor: pointer;
-            display: inline-block;
-            transition: var(--transition);
-            color: white;
+            color: #e0f0e7;
         }
-
-        .feature-header h1:hover {
-            transform: translateY(-2px);
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+       
+        .highlight {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #fff;
         }
-
-        .feature-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-            cursor: pointer;
-            transition: var(--transition);
+       
+        .policy-back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .feature-subtitle:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        .feature-content {
-            padding: 30px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .feature-section {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-            border: 1px solid #e0e0e0;
-        }
-
-        .feature-section:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+       
+        .policy-back-button:hover {
+            background-color: #c8e6d3;
             transform: translateY(-3px);
         }
-
-        .feature-section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #0a4f36;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .feature-section-title:hover {
-            color: #0e6b4b;
-        }
-
-        .feature-section-title::before {
-            content: "";
-            display: block;
-            width: 6px;
-            height: 20px;
-            background: #0e6b4b;
-            border-radius: 3px;
-        }
-
-        .task-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid #e0e0e0;
-        }
-
-        .stat-card:hover {
-            background: #f0f4f8;
-            transform: translateY(-5px);
-            border-color: #4caf50;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #0e6b4b;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666666;
-        }
-
-        .chart-container {
-            height: 300px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #e0e0e0;
-        }
-
-        .chart-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #f0f4f8;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666666;
-            font-style: italic;
-        }
-
-        /* Community Feed Styles */
-        .community-feed {
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            padding: 20px;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .feed-placeholder {
-            text-align: center;
-            color: var(--text-light);
-            padding: 40px 20px;
-        }
-
-        .share-community {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .share-preview {
-            width: 100%;
-        }
-
-        .share-card {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .share-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .share-time {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .share-content {
-            margin-bottom: 15px;
-        }
-
-        .share-text textarea {
-            min-height: 80px;
-            margin-bottom: 15px;
-        }
-
-        .share-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: var(--secondary-bg);
-            border-radius: 8px;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .stat-value {
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .share-achievements {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .achievement-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .share-actions {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        /* Community Highlights */
-        .community-highlights {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .highlight-item {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .highlight-header {
-            margin-bottom: 15px;
-        }
-
-        .highlight-content {
-            margin-bottom: 15px;
-        }
-
-        .highlight-content p {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .highlight-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .highlight-stat {
-            background: var(--secondary-bg);
-            color: var(--primary-color);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .highlight-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .community-actions .action-btn,
-        .highlight-actions .action-btn,
-        .like-btn,
-        .comment-btn {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: none;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            transition: var(--transition);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .action-btn:hover {
-            background: var(--secondary-bg);
-            color: var(--text-color);
-        }
-
-        .like-btn:hover {
-            color: #e74c3c;
-        }
-
-        .comment-btn:hover {
-            color: var(--primary-color);
-        }
-
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        .achievement-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            border: 2px solid #e0e0e0;
-            transition: var(--transition);
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .achievement-card:hover {
-            background: #f0f4f8;
-            border-color: #4caf50;
-            transform: translateY(-5px);
-        }
-
-        .achievement-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            background: #e8f5e8;
-            color: #0e6b4b;
-        }
-
-        .achievement-locked {
-            opacity: 0.5;
-        }
-
-        .achievement-locked .achievement-icon {
-            background: #f0f0f0;
-            color: #999999;
-        }
-
-        .achievement-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: #333333;
-        }
-
-        .achievement-desc {
-            font-size: 13px;
-            color: #666666;
-        }
-
-        /* Streak Calendar Styles */
-        .streak-calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 15px;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .calendar-day.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .calendar-day.inactive {
-            background: var(--secondary-bg);
-            color: var(--text-light);
-        }
-
-        .calendar-day.today {
-            border: 2px solid var(--primary-color);
-        }
-
-        /* Streak Stats Styles */
-        .streak-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .streak-stat {
-            background: var(--secondary-bg);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .streak-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .streak-stat-label {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .content {
-                grid-template-columns: 1fr;
-                grid-template-areas: 
-                    "quick-actions"
-                    "timysteps"
-                    "streak"
-                    "profile";
-            }
-            
-            .streak-container {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .streak-stats {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            body {
+       
+        /* Responsive Styles */
+        @media (max-width: 900px) {
+            .hero-content {
                 flex-direction: column;
+                text-align: center;
+                gap: 40px;
             }
            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding: 10px 0;
-            }
-
-            .sidebar:hover {
-                width: 100%;
-            }
-
-            .sidebar .nav-text {
-                display: block;
-                opacity: 1;
-                visibility: visible;
-                margin-left: 12px;
-            }
-
-            .sidebar .progress-section {
-                opacity: 1;
-                visibility: visible;
-                height: auto;
-                padding: 0 24px 20px;
-            }
-
-            .sidebar .nav-item {
-                justify-content: flex-start;
-                padding: 12px 16px;
-            }
-
-            .sidebar .sidebar-footer {
-                padding: 16px 24px 0;
-            }
-
-            .sidebar .exit-button {
-                justify-content: flex-start;
-                padding: 12px 16px;
+            .hero-text {
+                max-width: 100%;
             }
            
-            .main-content, .feature-page {
-                padding: 20px;
-                margin-left: 0;
+            .slider-container {
+                width: 100%;
+                max-width: 400px;
             }
-            
-            .sidebar:hover ~ .main-content,
-            .sidebar:hover ~ .feature-page {
-                margin-left: 0;
+           
+            .main-nav ul {
+                gap: 15px;
             }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .leaderboard-list {
-                grid-template-columns: 1fr;
-            }
-            
-            .profile-section {
+        }
+       
+        @media (max-width: 600px) {
+            .main-header {
                 flex-direction: column;
                 gap: 15px;
-                align-items: flex-start;
             }
-
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .achievements-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .share-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .share-actions {
+           
+            .main-nav ul {
+                flex-wrap: wrap;
                 justify-content: center;
             }
-        }
-        
-        @media (max-width: 480px) {
-            .main-content, .feature-page {
-                padding: 10px;
+           
+            h1 {
+                font-size: 36px;
             }
-            
-            .container, .feature-container {
-                border-radius: 12px;
-            }
-            
-            header, .feature-header {
-                padding: 20px;
-            }
-            
-            .section, .feature-section {
-                padding: 20px;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-            
-            .leaderboard-header {
+           
+            .hero-footer {
                 flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
+                gap: 20px;
+                text-align: center;
             }
-
-            .achievements-grid {
-                grid-template-columns: 1fr;
+           
+            .slider-controls-container {
+                order: 2;
+            }
+           
+            .customer-proof {
+                order: 1;
+            }
+           
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+           
+            .policy-content {
+                padding: 20px;
+            }
+            
+            .policy-title {
+                font-size: 28px;
             }
         }
     </style>
 </head>
-<body class="theme-green">
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-icon" id="toastIcon"></span>
-        <span id="toastMessage"></span>
-    </div>
-
-    <!-- Sidebar - Starts minimized, expands on hover -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-kzolm">
-                <!-- REPLACE THIS LINE WITH YOUR IMAGE -->
-                <img src="../image/kzolm-logo.png" alt="kzolm" class="sidebar-icon" id="sidebarImage">
-                <a href="../html/dashboard.html"></a>
-            </div>
-        </div>
-       
-        <div class="progress-section">
-            <div class="progress-title">Task Progress</div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="sidebarProgressBar"></div>
-            </div>
-            <div class="progress-text" id="sidebarProgressText">1 of 3 completed</div>
-        </div>
-       
-        <div class="nav-menu">
-            <!-- Updated sidebar items to be actual links -->
-            <a href="../html/mainpage.html" class="nav-item active">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Home</div>
-            </a>
-            <a href="../html/notification.html" class="nav-item">
-    <div class="nav-icon">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-        </svg>
-    </div>
-    <div class="nav-text">Notifications</div>
-</a>
-            <a href="../html/progress.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Progress</div>
-            </a>
-            <a href="../html/milestone.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M18.5 9.51L14.5 5.51V7c0 1.1-.9 2-2 2H4v2h8.5c1.1 0 2 .9 2 2v1.49l4-4zM5.5 14.49L9.5 18.49V17c0-1.1.9-2 2-2H20v-2h-8.5c-1.1 0-2-.9-2-2v-1.49l-4 4z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">TinySteps</div>
-            </a>
-            <a href="../html/community.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Community</div>
-            </a>
-
-            <!-- Add this within the nav-menu section of the sidebar -->
-<a href="../html/plantgrowth.html" class="nav-item">
-    <div class="nav-icon">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12 3l-4 6h3v11h2V9h3l-4-6z"/>
-        </svg>
-    </div>
-    <div class="nav-text">Growth</div>
-</a>
-<a href="meditation.html" class="nav-item">
-    <div class="nav-icon">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12,2C13.66,2 15,3.34 15,5C15,6.66 13.66,8 12,8C10.34,8 9,6.66 9,5C9,3.34 10.34,2 12,2zm-4.86,13.86l1.42-1.42C8.93,13.93 8.93,12.07 9.56,10.56c0.63-1.51 1.7-2.7 3.02-3.42l1.42,1.42c-1.05,0.63-1.87,1.54-2.35,2.65c-0.48,1.11-0.48,2.35 0,3.46c0.48,1.11 1.3,2.02 2.35,2.65l1.42,1.42c-1.32-0.72-2.39-1.91-3.02-3.42C8.93,15.93 8.93,14.07 9.56,12.56c0.63-1.51 1.7-2.7 3.02-3.42l1.42,1.42c-1.05,0.63-1.87,1.54-2.35,2.65c-0.48,1.11-0.48,2.35 0,3.46c0.48,1.11 1.3,2.02 2.35,2.65l1.42,1.42c-1.32-0.72-2.39-1.91-3.02-3.42C8.93,15.93 8.93,14.07 9.56,12.56z"/>
-        </svg>
-    </div>
-    <div class="nav-text">Meditation</div>
-</a>
-
-<!-- Goals/Targets Icon -->
-<a href="goals.html" class="nav-item">
-    <div class="nav-icon">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
-        </svg>
-    </div>
-    <div class="nav-text">Goals</div>
-</a>
-
-<!-- Rewards Icon -->
-<a href="rewards.html" class="nav-item">
-    <div class="nav-icon">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M19,5H17V3H7V5H5A2,2 0 0,0 3,7V8A3,3 0 0,0 6,11H18A3,3 0 0,0 21,8V7A2,2 0 0,0 19,5M5.5,18.5C5.5,17.12 6.62,16 8,16H9V12H15V16H16C17.38,16 18.5,17.12 18.5,18.5C18.5,19.88 17.38,21 16,21H8C6.62,21 5.5,19.88 5.5,18.5Z"/>
-        </svg>
-    </div>
-    <div class="nav-text">Rewards</div>
-</a>
-            <a href="settings.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Settings</div>
-            </a>
-            <a href="../html/help&feedback.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Help/Feedback</div>
-            </a>
-        </div>
-       
-        <div class="sidebar-footer">
-            <a href="exit.html" class="exit-button">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Exit</div>
-            </a>
-        </div>
-    </div>
+<body>
    
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <div class="container">
-            <header>
-                <h1>Task Tracker</h1>
-                <p class="header-subtitle">Stay productive and build healthy habits</p>
-                
-                <div class="profile-section">
-                    <div class="profile-info">
-                        <div class="profile-pic">JD</div>
-                        <div class="profile-name">John Doe</div>
-                    </div>
-                    <div class="header-actions">
-                        <a href="/menu" class="back-btn">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                            </svg>
-                            Back to Main
-                        </a>
-                    </div>
-                </div>
-            </header>
-            
-            <div class="content">
-                <div class="section">
-                    <h2 class="section-title">Quick Actions</h2>
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="showAddTaskPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                            </svg>
-                            Add New Task
-                        </button>
-                        <button class="action-btn" onclick="showStatisticsPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                            </svg>
-                            View Statistics
-                        </button>
-                        <button class="action-btn" onclick="showShareProgressPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
-                            </svg>
-                            Share Progress
-                        </button>
-                        <button class="action-btn" onclick="showAchievementsPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/>
-                            </svg>
-                            Achievements
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <h2 class="section-title">TinySteps</h2>
-                    <div class="progress-container">
-                        <div class="progress-info">
-                            <span>Task on progress</span>
-                            <span id="taskProgress">1 of 3 done</span>
+    <!-- Background Animation Containers -->
+    <div class="background-animation" id="microhabits-bg"></div>
+    <div class="background-animation" id="benefits-bg"></div>
+    <div class="background-animation" id="getting-started-bg"></div>
+    <div class="background-animation" id="success-stories-bg"></div>
+   
+    <div class="page-container">
+       
+        <header class="main-header">
+            <a href="#" class="logo">
+                <div class="logo-text">Kzolm</div>
+            </a>
+           
+            <nav class="main-nav">
+                <ul>
+                    <li><a class="nav-link microhabits" href="#microhabits-page">MICROHABITS</a></li>
+                    <li><a class="nav-link benefits" href="#benefits-page">BENEFITS</a></li>
+                    <li><a class="nav-link getting-started" href="#getting-started-page">GETTING STARTED</a></li>
+                    <li><a class="nav-link success-stories" href="#success-stories-page">SUCCESS STORIES</a></li>
+                </ul>
+            </nav>
+           
+            <div class="header-icons">
+                <!-- Search icon removed as requested -->
+                <a href="/profile" class="icon-button" aria-label="User Account"><i class="fas fa-user"></i></a>
+            </div>
+        </header>
+
+
+        <main class="hero-content">
+           
+            <div class="hero-text">
+                <a href="../html/new-kzolm.html" class="new-tag">KZOLM -Designed to Elevate</a>
+                <h1>Small Steps,<br>Big Change</h1>
+                <p>Build the life you want through tiny, consistent actions that actually stick.</p>
+               
+                <a href="../html/mainpage.html" class="cta-button">
+                    EXPLORE NOW
+                    <span>&rarr;</span>
+                </a>
+            </div>
+
+
+            <div class="hero-slider">
+                <div class="slider-container">
+                    <div class="slider-image-wrapper">
+                        <div class="slide">
+                            <img src="https://wearerestless.org/wp-content/uploads/2021/02/Reading-scaled.jpg" alt="Person reading a book in sunlight">
                         </div>
-                        <div class="progress-bar-main">
-                            <div class="progress-fill" id="progressFill"></div>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZXhlcmNpc2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80" alt="Person exercising">
                         </div>
-                    </div>
-                    
-                    <div class="task-list">
-                        <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task1" onchange="updateTaskProgress()" checked>
-                            <label for="task1" class="task-name task-completed">Morning routine</label>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVkaXRhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80" alt="Person meditating">
                         </div>
-                        <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task2" onchange="updateTaskProgress()">
-                            <label for="task2" class="task-name">Work project</label>
-                        </div>
-                        <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" id="task3" onchange="updateTaskProgress()">
-                            <label for="task3" class="task-name">Gym session</label>
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8am91cm5hbGluZ3xlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80" alt="Person journaling">
                         </div>
                     </div>
                 </div>
-                
-                <div class="section">
-                    <h2 class="section-title">Streak</h2>
-                    <div class="streak-container">
-                        <div class="streak-item">
-                            <div class="streak-icon" style="background: #e8f5e8; color: #0e6b4b;">
-                                <svg class="icon" viewBox="0 0 24 24">
-                                    <path d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8z"/>
-                                </svg>
-                            </div>
-                            <div class="streak-name">Current Streak</div>
-                            <div class="streak-status">245 days in a row!</div>
-                        </div>
-                    </div>
-                    
-                    <div class="streak-calendar">
-                        <!-- Calendar days will be generated by JavaScript -->
-                    </div>
-                    
-                    <div class="streak-stats">
-                        <div class="streak-stat">
-                            <div class="streak-stat-value">245</div>
-                            <div class="streak-stat-label">Current Streak</div>
-                        </div>
-                        <div class="streak-stat">
-                            <div class="streak-stat-value">78%</div>
-                            <div class="streak-stat-label">Completion Rate</div>
-                        </div>
-                        <div class="streak-stat">
-                            <div class="streak-stat-value">42</div>
-                            <div class="streak-stat-label">Tasks Completed</div>
-                        </div>
-                        <div class="streak-stat">
-                            <div class="streak-stat-value">15</div>
-                            <div class="streak-stat-label">Active Tasks</div>
-                        </div>
+            </div>
+
+
+        </main>
+
+
+        <footer class="hero-footer">
+           
+            <div class="customer-proof" id="customer-proof">
+                <div class="avatars">
+                    <img src="https://thumbs.dreamstime.com/b/portrait-handsome-smiling-young-man-folded-arms-smiling-joyful-cheerful-men-crossed-hands-isolated-studio-shot-172869765.jpg" alt="Customer 1">
+                    <img src="https://media.istockphoto.com/id/1483329842/photo/studio-portrait-of-attractive-woman-wearing-shirt-and-laughing-while-sitting-at-isolated-grey.webp?b=1&s=612x612&w=0&k=20&c=wE-CCntjb3Q4BlhDC7UA2K0VR485eVinp8pDagrErCw=" alt="Customer 2">
+                    <img src="https://img.freepik.com/free-photo/smiling-beautiful-young-woman-standing-posing_171337-11412.jpg?semt=ais_hybrid&w=740&q=80" alt="Customer 3">
+                </div>
+                <p><strong>50M+</strong> Happy<br>Customers</p>
+            </div>
+
+
+            <div class="slider-controls-container">
+                <div class="slider-controls">
+                    <button class="slider-arrow" id="prev-slide" aria-label="Previous slide">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-arrow" id="next-slide" aria-label="Next slide">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="slider-pagination">
+                    <span id="current-slide">01</span><span class="divider">/</span><span id="total-slides">04</span>
+                </div>
+            </div>
+        </footer>
+
+
+    </div>
+
+
+    <!-- Global Footer - Will be hidden when navigation buttons are clicked -->
+    <footer class="simple-footer" id="global-footer">
+        <div class="footer-container">
+            <div class="footer-logo">Kzolm Microhabits</div>
+           
+            <div class="footer-links">
+                <a href="../html/dashboard.html">Home</a>
+                <a href="security-verification.html">Account Security</a>
+                <a href="#privacy-policy-page">Privacy Policy</a>
+                <a href="#terms-of-use-page">Terms of Use</a>
+                <a href="../html/about.html">About <span class="kzolm-link">Kzolm</span></a>
+                <a href="../html/contact.html">Contact</a>
+            </div>
+           
+            <div class="footer-bottom">
+                <p>&copy; 2023 <span class="kzolm-link">Kzolm</span> Microhabits. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <div class="search-popup" id="search-popup">
+        <div class="search-content">
+            <div class="search-header">
+                <h3 class="search-title">Search</h3>
+                <button class="close-popup" id="close-search-popup">&times;</button>
+            </div>
+            <form class="search-form" id="search-form">
+                <input type="text" class="search-input" placeholder="What are you looking for?" id="search-input">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+            <div class="search-suggestions">
+                <div class="suggestion-title">Popular searches:</div>
+                <div class="suggestion-list">
+                    <div class="suggestion-tag">Microhabits</div>
+                    <div class="suggestion-tag">Productivity</div>
+                    <div class="suggestion-tag">Mindfulness</div>
+                    <div class="suggestion-tag">Exercise</div>
+                    <div class="suggestion-tag">Reading</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="popup" id="nav-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title" id="popup-title">Popup Title</h3>
+                <button class="close-popup" id="close-nav-popup">&times;</button>
+            </div>
+            <p id="popup-message">This is a popup message.</p>
+        </div>
+    </div>
+
+
+    <div class="popup" id="customer-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Our Happy Customers</h3>
+                <button class="close-popup" id="close-customer-popup">&times;</button>
+            </div>
+            <div class="user-list">
+                <div class="user-item">
+                    <img src="https://thumbs.dreamstime.com/b/portrait-handsome-smiling-young-man-folded-arms-smiling-joyful-cheerful-men-crossed-hands-isolated-studio-shot-172869765.jpg" alt="Customer 1" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Michael Chen</h4>
+                        <p>"Microhabits helped me build a consistent reading routine. I've read 12 books this year!"</p>
                     </div>
                 </div>
-                
-                <div class="section">
-                    <h2 class="section-title">Profile</h2>
-                    <div class="leaderboard">
-                        <div class="leaderboard-header">
-                            <div class="leaderboard-title">Friends Leaderboard</div>
-                            <div class="leaderboard-badge">You are the 1st today!</div>
-                        </div>
-                        <ul class="leaderboard-list">
-                            <li class="leaderboard-item">
-                                <div class="rank rank-1">1</div>
-                                <div class="user-info">
-                                    <div class="user-avatar">JD</div>
-                                    <div>You</div>
-                                </div>
-                                <div class="streak-count">245 streak</div>
-                            </li>
-                            <li class="leaderboard-item">
-                                <div class="rank rank-2">2</div>
-                                <div class="user-info">
-                                    <div class="user-avatar">AS</div>
-                                    <div>Alex Smith</div>
-                                </div>
-                                <div class="streak-count">198 streak</div>
-                            </li>
-                            <li class="leaderboard-item">
-                                <div class="rank rank-3">3</div>
-                                <div class="user-info">
-                                    <div class="user-avatar">MJ</div>
-                                    <div>Maria Johnson</div>
-                                </div>
-                                <div class="streak-count">176 streak</div>
-                            </li>
-                            <li class="leaderboard-item">
-                                <div class="rank rank-other">4</div>
-                                <div class="user-info">
-                                    <div class="user-avatar">TW</div>
-                                    <div>Taylor Wilson</div>
-                                </div>
-                                <div class="streak-count">154 streak</div>
-                            </li>
-                        </ul>
+                <div class="user-item">
+                    <img src="https://media.istockphoto.com/id/1483329842/photo/studio-portrait-of-attractive-woman-wearing-shirt-and-laughing-while-sitting-at-isolated-grey.webp?b=1&s=612x612&w=0&k=20&c=wE-CCntjb3Q4BlhDC7UA2K0VR485eVinp8pDagrErCw=" alt="Customer 2" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>"Started with just 5 minutes of meditation daily. Now I meditate for 30 minutes every morning."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://img.freepik.com/free-photo/smiling-beautiful-young-woman-standing-posing_171337-11412.jpg?semt=ais_hybrid&w=740&q=80" alt="Customer 3" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Emily Rodriguez</h4>
+                        <p>"The microhabits approach helped me lose 15 pounds by making small, sustainable changes."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyc29ufGVufDB8fDB8fHww&w=1000&q=80" alt="Customer 4" class="user-avatar">
+                    <div class="user-info">
+                        <h4>David Kim</h4>
+                        <p>"I went from zero exercise to running a 5K by starting with just 10 minutes of walking daily."</p>
+                    </div>
+                </div>
+                <div class="user-item">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww&w=1000&q=80" alt="Customer 5" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Jessica Williams</h4>
+                        <p>"Microhabits transformed my productivity. I now complete my most important tasks first thing."</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NEW: Add Task Page -->
-    <div class="feature-page" id="addTaskPage">
-        <div class="feature-container">
-            <div class="feature-header">
-                <h1>Add New Task</h1>
-                <p class="feature-subtitle">Create a new task to track your progress</p>
-                
-                <div class="profile-section">
-                    <div class="profile-info">
-                        <div class="profile-pic">JD</div>
-                        <div class="profile-name">John Doe</div>
-                    </div>
-                    <div class="header-actions">
-                        <button class="back-btn" onclick="showMainPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                            </svg>
-                            Back to Home
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="feature-content">
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Task Details</h2>
-                    <form class="task-form" id="taskForm">
-                        <div class="form-group">
-                            <label class="form-label" for="taskName">Task Name</label>
-                            <input type="text" class="form-input" id="taskName" placeholder="Enter task name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="taskDescription">Description</label>
-                            <textarea class="form-textarea" id="taskDescription" placeholder="Describe your task"></textarea>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label" for="taskCategory">Category</label>
-                                <select class="form-input" id="taskCategory">
-                                    <option value="health">Health & Fitness</option>
-                                    <option value="work">Work & Productivity</option>
-                                    <option value="learning">Learning & Development</option>
-                                    <option value="personal">Personal Growth</option>
-                                    <option value="social">Social & Relationships</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="taskPriority">Priority</label>
-                                <select class="form-input" id="taskPriority">
-                                    <option value="low">Low</option>
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label" for="taskDueDate">Due Date</label>
-                                <input type="date" class="form-input" id="taskDueDate">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="taskReminder">Reminder</label>
-                                <select class="form-input" id="taskReminder">
-                                    <option value="none">No Reminder</option>
-                                    <option value="15min">15 minutes before</option>
-                                    <option value="1hour">1 hour before</option>
-                                    <option value="1day">1 day before</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="showMainPage()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Create Task</button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Quick Templates</h2>
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="fillTemplate('morning')">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-                            </svg>
-                            Morning Routine
-                        </button>
-                        <button class="action-btn" onclick="fillTemplate('exercise')">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
-                            </svg>
-                            Exercise Session
-                        </button>
-                        <button class="action-btn" onclick="fillTemplate('reading')">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
-                            </svg>
-                            Reading Goal
-                        </button>
-                        <button class="action-btn" onclick="fillTemplate('work')">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
-                            </svg>
-                            Work Project
-                        </button>
-                    </div>
-                </div>
-            </div>
+
+    <div id="microhabits-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">The Power of Microhabits</h1>
+            <div class="article-meta">Published on November 13, 2023 • 10 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Microhabits are small, consistent actions that require minimal effort but yield significant results over time. Unlike traditional goal-setting approaches that often lead to burnout, microhabits focus on sustainable progress through tiny, manageable steps.</p>
+           
+            <h2>Why Microhabits Work</h2>
+            <p>The human brain is wired to resist drastic changes. When we set ambitious goals like "exercise for an hour every day" or "read 50 pages daily," we often fail because these changes are too overwhelming for our neural pathways.</p>
+           
+            <p>Microhabits bypass this resistance by being so small that they feel almost effortless. Want to build a reading habit? Start with just one paragraph per day. Want to exercise regularly? Begin with two minutes of stretching.</p>
+           
+            <h2>The Science Behind Microhabits</h2>
+            <p>Research in neuroscience shows that consistent repetition of small actions creates new neural pathways. Each time you perform a microhabit, you strengthen these pathways, making the behavior more automatic over time.</p>
+           
+            <p>This process, known as neuroplasticity, means that your brain literally rewires itself to make the new habit easier to perform. What starts as a conscious effort eventually becomes an automatic behavior.</p>
+           
+            <h2>Getting Started with Microhabits</h2>
+            <p>To implement microhabits successfully:</p>
+            <ol>
+                <li>Choose one specific behavior</li>
+                <li>Make it incredibly small (1-2 minutes maximum)</li>
+                <li>Attach it to an existing habit</li>
+                <li>Track your consistency</li>
+                <li>Celebrate small wins</li>
+            </ol>
+           
+            <p>Remember, the goal isn't perfection but consistency. Even if you miss a day, simply return to your microhabit the next day without self-judgment.</p>
         </div>
     </div>
 
-    <!-- NEW: Statistics Page -->
-    <div class="feature-page" id="statisticsPage">
-        <div class="feature-container">
-            <div class="feature-header">
-                <h1>Task Statistics</h1>
-                <p class="feature-subtitle">Track your progress and performance</p>
-                
-                <div class="profile-section">
-                    <div class="profile-info">
-                        <div class="profile-pic">JD</div>
-                        <div class="profile-name">John Doe</div>
-                    </div>
-                    <div class="header-actions">
-                        <button class="back-btn" onclick="showMainPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                            </svg>
-                            Back to Home
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="feature-content">
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Overview</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">245</div>
-                            <div class="stat-label">Current Streak</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">78%</div>
-                            <div class="stat-label">Completion Rate</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">42</div>
-                            <div class="stat-label">Tasks Completed</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">15</div>
-                            <div class="stat-label">Active Tasks</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Progress Trends</h2>
-                    <div class="chart-container">
-                        <canvas id="progressTrendChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Category Breakdown</h2>
-                    <div class="chart-container">
-                        <canvas id="categoryBreakdownChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Performance Insights</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">Morning</div>
-                            <div class="stat-label">Most Productive Time</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">Health</div>
-                            <div class="stat-label">Most Consistent Category</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">Wednesday</div>
-                            <div class="stat-label">Best Performing Day</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">15 min</div>
-                            <div class="stat-label">Average Task Duration</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+    <div id="benefits-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Benefits of Microhabits</h1>
+            <div class="article-meta">Published on November 10, 2023 • 8 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Microhabits offer numerous advantages over traditional goal-setting methods. By focusing on small, consistent actions, you can achieve lasting change without the stress and overwhelm that often accompanies bigger goals.</p>
+           
+            <h2>Reduced Mental Resistance</h2>
+            <p>When a task feels too large or intimidating, our brains naturally resist it. Microhabits eliminate this resistance by being so small that they feel almost trivial. This makes it much easier to get started and maintain consistency.</p>
+           
+            <h2>Sustainable Progress</h2>
+            <p>Unlike crash diets or intense workout regimens that often lead to burnout, microhabits create sustainable change. Because they require minimal time and energy, you're more likely to stick with them long-term.</p>
+           
+            <h2>Compound Effect</h2>
+            <p>Just like compound interest in finance, microhabits create a compound effect over time. Reading just one page per day adds up to 365 pages in a year. Doing two minutes of exercise daily results in over 12 hours of activity annually.</p>
+           
+            <h2>Building Identity</h2>
+            <p>Microhabits help you build a new identity gradually. Instead of "trying to exercise," you become "someone who exercises regularly." This identity shift makes the behavior more natural and automatic over time.</p>
+           
+            <h2>Reduced Decision Fatigue</h2>
+            <p>When habits become automatic, they require less mental energy. You don't need to decide whether to do your microhabit—it just becomes part of your routine, preserving willpower for more important decisions.</p>
         </div>
     </div>
 
-    <!-- NEW: Share Progress Page -->
-    <div class="feature-page" id="shareProgressPage">
-        <div class="feature-container">
-            <div class="feature-header">
-                <h1>Share Progress</h1>
-                <p class="feature-subtitle">Share your achievements with the community</p>
-                
-                <div class="profile-section">
-                    <div class="profile-info">
-                        <div class="profile-pic">JD</div>
-                        <div class="profile-name">John Doe</div>
-                    </div>
-                    <div class="header-actions">
-                        <button class="back-btn" onclick="showMainPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                            </svg>
-                            Back to Home
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="feature-content">
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Community Feed</h2>
-                    <div class="community-feed" id="communityFeed">
-                        <!-- Community posts will be dynamically loaded here -->
-                        <div class="highlight-item">
-                            <div class="highlight-header">
-                                <div class="user-info">
-                                    <div class="user-avatar">AS</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Alex Smith</div>
-                                        <div class="highlight-time">2 hours ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="highlight-content">
-                                <p>Just completed my 30-day meditation streak! 🧘‍♂️ Feeling more focused and calm than ever.</p>
-                                <div class="highlight-stats">
-                                    <span class="highlight-stat">30-day streak</span>
-                                    <span class="highlight-stat">100% completion</span>
-                                </div>
-                            </div>
-                            <div class="highlight-actions">
-                                <button class="action-btn like-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                    </svg>
-                                    <span>24</span>
-                                </button>
-                                <button class="action-btn comment-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z"/>
-                                    </svg>
-                                    <span>5</span>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="highlight-item">
-                            <div class="highlight-header">
-                                <div class="user-info">
-                                    <div class="user-avatar">MJ</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Maria Johnson</div>
-                                        <div class="highlight-time">1 day ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="highlight-content">
-                                <p>Hit my reading goal for the month! 📚 5 books down, feeling accomplished and inspired.</p>
-                                <div class="highlight-stats">
-                                    <span class="highlight-stat">Monthly goal achieved</span>
-                                    <span class="highlight-stat">5 books read</span>
-                                </div>
-                            </div>
-                            <div class="highlight-actions">
-                                <button class="action-btn like-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                    </svg>
-                                    <span>18</span>
-                                </button>
-                                <button class="action-btn comment-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z"/>
-                                    </svg>
-                                    <span>3</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Share to Community</h2>
-                    <div class="share-community">
-                        <div class="share-preview">
-                            <div class="share-card">
-                                <div class="share-header">
-                                    <div class="user-info">
-                                        <div class="user-avatar">JD</div>
-                                        <div class="user-details">
-                                            <div class="user-name">John Doe</div>
-                                            <div class="share-time">Just now</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="share-content">
-                                    <div class="share-text">
-                                        <textarea class="form-textarea" id="shareText" placeholder="Share your progress with the community...">I've been crushing my goals with Kzolm! I've maintained a 245-day streak and completed 78% of my tasks. Join me in building better habits! 🚀</textarea>
-                                    </div>
-                                    <div class="share-stats">
-                                        <div class="stat-item">
-                                            <span class="stat-label">Current Streak:</span>
-                                            <span class="stat-value">245 days</span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Completion Rate:</span>
-                                            <span class="stat-value">78%</span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Tasks Completed:</span>
-                                            <span class="stat-value">42</span>
-                                        </div>
-                                    </div>
-                                    <div class="share-achievements">
-                                        <div class="achievement-badge">🔥 7-Day Streak</div>
-                                        <div class="achievement-badge">💪 Task Master</div>
-                                        <div class="achievement-badge">📚 Learning Champion</div>
-                                    </div>
-                                </div>
-                                <div class="share-actions">
-                                    <button class="btn btn-primary" onclick="shareToCommunity()">Share to Community</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Community Highlights</h2>
-                    <div class="community-highlights">
-                        <div class="highlight-item">
-                            <div class="highlight-header">
-                                <div class="user-info">
-                                    <div class="user-avatar">TW</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Taylor Wilson</div>
-                                        <div class="highlight-time">3 days ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="highlight-content">
-                                <p>Completed my first 7-day workout streak! 💪 Feeling stronger and more energetic every day.</p>
-                                <div class="highlight-stats">
-                                    <span class="highlight-stat">7-day streak</span>
-                                    <span class="highlight-stat">Workout completed</span>
-                                </div>
-                            </div>
-                            <div class="highlight-actions">
-                                <button class="action-btn like-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                    </svg>
-                                    <span>32</span>
-                                </button>
-                                <button class="action-btn comment-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z"/>
-                                    </svg>
-                                    <span>7</span>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="highlight-item">
-                            <div class="highlight-header">
-                                <div class="user-info">
-                                    <div class="user-avatar">RK</div>
-                                    <div class="user-details">
-                                        <div class="user-name">Ryan Kim</div>
-                                        <div class="highlight-time">1 week ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="highlight-content">
-                                <p>Just hit 100 days of daily journaling! 📝 This habit has completely transformed my mindset and productivity.</p>
-                                <div class="highlight-stats">
-                                    <span class="highlight-stat">100-day streak</span>
-                                    <span class="highlight-stat">Journaling habit</span>
-                                </div>
-                            </div>
-                            <div class="highlight-actions">
-                                <button class="action-btn like-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                    </svg>
-                                    <span>45</span>
-                                </button>
-                                <button class="action-btn comment-btn">
-                                    <svg class="icon icon-small" viewBox="0 0 24 24">
-                                        <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z"/>
-                                    </svg>
-                                    <span>12</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+    <div id="getting-started-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Getting Started with Microhabits</h1>
+            <div class="article-meta">Published on November 5, 2023 • 12 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Starting your microhabits journey is simple but requires careful planning. Follow these steps to set yourself up for success and create lasting change through small, consistent actions.</p>
+           
+            <h2>Step 1: Identify Your Goal</h2>
+            <p>What area of your life would you like to improve? Common categories include health, productivity, learning, relationships, and mindfulness. Be specific about what you want to achieve.</p>
+           
+            <h2>Step 2: Break It Down</h2>
+            <p>Take your goal and break it down into the smallest possible action. If you want to read more, start with one paragraph. If you want to exercise, begin with two minutes of movement.</p>
+           
+            <p>The key is to make the action so small that it feels almost too easy. This eliminates resistance and makes it more likely you'll actually do it.</p>
+           
+            <h2>Step 3: Choose a Trigger</h2>
+            <p>Attach your microhabit to an existing routine. For example:</p>
+            <ul>
+                <li>After brushing my teeth, I will do one push-up</li>
+                <li>After my morning coffee, I will read one paragraph</li>
+                <li>Before checking my phone in the morning, I will meditate for one minute</li>
+            </ul>
+           
+            <h2>Step 4: Track Your Progress</h2>
+            <p>Use a habit tracker or calendar to mark each day you complete your microhabit. Visual progress is motivating and helps build momentum.</p>
+           
+            <h2>Step 5: Gradually Increase</h2>
+            <p>Once your microhabit feels automatic (usually after 2-4 weeks), you can gradually increase the difficulty. Add one more minute, one more page, or one more repetition.</p>
+           
+            <p>Remember, the increase should still feel manageable. The goal is sustainable progress, not rapid transformation.</p>
+           
+            <h2>Common Mistakes to Avoid</h2>
+            <p>Many people fail with microhabits because they:</p>
+            <ul>
+                <li>Start too big</li>
+                <li>Try to change too many habits at once</li>
+                <li>Get discouraged by occasional misses</li>
+                <li>Don't have a clear trigger</li>
+            </ul>
+           
+            <p>Be patient with yourself and focus on consistency over perfection. Even 80% consistency with a microhabit will yield significant results over time.</p>
         </div>
     </div>
 
-    <!-- NEW: Achievements Page -->
-    <div class="feature-page" id="achievementsPage">
-        <div class="feature-container">
-            <div class="feature-header">
-                <h1>Achievements</h1>
-                <p class="feature-subtitle">Unlock badges and celebrate your progress</p>
-                
-                <div class="profile-section">
-                    <div class="profile-info">
-                        <div class="profile-pic">JD</div>
-                        <div class="profile-name">John Doe</div>
-                    </div>
-                    <div class="header-actions">
-                        <button class="back-btn" onclick="showMainPage()">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-                            </svg>
-                            Back to Home
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="feature-content">
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Your Achievements</h2>
-                    <div class="achievements-grid">
-                        <div class="achievement-card">
-                            <div class="achievement-icon">🔥</div>
-                            <div class="achievement-name">7-Day Streak</div>
-                            <div class="achievement-desc">Complete tasks for 7 consecutive days</div>
-                        </div>
-                        <div class="achievement-card">
-                            <div class="achievement-icon">💪</div>
-                            <div class="achievement-name">Task Master</div>
-                            <div class="achievement-desc">Complete 10 tasks</div>
-                        </div>
-                        <div class="achievement-card">
-                            <div class="achievement-icon">📚</div>
-                            <div class="achievement-name">Learning Champion</div>
-                            <div class="achievement-desc">Complete 5 learning tasks</div>
-                        </div>
-                        <div class="achievement-card">
-                            <div class="achievement-icon">🌅</div>
-                            <div class="achievement-name">Early Riser</div>
-                            <div class="achievement-desc">Complete a task before 8 AM</div>
-                        </div>
-                        <div class="achievement-card">
-                            <div class="achievement-icon">⚡</div>
-                            <div class="achievement-name">Speed Demon</div>
-                            <div class="achievement-desc">Complete a task within 15 minutes</div>
-                        </div>
-                        <div class="achievement-card">
-                            <div class="achievement-icon">🏆</div>
-                            <div class="achievement-name">Consistency King</div>
-                            <div class="achievement-desc">Maintain 80% completion rate for 30 days</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">In Progress</h2>
-                    <div class="achievements-grid">
-                        <div class="achievement-card achievement-locked">
-                            <div class="achievement-icon">🔥</div>
-                            <div class="achievement-name">30-Day Streak</div>
-                            <div class="achievement-desc">Complete tasks for 30 consecutive days</div>
-                            <div class="streak-status">15/30 days</div>
-                        </div>
-                        <div class="achievement-card achievement-locked">
-                            <div class="achievement-icon">💼</div>
-                            <div class="achievement-name">Work Warrior</div>
-                            <div class="achievement-desc">Complete 20 work-related tasks</div>
-                            <div class="streak-status">12/20 tasks</div>
-                        </div>
-                        <div class="achievement-card achievement-locked">
-                            <div class="achievement-icon">🧠</div>
-                            <div class="achievement-name">Brain Booster</div>
-                            <div class="achievement-desc">Complete 10 mental health tasks</div>
-                            <div class="streak-status">7/10 tasks</div>
-                        </div>
-                        <div class="achievement-card achievement-locked">
-                            <div class="achievement-icon">🏃</div>
-                            <div class="achievement-name">Fitness Fanatic</div>
-                            <div class="achievement-desc">Complete 15 fitness tasks</div>
-                            <div class="streak-status">9/15 tasks</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feature-section">
-                    <h2 class="feature-section-title">Achievement Stats</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">6</div>
-                            <div class="stat-label">Achievements Unlocked</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">42%</div>
-                            <div class="stat-label">Overall Progress</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">4</div>
-                            <div class="stat-label">In Progress</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">8</div>
-                            <div class="stat-label">Remaining</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+    <div id="success-stories-page" class="article-container" style="display: none;">
+        <a href="#" class="back-button" onclick="hideArticlePage()">&larr; Back to Home</a>
+        <div class="article-header">
+            <h1 class="article-title">Success Stories: Transforming Lives with Microhabits</h1>
+            <div class="article-meta">Published on October 28, 2023 • 15 min read</div>
+        </div>
+        <div class="article-content">
+            <p>Thousands of people have transformed their lives through the power of microhabits. Here are some inspiring stories from our community members who started small and achieved remarkable results.</p>
+           
+            <h2>Sarah's Reading Revolution</h2>
+            <p>Sarah had always wanted to be "a reader" but struggled to find time for books. She started with a microhabit of reading just one paragraph every night before bed.</p>
+           
+            <p>"At first, it felt almost silly," Sarah recalls. "But after a week, I found myself naturally reading more. Some nights I'd read a whole page or even a chapter. Within three months, I'd finished my first book in years."</p>
+           
+            <p>Two years later, Sarah has read 24 books and started a book club with friends. "The microhabit approach removed the pressure and made reading enjoyable again."</p>
+           
+            <h2>Mark's Fitness Journey</h2>
+            <p>After years of failed gym memberships and abandoned workout plans, Mark decided to try a different approach. His microhabit: two minutes of exercise every morning.</p>
+           
+            <p>"I started with simple stretches and a couple of push-ups," Mark explains. "The two-minute rule was magical—it was so easy that I never skipped a day."</p>
+           
+            <p>After a month, Mark naturally increased to five minutes, then ten. Within six months, he was exercising for 30 minutes daily and had lost 25 pounds.</p>
+           
+            <p>"The best part was that it never felt like a chore. I actually looked forward to my morning movement."</p>
+           
+            <h2>Lisa's Mindfulness Practice</h2>
+            <p>Lisa struggled with anxiety and a constantly racing mind. She tried meditation apps but found sitting still for 10-20 minutes overwhelming.</p>
+           
+            <p>Her microhabit: one minute of mindful breathing after brushing her teeth each morning.</p>
+           
+            <p>"One minute felt manageable, even on my most anxious days," Lisa says. "Some days I'd do more, but the commitment was always just one minute."</p>
+           
+            <p>After three months, Lisa's anxiety had significantly decreased, and she naturally extended her practice to 10 minutes. "The microhabit approach taught me that consistency matters more than duration."</p>
+           
+            <h2>James' Writing Dream</h2>
+            <p>James had always wanted to write a novel but could never find the time or motivation. He started with a microhabit of writing one sentence each day.</p>
+           
+            <p>"Some days I wrote just one sentence, other days I wrote pages," James shares. "The key was removing the pressure to produce."</p>
+           
+            <p>Eighteen months later, James completed his first novel. "I would have never believed that writing one sentence a day could lead to a finished book, but it did."</p>
+           
+            <h2>Your Success Story</h2>
+            <p>These stories demonstrate that significant change doesn't require dramatic actions—just small, consistent steps. What microhabit will you start today?</p>
+           
+            <p>Remember, the journey of a thousand miles begins with a single step. Or in the case of microhabits, with a single sentence, a single push-up, or a single mindful breath.</p>
         </div>
     </div>
+
+
+    <!-- Privacy Policy Page -->
+    <div id="privacy-policy-page" class="policy-container" style="display: none;">
+        <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
+            <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
+        </a>
+        <div class="policy-header">
+            <h1 class="policy-title">Privacy Policy</h1>
+            <p class="policy-subtitle">How we protect and use your data at Kzolm Microhabits</p>
+        </div>
+
+        <div class="policy-content">
+            <div class="policy-section">
+                <h2>Introduction</h2>
+                <p>Welcome to Kzolm Microhabits! We're serious about two things: helping you build better habits and protecting your privacy. This policy explains what information we collect, how we use it, and your rights regarding your data.</p>
+                <p>Think of this as our commitment to being transparent about how we handle your information while you're on your microhabits journey.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>What Information We Collect</h2>
+                <p>We collect information that helps us personalize your microhabits experience:</p>
+                <ul>
+                    <li><strong>Account Information:</strong> Your name, email, and password (safely encrypted, of course!)</li>
+                    <li><strong>Habit Data:</strong> The habits you're tracking, your progress, and completion streaks</li>
+                    <li><strong>Usage Information:</strong> How you interact with our app to make it better</li>
+                    <li><strong>Device Information:</strong> Basic info about your device to ensure compatibility</li>
+                </ul>
+                <div class="highlight">
+                    <p><strong>Important:</strong> We don't sell your personal data to third parties. Your habit journey is yours alone.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h2>How We Use Your Information</h2>
+                <p>Your data helps us help you build better habits:</p>
+                <ul>
+                    <li>To create and manage your account</li>
+                    <li>To track your habit progress and celebrate your wins</li>
+                    <li>To provide personalized recommendations for new microhabits</li>
+                    <li>To improve our services based on how people use them</li>
+                    <li>To communicate important updates about your account or our services</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Data Security</h2>
+                <p>We take security as seriously as you take your morning meditation habit. We use industry-standard measures to protect your data:</p>
+                <ul>
+                    <li>Encryption of sensitive data</li>
+                    <li>Regular security assessments</li>
+                    <li>Limited access to your personal information</li>
+                </ul>
+                <p>However, no system is 100% secure, so we encourage you to use strong passwords and keep your login information safe.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Your Rights</h2>
+                <p>You have control over your data:</p>
+                <ul>
+                    <li>Access the personal data we hold about you</li>
+                    <li>Correct inaccurate information</li>
+                    <li>Request deletion of your account and data</li>
+                    <li>Opt-out of marketing communications</li>
+                    <li>Export your habit data</li>
+                </ul>
+                <p>To exercise any of these rights, contact us at privacy@kzolm.com.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Changes to This Policy</h2>
+                <p>As we grow and improve, we may update this policy. We'll notify you of significant changes and always post the latest version on our website.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Contact Us</h2>
+                <p>If you have questions about this privacy policy or how we handle your data, reach out to us at privacy@kzolm.com. We're here to help!</p>
+            </div>
+
+            <p><em>Last updated: November 13, 2023</em></p>
+        </div>
+    </div>
+
+
+    <!-- Terms of Use Page -->
+    <div id="terms-of-use-page" class="policy-container" style="display: none;">
+        <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
+            <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
+        </a>
+        <div class="policy-header">
+            <h1 class="policy-title">Terms of Use</h1>
+            <p class="policy-subtitle">The rules of the road for using Kzolm Microhabits</p>
+        </div>
+
+        <div class="policy-content">
+            <div class="policy-section">
+                <h2>Welcome to Kzolm!</h2>
+                <p>By using Kzolm Microhabits, you're agreeing to these terms. Think of them as the micro-rules for our macro-relationship.</p>
+                <p>We've tried to make these terms as clear and straightforward as possible, because let's face it - nobody actually reads these things. But if you do, you're already demonstrating the kind of attention to detail that builds great habits!</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Your Account</h2>
+                <p>To use Kzolm, you'll need to create an account. Here's what you agree to:</p>
+                <ul>
+                    <li>Provide accurate information about yourself</li>
+                    <li>Keep your password secure (no "password123", please!)</li>
+                    <li>Notify us immediately if you suspect any unauthorized use of your account</li>
+                    <li>Be at least 13 years old to use our services</li>
+                </ul>
+                <div class="highlight">
+                    <p><strong>Remember:</strong> You're responsible for all activity that happens under your account, so keep those login details safe!</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h2>What You Can Do</h2>
+                <p>We encourage you to:</p>
+                <ul>
+                    <li>Use Kzolm to build positive microhabits</li>
+                    <li>Share your progress with friends (bragging rights earned!)</li>
+                    <li>Provide feedback to help us improve</li>
+                    <li>Use our services for personal, non-commercial purposes</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>What You Can't Do</h2>
+                <p>To keep Kzolm a positive place for everyone, please don't:</p>
+                <ul>
+                    <li>Use our service for any illegal purpose</li>
+                    <li>Try to hack, disrupt, or overload our systems</li>
+                    <li>Create multiple accounts to abuse our services</li>
+                    <li>Impersonate others or provide false information</li>
+                    <li>Attempt to reverse engineer our technology</li>
+                </ul>
+                <p>Basically, don't be the person who ruins the group meditation session for everyone else.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Our Content</h2>
+                <p>The Kzolm app, website, logos, and all related content are owned by us or our licensors. You can use our services as intended, but please don't copy, modify, or distribute our content without permission.</p>
+                <p>Your habit data belongs to you. We don't claim ownership of the information you store in your Kzolm account.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Subscription Terms</h2>
+                <p>Some features of Kzolm may require a paid subscription:</p>
+                <ul>
+                    <li>Subscriptions automatically renew unless canceled</li>
+                    <li>You can cancel anytime through your account settings</li>
+                    <li>Refunds are handled on a case-by-case basis</li>
+                    <li>We may change subscription prices with notice</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Limitation of Liability</h2>
+                <p>We work hard to provide a reliable service, but sometimes things happen that are beyond our control. To the extent permitted by law, Kzolm won't be liable for:</p>
+                <ul>
+                    <li>Service interruptions or downtime</li>
+                    <li>Any indirect or consequential damages</li>
+                    <li>Accuracy of habit recommendations (we're good, but we're not mind readers)</li>
+                    <li>Your failure to build the habits you want (consistency is key!)</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Changes to These Terms</h2>
+                <p>As Kzolm grows and evolves, we may need to update these terms. We'll notify you of significant changes, and continued use of our services means you accept the updated terms.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Contact Information</h2>
+                <p>If you have questions about these terms, reach out to us at legal@kzolm.com. We're here to help you build better habits, not create legal headaches.</p>
+            </div>
+
+            <p><em>Last updated: November 13, 2023</em></p>
+        </div>
+    </div>
+
 
     <script>
-        // Task tracking
-        let completedTasks = 1;
-        const totalTasks = 3;
-        
-        // Initialize progress
-        updateProgressBar();
-        generateStreakCalendar();
-        
-        // Update task progress
-        function updateTaskProgress() {
-            const checkboxes = document.querySelectorAll('.task-checkbox');
-            completedTasks = 0;
+        // 创建背景动画元素
+        function createBackgroundAnimations() {
+            // MICROHABITS - 粒子动画
+            const microhabitsBg = document.getElementById('microhabits-bg');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'microhabits-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                microhabitsBg.appendChild(particle);
+            }
+
+            // BENEFITS - 波浪动画
+            const benefitsBg = document.getElementById('benefits-bg');
+            const wave1 = document.createElement('div');
+            wave1.className = 'benefits-wave';
+            benefitsBg.appendChild(wave1);
             
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    completedTasks++;
-                    checkbox.nextElementSibling.classList.add('task-completed');
-                } else {
-                    checkbox.nextElementSibling.classList.remove('task-completed');
+            const wave2 = document.createElement('div');
+            wave2.className = 'benefits-wave';
+            benefitsBg.appendChild(wave2);
+
+            // GETTING STARTED - 几何图案
+            const gettingStartedBg = document.getElementById('getting-started-bg');
+            const geometry = document.createElement('div');
+            geometry.className = 'getting-started-geometry';
+            gettingStartedBg.appendChild(geometry);
+
+            // SUCCESS STORIES - 闪烁动画
+            const successStoriesBg = document.getElementById('success-stories-bg');
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'success-sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 4 + 's';
+                successStoriesBg.appendChild(sparkle);
+            }
+
+            // 为所有背景添加浮动元素
+            const backgrounds = document.querySelectorAll('.background-animation');
+            backgrounds.forEach(bg => {
+                for (let i = 0; i < 5; i++) {
+                    const element = document.createElement('div');
+                    element.className = 'floating-element';
+                    element.style.width = Math.random() * 100 + 50 + 'px';
+                    element.style.height = element.style.width;
+                    element.style.left = Math.random() * 100 + '%';
+                    element.style.top = Math.random() * 100 + '%';
+                    element.style.animationDelay = Math.random() * 15 + 's';
+                    element.style.opacity = Math.random() * 0.1 + 0.05;
+                    bg.appendChild(element);
                 }
             });
-            
-            // Update progress bar
-            updateProgressBar();
-            
-            // Update task progress text
-            document.getElementById('taskProgress').textContent = `${completedTasks} of ${totalTasks} done`;
-        }
-        
-        function updateProgressBar() {
-            const progressPercentage = (completedTasks / totalTasks) * 100;
-            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
-            document.getElementById('sidebarProgressBar').style.width = `${progressPercentage}%`;
-            document.getElementById('sidebarProgressText').textContent = `${completedTasks} of ${totalTasks} completed`;
         }
 
-        // Generate streak calendar
-        function generateStreakCalendar() {
-            const calendar = document.querySelector('.streak-calendar');
-            const daysInMonth = 31;
-            const today = new Date().getDate();
-            
-            // Generate calendar days
-            for (let i = 1; i <= daysInMonth; i++) {
-                const day = document.createElement('div');
-                day.className = 'calendar-day';
-                day.textContent = i;
-                
-                // Mark active days (for demonstration, mark days up to today)
-                if (i <= today) {
-                    day.classList.add('active');
-                } else {
-                    day.classList.add('inactive');
-                }
-                
-                // Mark today
-                if (i === today) {
-                    day.classList.add('today');
-                }
-                
-                calendar.appendChild(day);
-            }
+        // 图片轮播功能
+        const sliderWrapper = document.querySelector('.slider-image-wrapper');
+        const prevButton = document.getElementById('prev-slide');
+        const nextButton = document.getElementById('next-slide');
+        const currentSlideElement = document.getElementById('current-slide');
+        const totalSlidesElement = document.getElementById('total-slides');
+       
+        let currentSlide = 0;
+        const totalSlides = 4;
+       
+        // 初始化分页器
+        totalSlidesElement.textContent = '04';
+       
+        // 更新分页器
+        function updatePagination() {
+            currentSlideElement.textContent = (currentSlide + 1).toString().padStart(2, '0');
         }
-
-        // Page navigation functions
-        function showMainPage() {
-            document.getElementById('mainContent').style.display = 'flex';
-            document.getElementById('addTaskPage').style.display = 'none';
-            document.getElementById('statisticsPage').style.display = 'none';
-            document.getElementById('shareProgressPage').style.display = 'none';
-            document.getElementById('achievementsPage').style.display = 'none';
-        }
-
-        function showAddTaskPage() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('addTaskPage').style.display = 'flex';
-            document.getElementById('statisticsPage').style.display = 'none';
-            document.getElementById('shareProgressPage').style.display = 'none';
-            document.getElementById('achievementsPage').style.display = 'none';
-        }
-
-        function showStatisticsPage() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('addTaskPage').style.display = 'none';
-            document.getElementById('statisticsPage').style.display = 'flex';
-            document.getElementById('shareProgressPage').style.display = 'none';
-            document.getElementById('achievementsPage').style.display = 'none';
-            
-            // Initialize charts when the statistics page is shown
-            setTimeout(initializeCharts, 100);
-        }
-
-        function showShareProgressPage() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('addTaskPage').style.display = 'none';
-            document.getElementById('statisticsPage').style.display = 'none';
-            document.getElementById('shareProgressPage').style.display = 'flex';
-            document.getElementById('achievementsPage').style.display = 'none';
-        }
-
-        function showAchievementsPage() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('addTaskPage').style.display = 'none';
-            document.getElementById('statisticsPage').style.display = 'none';
-            document.getElementById('shareProgressPage').style.display = 'none';
-            document.getElementById('achievementsPage').style.display = 'flex';
-        }
-
-        // Add Task Page functionality
-        document.getElementById('taskForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // In a real app, you would save the task here
-            showToast('Task created successfully!', 'success');
-            showMainPage();
-        });
-
-        function fillTemplate(template) {
-            const templates = {
-                morning: {
-                    name: 'Morning Routine',
-                    description: 'Start the day with energy and focus',
-                    category: 'health'
-                },
-                exercise: {
-                    name: 'Exercise Session',
-                    description: 'Get moving and stay active',
-                    category: 'health'
-                },
-                reading: {
-                    name: 'Reading Goal',
-                    description: 'Expand knowledge through reading',
-                    category: 'learning'
-                },
-                work: {
-                    name: 'Work Project',
-                    description: 'Make progress on important work tasks',
-                    category: 'work'
-                }
-            };
-            
-            const selected = templates[template];
-            document.getElementById('taskName').value = selected.name;
-            document.getElementById('taskDescription').value = selected.description;
-            document.getElementById('taskCategory').value = selected.category;
-            
-            showToast(`Template "${selected.name}" loaded!`, 'success');
-        }
-
-        // Share Progress Page functionality
-        function shareToCommunity() {
-            const shareText = document.getElementById('shareText').value;
-            
-            if (shareText.trim() === '') {
-                showToast('Please add a message to share!', 'error');
-                return;
-            }
-            
-            // In a real app, this would send the data to a backend
-            showToast('Your progress has been shared to the community!', 'success');
-            
-            // Reset the form
-            document.getElementById('shareText').value = '';
-            
-            // Update the community feed
-            updateCommunityFeed();
-        }
-
-        function updateCommunityFeed() {
-            const feed = document.getElementById('communityFeed');
-            
-            // In a real app, this would fetch data from a backend
-            // For now, we'll just show a success message
-            feed.innerHTML = `
-                <div class="highlight-item">
-                    <div class="highlight-header">
-                        <div class="user-info">
-                            <div class="user-avatar">JD</div>
-                            <div class="user-details">
-                                <div class="user-name">John Doe</div>
-                                <div class="highlight-time">Just now</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="highlight-content">
-                        <p>${document.getElementById('shareText').value || 'I just shared my progress!'}</p>
-                        <div class="highlight-stats">
-                            <span class="highlight-stat">245-day streak</span>
-                            <span class="highlight-stat">78% completion</span>
-                        </div>
-                    </div>
-                    <div class="highlight-actions">
-                        <button class="action-btn like-btn">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                            </svg>
-                            <span>0</span>
-                        </button>
-                        <button class="action-btn comment-btn">
-                            <svg class="icon icon-small" viewBox="0 0 24 24">
-                                <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h11c.55 0 1-.45 1-1z"/>
-                            </svg>
-                            <span>0</span>
-                        </button>
-                    </div>
-                </div>
-            ` + feed.innerHTML;
-        }
-
-        // Toast notification function
-        function showToast(message, type) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const toastIcon = document.getElementById('toastIcon');
-            
-            toastMessage.textContent = message;
-            toast.className = 'toast';
-            
-            if (type === 'success') {
-                toast.classList.add('toast-success');
-                toastIcon.textContent = '✓';
+       
+        // 切换到指定幻灯片
+        function goToSlide(slideIndex) {
+            if (slideIndex < 0) {
+                currentSlide = totalSlides - 1;
+            } else if (slideIndex >= totalSlides) {
+                currentSlide = 0;
             } else {
-                toast.classList.add('toast-error');
-                toastIcon.textContent = '✗';
+                currentSlide = slideIndex;
             }
-            
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+           
+            const translateX = -currentSlide * 25; // 每张幻灯片占25%宽度
+            sliderWrapper.style.transform = `translateX(${translateX}%)`;
+           
+            updatePagination();
         }
-
-        // Sidebar functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Make the sidebar image clickable (link to home)
-            const sidebarImage = document.getElementById('sidebarImage');
-            sidebarImage.addEventListener('click', function() {
-                window.location.href = 'home.html';
+       
+        // 下一张幻灯片
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+       
+        // 上一张幻灯片
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+       
+        // 添加事件监听器
+        prevButton.addEventListener('click', prevSlide);
+        nextButton.addEventListener('click', nextSlide);
+       
+        // 初始化分页器
+        updatePagination();
+       
+        // 导航链接激活效果
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+               
+                // 移除所有链接的active类
+                navLinks.forEach(l => l.classList.remove('active'));
+                // 为点击的链接添加active类
+                e.target.classList.add('active');
+               
+                // 显示对应的文章页面
+                const targetId = e.target.getAttribute('href').substring(1);
+                showArticlePage(targetId);
+            });
+        });
+       
+        // Footer链接点击事件
+        document.querySelectorAll('.footer-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href === '#privacy-policy-page' || href === '#terms-of-use-page') {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    showPolicyPage(targetId);
+                }
+            });
+        });
+       
+        // 显示文章页面
+        function showArticlePage(pageId) {
+            // 隐藏所有背景动画
+            document.querySelectorAll('.background-animation').forEach(bg => {
+                bg.classList.remove('active');
+            });
+           
+            // 显示对应的背景动画
+            const bgId = pageId.replace('-page', '-bg');
+            document.getElementById(bgId).classList.add('active');
+           
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏主页内容
+            document.querySelector('.page-container').style.display = 'none';
+           
+            // 隐藏全局页脚
+            document.getElementById('global-footer').style.display = 'none';
+           
+            // 显示目标文章页面
+            const targetPage = document.getElementById(pageId);
+            targetPage.style.display = 'block';
+           
+            // 根据页面ID添加相应的动画类
+            if (pageId === 'microhabits-page') {
+                targetPage.classList.add('animate-microhabits');
+            } else if (pageId === 'benefits-page') {
+                targetPage.classList.add('animate-benefits');
+            } else if (pageId === 'getting-started-page') {
+                targetPage.classList.add('animate-getting-started');
+               
+                // 为GETTING STARTED页面的内容元素添加延迟索引
+                const contentItems = targetPage.querySelectorAll('.article-content > *');
+                contentItems.forEach((item, index) => {
+                    item.style.setProperty('--item-index', index);
+                });
+            } else if (pageId === 'success-stories-page') {
+                targetPage.classList.add('animate-success-stories');
+            }
+        }
+       
+        // 显示政策页面
+        function showPolicyPage(pageId) {
+            // 隐藏所有背景动画
+            document.querySelectorAll('.background-animation').forEach(bg => {
+                bg.classList.remove('active');
+            });
+           
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏主页内容
+            document.querySelector('.page-container').style.display = 'none';
+           
+            // 隐藏全局页脚
+            document.getElementById('global-footer').style.display = 'none';
+           
+            // 显示目标政策页面
+            const targetPage = document.getElementById(pageId);
+            targetPage.style.display = 'block';
+        }
+       
+        // 隐藏文章页面，返回主页
+        function hideArticlePage() {
+            // 隐藏所有背景动画
+            document.querySelectorAll('.background-animation').forEach(bg => {
+                bg.classList.remove('active');
+            });
+           
+            // 显示主页内容
+            document.querySelector('.page-container').style.display = 'flex';
+           
+            // 显示全局页脚
+            document.getElementById('global-footer').style.display = 'block';
+           
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+                // 移除动画类
+                page.classList.remove('animate-microhabits', 'animate-benefits', 'animate-getting-started', 'animate-success-stories');
+            });
+           
+            // 移除所有导航链接的active类
+            navLinks.forEach(l => l.classList.remove('active'));
+        }
+       
+        // 隐藏政策页面，返回主页
+        function hidePolicyPage() {
+            // 显示主页内容
+            document.querySelector('.page-container').style.display = 'flex';
+           
+            // 显示全局页脚
+            document.getElementById('global-footer').style.display = 'block';
+           
+            // 隐藏所有政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
+                page.style.display = 'none';
+            });
+        }
+       
+        // 客户证明点击事件
+        document.getElementById('customer-proof').addEventListener('click', function() {
+            document.getElementById('customer-popup').classList.add('active');
+        });
+       
+        // 搜索表单提交
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('search-input').value;
+            if (searchTerm.trim() !== '') {
+                alert(`Searching for: ${searchTerm}`);
+                // 在实际应用中，这里会执行搜索操作
+                document.getElementById('search-popup').classList.remove('active');
+            }
+        });
+       
+        // 搜索建议标签点击事件
+        document.querySelectorAll('.suggestion-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.getElementById('search-input').value = this.textContent;
+            });
+        });
+       
+        // 关闭弹出窗口
+        document.getElementById('close-nav-popup').addEventListener('click', function() {
+            document.getElementById('nav-popup').classList.remove('active');
+        });
+       
+        document.getElementById('close-customer-popup').addEventListener('click', function() {
+            document.getElementById('customer-popup').classList.remove('active');
+        });
+       
+        document.getElementById('close-search-popup').addEventListener('click', function() {
+            document.getElementById('search-popup').classList.remove('active');
+        });
+       
+        // 点击弹出窗口外部关闭
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('popup')) {
+                e.target.classList.remove('active');
+            }
+            if (e.target.classList.contains('search-popup')) {
+                e.target.classList.remove('active');
+            }
+        });
+       
+        // 按ESC键关闭搜索弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('search-popup').classList.remove('active');
+            }
+        });
+       
+        // Footer functionality
+        document.querySelectorAll('.kzolm-link').forEach(link => {
+            link.addEventListener('mouseover', function() {
+                this.style.color = '#1a9c6e';
+                this.style.transition = 'color 0.3s ease';
+            });
+           
+            link.addEventListener('mouseout', function() {
+                this.style.color = '#0e6b4b';
             });
         });
 
-        // Chart initialization
-        let progressTrendChart, categoryBreakdownChart;
-
-        function initializeCharts() {
-            // Progress Trend Chart (Line Chart)
-            const progressTrendCtx = document.getElementById('progressTrendChart').getContext('2d');
-            if (progressTrendChart) {
-                progressTrendChart.destroy();
-            }
-            progressTrendChart = new Chart(progressTrendCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Tasks Completed',
-                        data: [3, 5, 7, 6, 8, 4, 9],
-                        borderColor: '#0e6b4b',
-                        backgroundColor: 'rgba(14, 107, 75, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Weekly Task Completion'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 10,
-                            title: {
-                                display: true,
-                                text: 'Tasks Completed'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Day of Week'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Category Breakdown Chart (Doughnut Chart)
-            const categoryBreakdownCtx = document.getElementById('categoryBreakdownChart').getContext('2d');
-            if (categoryBreakdownChart) {
-                categoryBreakdownChart.destroy();
-            }
-            categoryBreakdownChart = new Chart(categoryBreakdownCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Health & Fitness', 'Work & Productivity', 'Learning & Development', 'Personal Growth', 'Social & Relationships'],
-                    datasets: [{
-                        data: [35, 25, 20, 15, 5],
-                        backgroundColor: [
-                            '#0e6b4b',
-                            '#4caf50',
-                            '#81c784',
-                            '#a5d6a7',
-                            '#c8e6c9'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Tasks by Category'
-                        }
-                    }
-                }
-            });
-        }
+        // 初始化背景动画
+        createBackgroundAnimations();
     </script>
+
+
 </body>
 </html>
