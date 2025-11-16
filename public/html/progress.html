@@ -37,7 +37,7 @@
             min-height: 100vh;
         }
 
-        /* Top Bar Styles - ADDED */
+        /* Top Bar Styles - MODIFIED */
         .top-bar {
             background-color: var(--primary-color);
             color: white;
@@ -55,9 +55,15 @@
             font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 1px;
+            margin-left: 50px; /* Added space for back button */
         }
 
+        /* Back Button - MODIFIED to top left corner */
         .back-button {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
@@ -70,11 +76,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
+            z-index: 1001;
         }
 
         .back-button:hover {
             background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
+            transform: translateY(-50%) scale(1.05);
         }
 
         /* Animated Background */
@@ -89,7 +96,7 @@
             overflow: hidden;
         }
 
-        /* 新的动画元素 - 成长粒子 */
+        /* Rest of your existing CSS remains exactly the same */
         .growth-particle {
             position: absolute;
             background: linear-gradient(to bottom, var(--primary-light), var(--primary-color));
@@ -99,7 +106,6 @@
             animation: grow-and-fade 8s infinite ease-in-out;
         }
 
-        /* 微习惯图标动画 */
         .habit-icon {
             position: absolute;
             font-size: 1.5rem;
@@ -145,7 +151,6 @@
             }
         }
 
-        /* Main Content */
         .dashboard-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -154,7 +159,6 @@
             z-index: 1;
         }
 
-        /* Header section */
         .dashboard-header {
             margin-bottom: 30px;
             text-align: center;
@@ -175,7 +179,6 @@
             font-size: 1.1rem;
         }
 
-        /* Activity selection */
         .activity-selection {
             display: flex;
             gap: 15px;
@@ -212,7 +215,6 @@
             font-size: 1.2rem;
         }
 
-        /* Time range buttons */
         .time-range-buttons {
             display: flex;
             gap: 10px;
@@ -241,7 +243,6 @@
             border-color: var(--primary-color);
         }
 
-        /* Stats grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -286,7 +287,6 @@
             color: var(--primary-color);
         }
 
-        /* Progress section */
         .progress-section {
             margin-bottom: 30px;
         }
@@ -304,7 +304,6 @@
             color: var(--primary-light);
         }
 
-        /* Calendar view */
         .calendar-container {
             background-color: var(--card-bg);
             border-radius: 15px;
@@ -371,7 +370,6 @@
             background-color: white;
         }
 
-        /* Activity log */
         .activity-section {
             margin-bottom: 30px;
         }
@@ -428,7 +426,6 @@
             color: var(--missed-color);
         }
 
-        /* Microhabits Quote */
         .quote-container {
             text-align: center;
             margin: 30px 0;
@@ -452,7 +449,6 @@
             font-weight: 600;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .dashboard-container {
                 padding: 15px;
@@ -474,12 +470,12 @@
     </style>
 </head>
 <body>
-    <!-- Top Bar - ADDED -->
+    <!-- Top Bar with Back Button in Top Left Corner -->
     <div class="top-bar">
-        <div class="brand-name">kzolm</div>
         <a href="mainpage.html" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
+        <div class="brand-name">kzolm</div>
     </div>
 
     <!-- Animated Background -->
@@ -589,14 +585,14 @@
     </div>
 
     <script>
-        // Sample data for different activities and time ranges
+        // Your existing JavaScript code remains exactly the same
         const habitData = {
             exercising: {
                 "7": {
                     streak: "5 days",
                     completions: "6",
                     rate: "86%",
-                    calendarData: [0, 1, 1, 1, 1, 1, 1], // 0 = no activity, 1 = activity
+                    calendarData: [0, 1, 1, 1, 1, 1, 1],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
                         { date: "Dec 4, 2023", status: "completed", notes: "Quick HIIT session at home" },
@@ -612,11 +608,11 @@
                     completions: "25",
                     rate: "83%",
                     calendarData: [
-                        0, 0, 0, 0, 1, 1, 1,  // Week 1
-                        1, 1, 1, 1, 1, 0, 1,  // Week 2
-                        1, 1, 1, 1, 1, 1, 1,  // Week 3
-                        1, 1, 1, 1, 1, 1, 1,  // Week 4
-                        1, 1, 1, 1            // Week 5 (partial)
+                        0, 0, 0, 0, 1, 1, 1,
+                        1, 1, 1, 1, 1, 0, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
@@ -635,13 +631,13 @@
                     completions: "89",
                     rate: "92%",
                     calendarData: [
-                        0, 0, 0, 0, 1, 1, 1,  // Week 1
-                        1, 1, 1, 1, 1, 0, 1,  // Week 2
-                        1, 1, 1, 1, 1, 1, 1,  // Week 3
-                        1, 1, 1, 1, 1, 1, 1,  // Week 4
-                        1, 1, 1, 1, 1, 1, 1,  // Week 5
-                        1, 1, 1, 1, 1, 1, 1,  // Week 6
-                        1, 1, 1, 1, 1, 1, 1   // Week 7
+                        0, 0, 0, 0, 1, 1, 1,
+                        1, 1, 1, 1, 1, 0, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
@@ -678,11 +674,11 @@
                     completions: "28",
                     rate: "93%",
                     calendarData: [
-                        1, 1, 1, 1, 1, 1, 1,  // Week 1
-                        1, 1, 1, 1, 1, 1, 1,  // Week 2
-                        1, 1, 1, 1, 1, 1, 1,  // Week 3
-                        1, 1, 1, 1, 1, 1, 1,  // Week 4
-                        1, 1, 1, 1            // Week 5 (partial)
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Drank 8 glasses of water" },
@@ -701,13 +697,13 @@
                     completions: "112",
                     rate: "95%",
                     calendarData: [
-                        1, 1, 1, 1, 1, 1, 1,  // Week 1
-                        1, 1, 1, 1, 1, 1, 1,  // Week 2
-                        1, 1, 1, 1, 1, 1, 1,  // Week 3
-                        1, 1, 1, 1, 1, 1, 1,  // Week 4
-                        1, 1, 1, 1, 1, 1, 1,  // Week 5
-                        1, 1, 1, 1, 1, 1, 1,  // Week 6
-                        1, 1, 1, 1, 1, 1, 1   // Week 7
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Drank 8 glasses of water" },
@@ -744,11 +740,11 @@
                     completions: "18",
                     rate: "60%",
                     calendarData: [
-                        0, 0, 0, 1, 1, 1, 0,  // Week 1
-                        1, 1, 0, 1, 1, 0, 1,  // Week 2
-                        0, 1, 1, 0, 1, 1, 0,  // Week 3
-                        1, 0, 1, 1, 0, 1, 1,  // Week 4
-                        0, 1, 1, 0            // Week 5 (partial)
+                        0, 0, 0, 1, 1, 1, 0,
+                        1, 1, 0, 1, 1, 0, 1,
+                        0, 1, 1, 0, 1, 1, 0,
+                        1, 0, 1, 1, 0, 1, 1,
+                        0, 1, 1, 0
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Read 20 pages of 'Atomic Habits'" },
@@ -767,13 +763,13 @@
                     completions: "67",
                     rate: "75%",
                     calendarData: [
-                        0, 0, 0, 1, 1, 1, 0,  // Week 1
-                        1, 1, 0, 1, 1, 0, 1,  // Week 2
-                        0, 1, 1, 0, 1, 1, 0,  // Week 3
-                        1, 0, 1, 1, 0, 1, 1,  // Week 4
-                        0, 1, 1, 0, 1, 1, 1,  // Week 5
-                        1, 0, 1, 1, 0, 1, 1,  // Week 6
-                        0, 1, 1, 0, 1, 1, 1   // Week 7
+                        0, 0, 0, 1, 1, 1, 0,
+                        1, 1, 0, 1, 1, 0, 1,
+                        0, 1, 1, 0, 1, 1, 0,
+                        1, 0, 1, 1, 0, 1, 1,
+                        0, 1, 1, 0, 1, 1, 1,
+                        1, 0, 1, 1, 0, 1, 1,
+                        0, 1, 1, 0, 1, 1, 1
                     ],
                     logData: [
                         { date: "Dec 5, 2023", status: "completed", notes: "Read 20 pages of 'Atomic Habits'" },
@@ -791,55 +787,45 @@
             }
         };
 
-        // Create animated background
         function createBackgroundAnimation() {
             const container = document.getElementById('background-animation');
             
-            // Create growth particles
             for (let i = 0; i < 25; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'growth-particle';
                 
-                // Random size and position
                 const size = Math.random() * 15 + 5;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
                 
-                // Random animation delay
                 particle.style.animationDelay = `${Math.random() * 8}s`;
                 
                 container.appendChild(particle);
             }
             
-            // Create floating habit icons
             const icons = ['fa-running', 'fa-tint', 'fa-book', 'fa-heart', 'fa-apple-alt', 'fa-bed'];
             for (let i = 0; i < 12; i++) {
                 const icon = document.createElement('i');
                 icon.className = `fas ${icons[Math.floor(Math.random() * icons.length)]} habit-icon`;
                 
-                // Random position
                 icon.style.left = `${Math.random() * 100}%`;
                 icon.style.top = `${Math.random() * 100}%`;
                 
-                // Random animation delay
                 icon.style.animationDelay = `${Math.random() * 20}s`;
                 
                 container.appendChild(icon);
             }
         }
 
-        // Update the UI based on selected activity and time range
         function updateUI(activity, range) {
             const data = habitData[activity][range];
             
-            // Update stats
             document.getElementById('streak-value').textContent = data.streak;
             document.getElementById('completions-value').textContent = data.completions;
             document.getElementById('rate-value').textContent = data.rate;
             
-            // Update progress title
             const activityNames = {
                 exercising: "Exercising",
                 water: "Drinking Water",
@@ -855,43 +841,33 @@
             document.getElementById('progress-title').innerHTML = 
                 `<i class="fas fa-chart-line"></i>${activityNames[activity]} Progress - ${rangeNames[range]}`;
             
-            // Update calendar
             updateCalendar(data.calendarData, range);
-            
-            // Update activity log
             updateActivityLog(data.logData);
         }
 
-        // Update calendar view
         function updateCalendar(calendarData, range) {
             const calendarGrid = document.getElementById('calendar-grid');
             calendarGrid.innerHTML = '';
             
-            // Get current date info
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
             
-            // Calculate starting day based on range
             let startDate;
             let daysToShow;
             
             if (range === "7") {
                 daysToShow = 7;
                 startDate = new Date(now);
-                startDate.setDate(now.getDate() - 6); // Show last 7 days including today
+                startDate.setDate(now.getDate() - 6);
             } else if (range === "30") {
                 daysToShow = 30;
                 startDate = new Date(now);
-                startDate.setDate(now.getDate() - 29); // Show last 30 days including today
+                startDate.setDate(now.getDate() - 29);
             } else {
-                // For "all" range, show a fixed number of days (42 to fill 6 weeks)
                 daysToShow = 42;
                 startDate = new Date(now);
-                startDate.setDate(now.getDate() - 41); // Show last 42 days including today
+                startDate.setDate(now.getDate() - 41);
             }
             
-            // Add days to the calendar
             for (let i = 0; i < daysToShow; i++) {
                 const currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
@@ -899,12 +875,10 @@
                 const dayElement = document.createElement('div');
                 dayElement.className = 'calendar-day';
                 
-                // Mark today
                 if (currentDate.toDateString() === now.toDateString()) {
                     dayElement.classList.add('today');
                 }
                 
-                // Mark days with activity
                 if (calendarData[i] === 1) {
                     dayElement.classList.add('has-activity');
                 }
@@ -914,7 +888,6 @@
                 dayNumber.textContent = currentDate.getDate();
                 dayElement.appendChild(dayNumber);
                 
-                // Add activity indicator for days with activity
                 if (dayElement.classList.contains('has-activity')) {
                     const indicator = document.createElement('div');
                     indicator.className = 'activity-indicator';
@@ -925,7 +898,6 @@
             }
         }
 
-        // Update activity log
         function updateActivityLog(logData) {
             const tableBody = document.getElementById('activity-table-body');
             tableBody.innerHTML = '';
@@ -953,7 +925,6 @@
             });
         }
 
-        // Add interactivity to time range buttons
         const timeButtons = document.querySelectorAll('.time-btn');
         timeButtons.forEach(btn => {
             btn.addEventListener('click', function() {
@@ -966,7 +937,6 @@
             });
         });
 
-        // Add interactivity to activity selection
         const activityItems = document.querySelectorAll('.activity-item');
         activityItems.forEach(item => {
             item.addEventListener('click', function() {
@@ -979,11 +949,9 @@
             });
         });
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             createBackgroundAnimation();
             
-            // Set initial state
             const initialActivity = document.querySelector('.activity-item.active').dataset.activity;
             const initialRange = document.querySelector('.time-btn.active').dataset.range;
             updateUI(initialActivity, initialRange);

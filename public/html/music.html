@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music | Kzolm</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>MicroHabits - Goals</title>
     <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,752 +25,398 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #2f5d44;
-            --secondary: #5b8765;
-            --accent: #9ef86c;
-            --light: #f9f9f9;
-            --dark: #204b33;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --shadow: 0 5px 15px rgba(0,0,0,0.08);
-            --music-primary: #4a306d;
-            --music-secondary: #6a4c93;
-        }
-
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-color);
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .back-btn {
-            display: inline-flex;
+        /* Top Bar */
+        .top-bar {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: var(--music-primary);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 30px;
+            transition: var(--transition);
             text-decoration: none;
+            margin-right: 15px;
         }
 
-        .back-btn:hover {
-            background: var(--music-secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
 
-        .page-title {
+        /* Page Header */
+        .page-header {
             text-align: center;
-            margin-bottom: 40px;
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
+            margin: 40px 0;
+            animation: fadeInUp 1s ease-out;
         }
 
-        .page-title h1 {
-            font-size: 2.5rem;
+        .page-header h1 {
+            font-size: 3rem;
+            color: var(--primary-color);
             margin-bottom: 10px;
-            background: linear-gradient(to right, #9ef86c, #6a4c93);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .page-title p {
-            color: #b0b0b0;
-            font-size: 1.1rem;
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .music-player {
+        /* Goals Container */
+        .goals-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 40px;
+            margin: 40px 0;
         }
 
-        @media (max-width: 900px) {
-            .music-player {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .now-playing {
-            background: rgba(255, 255, 255, 0.05);
+        .goal-form {
+            background: var(--card-color);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
         }
 
-        .album-art {
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 25px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            position: relative;
-        }
-
-        .album-art img {
-            width: 100%;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .album-art:hover img {
-            transform: scale(1.05);
-        }
-
-        .album-art::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
-            pointer-events: none;
-        }
-
-        .song-info {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .song-title {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .song-artist {
-            font-size: 1.2rem;
-            color: #b0b0b0;
-            margin-bottom: 5px;
-        }
-
-        .song-album {
-            font-size: 1rem;
-            color: #9ef86c;
-        }
-
-        .progress-container {
-            margin-bottom: 25px;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(to right, #9ef86c, #6a4c93);
-            border-radius: 3px;
-            width: 30%;
-            transition: width 0.1s linear;
-        }
-
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: #b0b0b0;
-        }
-
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
+        .goal-form h2 {
+            color: var(--primary-color);
             margin-bottom: 20px;
         }
 
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .play-btn {
-            width: 70px;
-            height: 70px;
-            background: var(--accent);
-            color: var(--dark);
-            font-size: 1.8rem;
-        }
-
-        .play-btn:hover {
-            background: #8be35f;
-            transform: scale(1.1);
-        }
-
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .volume-bar {
-            flex: 1;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .volume-level {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 2px;
-            width: 70%;
-        }
-
-        .playlist-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
             font-weight: 600;
         }
 
-        .search-box {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 20px;
-            padding: 10px 15px;
-            color: white;
-            width: 200px;
-        }
-
-        .search-box::placeholder {
-            color: #b0b0b0;
-        }
-
-        .playlist {
-            list-style: none;
-        }
-
-        .playlist-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
             border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0;
-            animation: slideIn 0.5s ease forwards;
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
-        .playlist-item:nth-child(1) { animation-delay: 0.1s; }
-        .playlist-item:nth-child(2) { animation-delay: 0.2s; }
-        .playlist-item:nth-child(3) { animation-delay: 0.3s; }
-        .playlist-item:nth-child(4) { animation-delay: 0.4s; }
-        .playlist-item:nth-child(5) { animation-delay: 0.5s; }
-        .playlist-item:nth-child(6) { animation-delay: 0.6s; }
-        .playlist-item:nth-child(7) { animation-delay: 0.7s; }
-        .playlist-item:nth-child(8) { animation-delay: 0.8s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 107, 75, 0.1);
+        }
 
-        .playlist-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .goals-list {
+            background: var(--card-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .goal-item {
+            background: rgba(14, 107, 75, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .goal-item:hover {
             transform: translateX(5px);
+            background: rgba(14, 107, 75, 0.1);
         }
 
-        .playlist-item.active {
-            background: rgba(158, 248, 108, 0.2);
-            border-left: 3px solid var(--accent);
-        }
-
-        .item-number {
-            width: 30px;
-            text-align: center;
-            color: #b0b0b0;
-            font-size: 0.9rem;
-        }
-
-        .item-info {
-            flex: 1;
-            margin-left: 15px;
-        }
-
-        .item-title {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .item-artist {
-            font-size: 0.9rem;
-            color: #b0b0b0;
-        }
-
-        .item-duration {
-            color: #b0b0b0;
-            font-size: 0.9rem;
-        }
-
-        .item-play {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
+        .goal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            margin-left: 15px;
-            opacity: 0;
-            transition: all 0.3s;
+            margin-bottom: 10px;
         }
 
-        .playlist-item:hover .item-play {
-            opacity: 1;
+        .goal-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
         }
 
-        .playlist-item.active .item-play {
-            opacity: 1;
-            background: var(--accent);
-            color: var(--dark);
+        .goal-category {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
         }
 
-        .visualizer {
-            height: 100px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 4px;
-            margin-top: 30px;
-            opacity: 0;
-            animation: fadeIn 1s ease 0.5s forwards;
+        .goal-progress {
+            margin-top: 10px;
         }
 
-        .bar {
-            width: 8px;
-            background: linear-gradient(to top, #9ef86c, #6a4c93);
-            border-radius: 4px 4px 0 0;
-            animation: equalizer 1.5s ease infinite alternate;
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
         }
 
-        .bar:nth-child(1) { height: 20%; animation-delay: 0s; }
-        .bar:nth-child(2) { height: 40%; animation-delay: 0.1s; }
-        .bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
-        .bar:nth-child(4) { height: 80%; animation-delay: 0.3s; }
-        .bar:nth-child(5) { height: 100%; animation-delay: 0.4s; }
-        .bar:nth-child(6) { height: 80%; animation-delay: 0.5s; }
-        .bar:nth-child(7) { height: 60%; animation-delay: 0.6s; }
-        .bar:nth-child(8) { height: 40%; animation-delay: 0.7s; }
-        .bar:nth-child(9) { height: 20%; animation-delay: 0.8s; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
 
-        @keyframes slideIn {
-            from { 
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(14, 107, 75, 0.3);
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
-            to { 
+            to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes equalizer {
-            0% { height: 20%; }
-            100% { height: 100%; }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        /* Scrollbar styling */
-        .playlist-section::-webkit-scrollbar {
-            width: 8px;
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 12px 15px;
+            }
+            
+            .brand-name {
+                font-size: 1.3rem;
+            }
+            
+            .back-button {
+                width: 35px;
+                height: 35px;
+                margin-right: 12px;
+            }
 
-        .playlist-section::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-        }
+            .page-header h1 {
+                font-size: 2rem;
+            }
 
-        .playlist-section::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
-
-        .playlist-section::-webkit-scrollbar-thumb:hover {
-            background: #8be35f;
+            .goals-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Back Button -->
-        <a href="mainpage.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Main Page
+    <!-- Top Bar Only -->
+    <div class="top-bar">
+        <a href="mainpage.html" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+            </svg>
         </a>
+        <div class="brand-name">kzolm</div>
+    </div>
 
-        <!-- Page Title -->
-        <div class="page-title">
-            <h1>Focus & Relaxation Music</h1>
-            <p>Curated playlists to enhance your microhabits journey</p>
+    <div class="container">
+        <div class="page-header">
+            <h1>Your Goals</h1>
+            <p>Set meaningful goals and track your progress towards better habits</p>
         </div>
 
-        <!-- Music Player -->
-        <div class="music-player">
-            <!-- Now Playing Section -->
-            <div class="now-playing">
-                <div class="album-art">
-                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Album Art">
-                </div>
-                
-                <div class="song-info">
-                    <h2 class="song-title">Morning Calm</h2>
-                    <p class="song-artist">Kzolm Sounds</p>
-                    <p class="song-album">Focus & Flow</p>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress"></div>
+        <div class="goals-container">
+            <div class="goal-form">
+                <h2>Create New Goal</h2>
+                <form id="goal-form">
+                    <div class="form-group">
+                        <label for="goal-title">Goal Title</label>
+                        <input type="text" id="goal-title" placeholder="e.g., Meditate daily" required>
                     </div>
-                    <div class="time-info">
-                        <span class="current-time">1:24</span>
-                        <span class="total-time">4:36</span>
+                    <div class="form-group">
+                        <label for="goal-category">Category</label>
+                        <select id="goal-category">
+                            <option value="health">Health & Wellness</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="learning">Learning</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="financial">Financial</option>
+                        </select>
                     </div>
-                </div>
-                
-                <div class="player-controls">
-                    <button class="control-btn">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="control-btn play-btn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="control-btn">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                </div>
-                
-                <div class="volume-control">
-                    <i class="fas fa-volume-up"></i>
-                    <div class="volume-bar">
-                        <div class="volume-level"></div>
+                    <div class="form-group">
+                        <label for="goal-duration">Duration (days)</label>
+                        <input type="number" id="goal-duration" min="1" max="365" value="30">
                     </div>
-                </div>
-                
-                <div class="visualizer">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
+                    <div class="form-group">
+                        <label for="goal-description">Description</label>
+                        <textarea id="goal-description" rows="3" placeholder="Describe your goal..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Create Goal</button>
+                </form>
             </div>
-            
-            <!-- Playlist Section -->
-            <div class="playlist-section">
-                <div class="section-header">
-                    <h2 class="section-title">Focus Playlist</h2>
-                    <input type="text" class="search-box" placeholder="Search...">
+
+            <div class="goals-list">
+                <h2>Your Goals</h2>
+                <div id="goals-container">
+                    <!-- Goals will be dynamically added here -->
                 </div>
-                
-                <ul class="playlist">
-                    <li class="playlist-item active">
-                        <span class="item-number">1</span>
-                        <div class="item-info">
-                            <div class="item-title">Morning Calm</div>
-                            <div class="item-artist">Kzolm Sounds</div>
-                        </div>
-                        <span class="item-duration">4:36</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">2</span>
-                        <div class="item-info">
-                            <div class="item-title">Deep Focus</div>
-                            <div class="item-artist">Mindful Beats</div>
-                        </div>
-                        <span class="item-duration">5:12</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">3</span>
-                        <div class="item-info">
-                            <div class="item-title">Productive Flow</div>
-                            <div class="item-artist">Focus Waves</div>
-                        </div>
-                        <span class="item-duration">3:58</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">4</span>
-                        <div class="item-info">
-                            <div class="item-title">Study Session</div>
-                            <div class="item-artist">Academic Tones</div>
-                        </div>
-                        <span class="item-duration">6:24</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">5</span>
-                        <div class="item-info">
-                            <div class="item-title">Creative Spark</div>
-                            <div class="item-artist">Inspiration Sounds</div>
-                        </div>
-                        <span class="item-duration">4:45</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">6</span>
-                        <div class="item-info">
-                            <div class="item-title">Mindful Moments</div>
-                            <div class="item-artist">Kzolm Sounds</div>
-                        </div>
-                        <span class="item-duration">5:30</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">7</span>
-                        <div class="item-info">
-                            <div class="item-title">Evening Wind Down</div>
-                            <div class="item-artist">Calm Collective</div>
-                        </div>
-                        <span class="item-duration">7:15</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                    
-                    <li class="playlist-item">
-                        <span class="item-number">8</span>
-                        <div class="item-info">
-                            <div class="item-title">Sleep Well</div>
-                            <div class="item-artist">Dreamy Sounds</div>
-                        </div>
-                        <span class="item-duration">8:42</span>
-                        <button class="item-play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
 
     <script>
-        // Music Player Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const playBtn = document.querySelector('.play-btn');
-            const progressBar = document.querySelector('.progress');
-            const progressContainer = document.querySelector('.progress-bar');
-            const currentTimeEl = document.querySelector('.current-time');
-            const totalTimeEl = document.querySelector('.total-time');
-            const playlistItems = document.querySelectorAll('.playlist-item');
-            const volumeBar = document.querySelector('.volume-level');
-            const visualizer = document.querySelector('.visualizer');
-            const bars = document.querySelectorAll('.bar');
+        let goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+        document.getElementById('goal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            let isPlaying = false;
-            let currentSongIndex = 0;
+            const title = document.getElementById('goal-title').value;
+            const category = document.getElementById('goal-category').value;
+            const duration = parseInt(document.getElementById('goal-duration').value);
+            const description = document.getElementById('goal-description').value;
+
+            const newGoal = {
+                id: Date.now(),
+                title,
+                category,
+                duration,
+                description,
+                progress: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            goals.push(newGoal);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
             
-            // Toggle play/pause
-            playBtn.addEventListener('click', function() {
-                isPlaying = !isPlaying;
-                
-                if (isPlaying) {
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    visualizer.style.opacity = '1';
-                    // Animate bars
-                    bars.forEach(bar => {
-                        bar.style.animationPlayState = 'running';
-                    });
-                } else {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    visualizer.style.opacity = '0.5';
-                    // Pause bars animation
-                    bars.forEach(bar => {
-                        bar.style.animationPlayState = 'paused';
-                    });
-                }
-            });
+            // Reset form
+            document.getElementById('goal-form').reset();
+            document.getElementById('goal-duration').value = 30;
             
-            // Update progress bar (simulated)
-            function updateProgress() {
-                if (isPlaying) {
-                    // Simulate progress - in a real app this would be connected to actual audio
-                    const currentWidth = parseFloat(progressBar.style.width) || 0;
-                    if (currentWidth < 100) {
-                        progressBar.style.width = (currentWidth + 0.1) + '%';
-                        
-                        // Update time (simulated)
-                        const currentMinutes = Math.floor((currentWidth / 100) * 4);
-                        const currentSeconds = Math.floor(((currentWidth / 100) * 276) % 60);
-                        currentTimeEl.textContent = `${currentMinutes}:${currentSeconds < 10 ? '0' : ''}${currentSeconds}`;
-                    } else {
-                        // Song ended, play next
-                        playNext();
-                    }
-                }
-            }
-            
-            // Set up progress update interval
-            setInterval(updateProgress, 100);
-            
-            // Click on progress bar to seek
-            progressContainer.addEventListener('click', function(e) {
-                const width = this.clientWidth;
-                const clickX = e.offsetX;
-                const percentage = (clickX / width) * 100;
-                progressBar.style.width = percentage + '%';
-            });
-            
-            // Click on volume bar to adjust volume
-            document.querySelector('.volume-bar').addEventListener('click', function(e) {
-                const width = this.clientWidth;
-                const clickX = e.offsetX;
-                const percentage = (clickX / width) * 100;
-                volumeBar.style.width = percentage + '%';
-            });
-            
-            // Playlist item selection
-            playlistItems.forEach((item, index) => {
-                item.addEventListener('click', function() {
-                    // Remove active class from all items
-                    playlistItems.forEach(i => i.classList.remove('active'));
-                    
-                    // Add active class to clicked item
-                    this.classList.add('active');
-                    
-                    // Update current song index
-                    currentSongIndex = index;
-                    
-                    // Update now playing info
-                    const title = this.querySelector('.item-title').textContent;
-                    const artist = this.querySelector('.item-artist').textContent;
-                    
-                    document.querySelector('.song-title').textContent = title;
-                    document.querySelector('.song-artist').textContent = artist;
-                    
-                    // Reset progress
-                    progressBar.style.width = '0%';
-                    currentTimeEl.textContent = '0:00';
-                    
-                    // If not playing, start playing
-                    if (!isPlaying) {
-                        isPlaying = true;
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        visualizer.style.opacity = '1';
-                        bars.forEach(bar => {
-                            bar.style.animationPlayState = 'running';
-                        });
-                    }
-                });
-            });
-            
-            // Play next song
-            function playNext() {
-                currentSongIndex = (currentSongIndex + 1) % playlistItems.length;
-                playlistItems[currentSongIndex].click();
-            }
-            
-            // Play previous song
-            document.querySelector('.fa-step-backward').closest('.control-btn').addEventListener('click', function() {
-                currentSongIndex = (currentSongIndex - 1 + playlistItems.length) % playlistItems.length;
-                playlistItems[currentSongIndex].click();
-            });
-            
-            // Play next song
-            document.querySelector('.fa-step-forward').closest('.control-btn').addEventListener('click', playNext);
-            
-            // Search functionality
-            const searchBox = document.querySelector('.search-box');
-            searchBox.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                
-                playlistItems.forEach(item => {
-                    const title = item.querySelector('.item-title').textContent.toLowerCase();
-                    const artist = item.querySelector('.item-artist').textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || artist.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
+            // Show success animation
+            const btn = document.querySelector('.goal-form .btn');
+            btn.textContent = '✓ Goal Created!';
+            setTimeout(() => {
+                btn.textContent = 'Create Goal';
+            }, 2000);
         });
+
+        function renderGoals() {
+            const container = document.getElementById('goals-container');
+            container.innerHTML = '';
+
+            if (goals.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light);">No goals yet. Create your first goal!</p>';
+                return;
+            }
+
+            goals.forEach(goal => {
+                const goalElement = document.createElement('div');
+                goalElement.className = 'goal-item';
+                goalElement.innerHTML = `
+                    <div class="goal-header">
+                        <div class="goal-title">${goal.title}</div>
+                        <div class="goal-category">${goal.category}</div>
+                    </div>
+                    <p>${goal.description}</p>
+                    <div class="goal-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9rem;">
+                            <span>${goal.progress}% Complete</span>
+                            <span>${goal.duration} days</span>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteGoal(${goal.id})">Delete</button>
+                `;
+                container.appendChild(goalElement);
+            });
+        }
+
+        function deleteGoal(id) {
+            goals = goals.filter(goal => goal.id !== id);
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
+        }
+
+        // Initialize
+        renderGoals();
     </script>
 </body>
 </html>
