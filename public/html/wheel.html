@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel of Tiny Challenges | Microhabits</title>
+    <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .wheel-container {
+            flex: 1;
+            min-width: 350px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: auto;
+            transform-origin: center;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 0 0 5px var(--primary-dark), 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-color);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 5;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .spin-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(14, 107, 75, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spin-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(14, 107, 75, 0.4);
+        }
+
+        .spin-button:active {
+            transform: translateY(1px);
+        }
+
+        .spin-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .challenges-info {
+            flex: 1;
+            min-width: 350px;
+            max-width: 500px;
+            background: var(--card-color);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .challenge-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .challenge-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(14, 107, 75, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .challenge-item:hover {
+            background: rgba(14, 107, 75, 0.1);
+            transform: translateX(5px);
+        }
+
+        .result-container {
+            background: rgba(14, 107, 75, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border: 2px dashed var(--primary-color);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .result-challenge {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .result-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .accept-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .skip-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .skip-btn:hover {
+            background: #e68900;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .stat-card {
+            background: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            flex: 1;
+            margin: 0 10px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            opacity: 0;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .bounce {
+            animation: bounce 1s;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .wheel-container, .challenges-info {
+                max-width: 100%;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Wheel of Tiny Challenges</h1>
+            <p class="subtitle">Spin the wheel to discover your next microhabit challenge! Complete them daily to build lasting positive habits.</p>
+        </header>
+
+        <div class="content">
+            <div class="wheel-container">
+                <div class="wheel-wrapper">
+                    <div class="pointer"></div>
+                    <svg class="wheel" viewBox="0 0 400 400" id="wheel">
+                        <!-- Wheel segments will be generated by JavaScript -->
+                    </svg>
+                    <div class="wheel-center">SPIN</div>
+                </div>
+                <button class="spin-button" id="spinButton">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 6V3L16 7L12 11V8C8.69 8 6 10.69 6 14C6 15.04 6.38 16 7 16.88C7.62 17.76 8.54 18.5 9.54 19.06C10.54 19.62 11.63 20 12.73 20C15.62 20 18.13 18.47 19.26 16H17.2C16.33 17.19 14.81 18 13.03 18C10.82 18 8.97 16.65 8.28 14.73C8.07 14.15 7.96 13.54 7.96 12.91C7.96 12.28 8.07 11.67 8.28 11.09C8.97 9.17 10.82 7.82 13.03 7.82C14.23 7.82 15.36 8.23 16.29 8.96L18.78 6.47C17.28 5.22 15.36 4.5 13.03 4.5C10.7 4.5 8.78 5.22 7.28 6.47C5.78 7.72 4.78 9.47 4.29 11.44C3.8 13.41 3.8 15.53 4.29 17.5C4.78 19.47 5.78 21.22 7.28 22.47C8.78 23.72 10.7 24.5 13.03 24.5C15.36 24.5 17.28 23.72 18.78 22.47C20.28 21.22 21.28 19.47 21.77 17.5C22.26 15.53 22.26 13.41 21.77 11.44C21.5 10.35 21.06 9.33 20.5 8.41L18.01 10.9C18.35 11.35 18.63 11.84 18.84 12.37C19.05 12.9 19.16 13.46 19.16 14.04C19.16 14.62 19.05 15.18 18.84 15.71C18.63 16.24 18.35 16.73 18.01 17.18C17.67 17.63 17.27 18.02 16.82 18.36C16.37 18.7 15.88 18.98 15.35 19.19C14.82 19.4 14.26 19.51 13.68 19.51C13.1 19.51 12.54 19.4 12.01 19.19C11.48 18.98 10.99 18.7 10.54 18.36C10.09 18.02 9.69 17.63 9.35 17.18C9.01 16.73 8.73 16.24 8.52 15.71C8.31 15.18 8.2 14.62 8.2 14.04C8.2 12.87 8.59 11.81 9.27 10.97C9.95 10.13 10.89 9.57 11.95 9.41V6Z" fill="white"/>
+                    </svg>
+                    Spin the Wheel
+                </button>
+            </div>
+
+            <div class="challenges-info">
+                <h2 class="section-title">Your Challenge</h2>
+                <div class="result-container" id="resultContainer">
+                    <p id="defaultResult">Spin the wheel to get your challenge!</p>
+                    <div id="challengeResult" style="display: none;">
+                        <p class="result-title">Your Challenge Is:</p>
+                        <p class="result-challenge" id="challengeName"></p>
+                        <p class="result-description" id="challengeDescription"></p>
+                        <div class="action-buttons">
+                            <button class="action-btn accept-btn" id="acceptChallenge">Accept Challenge</button>
+                            <button class="action-btn skip-btn" id="skipChallenge">Skip</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Available Challenges</h2>
+                <ul class="challenge-list" id="challengeList">
+                    <!-- Challenges will be populated by JavaScript -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="completedChallenges">0</div>
+                <div class="stat-label">Completed Challenges</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalSpins">0</div>
+                <div class="stat-label">Total Spins</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Challenge data
+        const challenges = [
+            {
+                name: "5-Minute Meditation",
+                description: "Take 5 minutes to sit quietly and focus on your breathing.",
+                color: "#0e6b4b"
+            },
+            {
+                name: "Drink a Glass of Water",
+                description: "Hydrate your body with a full glass of water.",
+                color: "#4caf50"
+            },
+            {
+                name: "10-Minute Walk",
+                description: "Go for a 10-minute walk to refresh your mind and body.",
+                color: "#0a4f36"
+            },
+            {
+                name: "Read 5 Pages",
+                description: "Read 5 pages from a book you've been meaning to read.",
+                color: "#388e3c"
+            },
+            {
+                name: "Express Gratitude",
+                description: "Write down three things you're grateful for today.",
+                color: "#2e7d32"
+            },
+            {
+                name: "Stretch Break",
+                description: "Take a 3-minute break to stretch your body.",
+                color: "#1b5e20"
+            },
+            {
+                name: "Digital Detox",
+                description: "Spend 15 minutes without any screens or digital devices.",
+                color: "#0e6b4b"
+            },
+            {
+                name: "Healthy Snack",
+                description: "Choose a healthy snack instead of a processed one.",
+                color: "#4caf50"
+            }
+        ];
+
+        // Initialize variables
+        let isSpinning = false;
+        let completedChallenges = 0;
+        let currentStreak = 0;
+        let totalSpins = 0;
+        let currentChallenge = null;
+
+        // DOM elements
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spinButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const defaultResult = document.getElementById('defaultResult');
+        const challengeResult = document.getElementById('challengeResult');
+        const challengeName = document.getElementById('challengeName');
+        const challengeDescription = document.getElementById('challengeDescription');
+        const acceptChallengeBtn = document.getElementById('acceptChallenge');
+        const skipChallengeBtn = document.getElementById('skipChallenge');
+        const challengeList = document.getElementById('challengeList');
+        const completedChallengesEl = document.getElementById('completedChallenges');
+        const currentStreakEl = document.getElementById('currentStreak');
+        const totalSpinsEl = document.getElementById('totalSpins');
+
+        // Initialize the wheel
+        function initializeWheel() {
+            // Clear existing wheel content
+            wheel.innerHTML = '';
+            
+            const centerX = 200;
+            const centerY = 200;
+            const radius = 180;
+            const anglePerSegment = (2 * Math.PI) / challenges.length;
+            
+            // Create wheel segments
+            challenges.forEach((challenge, index) => {
+                const startAngle = index * anglePerSegment;
+                const endAngle = (index + 1) * anglePerSegment;
+                
+                // Create path for segment
+                const startX = centerX + radius * Math.cos(startAngle);
+                const startY = centerY + radius * Math.sin(startAngle);
+                const endX = centerX + radius * Math.cos(endAngle);
+                const endY = centerY + radius * Math.sin(endAngle);
+                
+                const largeArcFlag = endAngle - startAngle <= Math.PI ? 0 : 1;
+                
+                const pathData = [
+                    `M ${centerX} ${centerY}`,
+                    `L ${startX} ${startY}`,
+                    `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+                    'Z'
+                ].join(' ');
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', pathData);
+                path.setAttribute('fill', challenge.color);
+                path.setAttribute('stroke', 'white');
+                path.setAttribute('stroke-width', '2');
+                path.setAttribute('data-index', index);
+                
+                wheel.appendChild(path);
+                
+                // Add text to segment
+                const textAngle = startAngle + anglePerSegment / 2;
+                const textRadius = radius * 0.7;
+                const textX = centerX + textRadius * Math.cos(textAngle);
+                const textY = centerY + textRadius * Math.sin(textAngle);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', textX);
+                text.setAttribute('y', textY);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-weight', 'bold');
+                text.setAttribute('font-size', '14');
+                text.setAttribute('transform', `rotate(${textAngle * 180 / Math.PI + 90}, ${textX}, ${textY})`);
+                
+                // Split challenge name for better display
+                const words = challenge.name.split(' ');
+                if (words.length > 2) {
+                    text.innerHTML = `<tspan x="${textX}" dy="-0.5em">${words.slice(0, 2).join(' ')}</tspan><tspan x="${textX}" dy="1.2em">${words.slice(2).join(' ')}</tspan>`;
+                } else {
+                    text.textContent = challenge.name;
+                }
+                
+                wheel.appendChild(text);
+            });
+            
+            // Populate challenge list
+            challengeList.innerHTML = '';
+            challenges.forEach(challenge => {
+                const li = document.createElement('li');
+                li.className = 'challenge-item';
+                li.innerHTML = `<strong>${challenge.name}</strong> - ${challenge.description}`;
+                challengeList.appendChild(li);
+            });
+            
+            // Load stats from localStorage
+            loadStats();
+        }
+
+        // Spin the wheel
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            totalSpins++;
+            totalSpinsEl.textContent = totalSpins;
+            saveStats();
+            
+            // Hide previous result
+            defaultResult.style.display = 'block';
+            challengeResult.style.display = 'none';
+            
+            // Calculate random rotation
+            const extraRotations = 5; // Number of full rotations before stopping
+            const randomSegment = Math.floor(Math.random() * challenges.length);
+            const segmentAngle = 360 / challenges.length;
+            const stopAngle = 360 - (randomSegment * segmentAngle + segmentAngle / 2);
+            const totalRotation = 360 * extraRotations + stopAngle;
+            
+            // Apply rotation with easing
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            // Show result after animation
+            setTimeout(() => {
+                currentChallenge = challenges[randomSegment];
+                showChallengeResult(currentChallenge);
+                isSpinning = false;
+                spinButton.disabled = false;
+                
+                // Add confetti effect
+                createConfetti();
+            }, 4000);
+        }
+
+        // Show challenge result
+        function showChallengeResult(challenge) {
+            defaultResult.style.display = 'none';
+            challengeName.textContent = challenge.name;
+            challengeDescription.textContent = challenge.description;
+            challengeResult.style.display = 'block';
+            
+            // Add bounce animation to result
+            challengeResult.classList.add('bounce');
+            setTimeout(() => {
+                challengeResult.classList.remove('bounce');
+            }, 1000);
+        }
+
+        // Accept challenge
+        function acceptChallenge() {
+            if (!currentChallenge) return;
+            
+            completedChallenges++;
+            currentStreak++;
+            completedChallengesEl.textContent = completedChallenges;
+            currentStreakEl.textContent = currentStreak;
+            saveStats();
+            
+            // Show success message
+            defaultResult.style.display = 'block';
+            defaultResult.textContent = `Great! You've accepted the "${currentChallenge.name}" challenge.`;
+            defaultResult.style.color = 'var(--primary-color)';
+            defaultResult.style.fontWeight = 'bold';
+            challengeResult.style.display = 'none';
+            
+            // Reset after a delay
+            setTimeout(() => {
+                defaultResult.textContent = 'Spin the wheel to get your next challenge!';
+                defaultResult.style.color = '';
+                defaultResult.style.fontWeight = '';
+            }, 3000);
+            
+            currentChallenge = null;
+        }
+
+        // Skip challenge
+        function skipChallenge() {
+            if (!currentChallenge) return;
+            
+            currentStreak = 0;
+            currentStreakEl.textContent = currentStreak;
+            saveStats();
+            
+            // Show skip message
+            defaultResult.style.display = 'block';
+            defaultResult.textContent = `You've skipped the "${currentChallenge.name}" challenge.`;
+            defaultResult.style.color = 'var(--secondary-color)';
+            challengeResult.style.display = 'none';
+            
+            // Reset after a delay
+            setTimeout(() => {
+                defaultResult.textContent = 'Spin the wheel to get your next challenge!';
+                defaultResult.style.color = '';
+            }, 3000);
+            
+            currentChallenge = null;
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#0e6b4b', '#4caf50', '#0a4f36', '#388e3c', '#2e7d32', '#1b5e20'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                document.body.appendChild(confetti);
+                
+                // Animate confetti
+                const animation = confetti.animate([
+                    { 
+                        transform: 'translateY(-100vh) rotate(0deg)',
+                        opacity: 1
+                    },
+                    { 
+                        transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)'
+                });
+                
+                // Remove confetti after animation
+                animation.onfinish = () => {
+                    confetti.remove();
+                };
+            }
+        }
+
+        // Save stats to localStorage
+        function saveStats() {
+            const stats = {
+                completedChallenges,
+                currentStreak,
+                totalSpins
+            };
+            localStorage.setItem('wheelOfChallengesStats', JSON.stringify(stats));
+        }
+
+        // Load stats from localStorage
+        function loadStats() {
+            const savedStats = localStorage.getItem('wheelOfChallengesStats');
+            if (savedStats) {
+                const stats = JSON.parse(savedStats);
+                completedChallenges = stats.completedChallenges || 0;
+                currentStreak = stats.currentStreak || 0;
+                totalSpins = stats.totalSpins || 0;
+                
+                completedChallengesEl.textContent = completedChallenges;
+                currentStreakEl.textContent = currentStreak;
+                totalSpinsEl.textContent = totalSpins;
+            }
+        }
+
+        // Event listeners
+        spinButton.addEventListener('click', spinWheel);
+        acceptChallengeBtn.addEventListener('click', acceptChallenge);
+        skipChallengeBtn.addEventListener('click', skipChallenge);
+
+        // Initialize the app
+        initializeWheel();
+    </script>
+</body>
+</html>
