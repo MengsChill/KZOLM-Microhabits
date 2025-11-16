@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | MicroHabits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary: #ff9800;
+            --accent: #9c27b0;
+            --background: #f8fbf9;
+            --card: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fbf9 0%, #e8f4f1 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(14, 107, 75, 0.3);
+        }
+
+        .nav-back:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 107, 75, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-left: 20px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f8f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-icon:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Notifications Container */
+        .notifications-container {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .notifications-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .notifications-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: #f1f8f5;
+            color: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .notification-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #f1f8f5;
+            color: var(--text);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #e2f0eb;
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .notifications-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .notifications-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .notifications-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .notification-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item.unread {
+            background: #f8fffd;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #f1f8f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notification-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .notification-message {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .notification-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .notification-action {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .notification-action:hover {
+            background: #f1f8f5;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .empty-desc {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Settings Section */
+        .settings-container {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .settings-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .setting-item:hover {
+            background: #f1f8f5;
+            transform: translateY(-2px);
+        }
+
+        .setting-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .setting-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .setting-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 12px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-title {
+                margin-left: 0;
+                font-size: 1.5rem;
+            }
+            
+            .brand-name {
+                font-size: 1.3rem;
+            }
+            
+            .nav-back {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .notifications-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .notifications-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .notification-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .notification-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-left {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-title {
+                text-align: center;
+            }
+            
+            .notification-filters {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation Bar -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <button class="nav-back" onclick="window.location.href='mainpage.html'">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <div class="nav-brand">
+                    <div class="brand-name">Kzolm</div>
+                </div>
+                <div class="nav-title">Notifications</div>
+            </div>
+            <div class="nav-actions">
+                <div class="nav-icon" title="Mark all as read">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="nav-icon" title="Notification settings">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </nav>
+        
+        <header>
+            <h1>Stay Updated</h1>
+            <p class="subtitle">Never miss important updates about your habits, progress, and community</p>
+        </header>
+        
+        <div class="notifications-container">
+            <div class="notifications-header">
+                <h2 class="notifications-title">Recent Notifications</h2>
+                <div class="notifications-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-check-double"></i> Mark All Read
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <div class="notification-filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Unread</button>
+                <button class="filter-btn">Achievements</button>
+                <button class="filter-btn">Reminders</button>
+                <button class="filter-btn">Community</button>
+            </div>
+            
+            <div class="notifications-list" id="notificationsList">
+                <!-- Notifications will be dynamically added here -->
+            </div>
+        </div>
+        
+        <div class="settings-container">
+            <h2 class="settings-title">Notification Settings</h2>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">Habit Reminders</div>
+                        <div class="setting-desc">Get reminded about your daily habits</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">Milestone Achievements</div>
+                        <div class="setting-desc">Celebrate when you reach new milestones</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">Community Updates</div>
+                        <div class="setting-desc">Updates from your friends and community</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">Weekly Progress Reports</div>
+                        <div class="setting-desc">Receive weekly summaries of your progress</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-name">Product Tips</div>
+                        <div class="setting-desc">Helpful tips to improve your experience</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample notifications data
+            const notifications = [
+                {
+                    id: 1,
+                    type: 'achievement',
+                    title: 'Milestone Reached!',
+                    message: 'Congratulations! You\'ve completed your 7-day meditation streak.',
+                    time: '2 hours ago',
+                    unread: true,
+                    icon: 'fas fa-trophy',
+                    badge: 'Achievement'
+                },
+                {
+                    id: 2,
+                    type: 'reminder',
+                    title: 'Habit Reminder',
+                    message: 'Don\'t forget to complete your evening journaling session.',
+                    time: '5 hours ago',
+                    unread: true,
+                    icon: 'fas fa-bell',
+                    badge: 'Reminder'
+                },
+                {
+                    id: 3,
+                    type: 'community',
+                    title: 'New Follower',
+                    message: 'Alex Johnson started following your progress.',
+                    time: '1 day ago',
+                    unread: false,
+                    icon: 'fas fa-user-plus',
+                    badge: 'Community'
+                },
+                {
+                    id: 4,
+                    type: 'progress',
+                    title: 'Weekly Progress',
+                    message: 'You completed 85% of your habits this week. Great job!',
+                    time: '2 days ago',
+                    unread: false,
+                    icon: 'fas fa-chart-line',
+                    badge: 'Progress'
+                },
+                {
+                    id: 5,
+                    type: 'system',
+                    title: 'New Feature Available',
+                    message: 'Try our new habit tracking visualization in the Progress section.',
+                    time: '3 days ago',
+                    unread: false,
+                    icon: 'fas fa-star',
+                    badge: 'Update'
+                },
+                {
+                    id: 6,
+                    type: 'community',
+                    title: 'Friend Achievement',
+                    message: 'Maria reached her 30-day yoga streak! Send congratulations.',
+                    time: '4 days ago',
+                    unread: false,
+                    icon: 'fas fa-users',
+                    badge: 'Community'
+                }
+            ];
+
+            const notificationsList = document.getElementById('notificationsList');
+            
+            // Function to render notifications
+            function renderNotifications() {
+                notificationsList.innerHTML = '';
+                
+                if (notifications.length === 0) {
+                    notificationsList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="far fa-bell"></i>
+                            </div>
+                            <div class="empty-title">No notifications yet</div>
+                            <div class="empty-desc">When you have new notifications, they'll appear here</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                notifications.forEach(notification => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = `notification-item ${notification.unread ? 'unread' : ''}`;
+                    
+                    notificationItem.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="${notification.icon}"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">
+                                ${notification.title}
+                                <span class="notification-badge">${notification.badge}</span>
+                            </div>
+                            <div class="notification-message">${notification.message}</div>
+                            <div class="notification-time">${notification.time}</div>
+                            <div class="notification-actions">
+                                <button class="notification-action mark-read" data-id="${notification.id}">
+                                    <i class="fas fa-check"></i> Mark as read
+                                </button>
+                                <button class="notification-action delete" data-id="${notification.id}">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        ${notification.unread ? '<div class="notification-dot"></div>' : ''}
+                    `;
+                    
+                    notificationsList.appendChild(notificationItem);
+                });
+                
+                // Add event listeners to action buttons
+                document.querySelectorAll('.mark-read').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        markAsRead(id);
+                    });
+                });
+                
+                document.querySelectorAll('.delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        deleteNotification(id);
+                    });
+                });
+            }
+            
+            // Function to mark notification as read
+            function markAsRead(id) {
+                const notification = notifications.find(n => n.id === id);
+                if (notification) {
+                    notification.unread = false;
+                    renderNotifications();
+                }
+            }
+            
+            // Function to delete notification
+            function deleteNotification(id) {
+                const index = notifications.findIndex(n => n.id === id);
+                if (index !== -1) {
+                    notifications.splice(index, 1);
+                    renderNotifications();
+                }
+            }
+            
+            // Function to mark all as read
+            function markAllAsRead() {
+                notifications.forEach(notification => {
+                    notification.unread = false;
+                });
+                renderNotifications();
+            }
+            
+            // Function to clear all notifications
+            function clearAllNotifications() {
+                notifications.length = 0;
+                renderNotifications();
+            }
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.action-btn').forEach(button => {
+                if (button.textContent.includes('Mark All Read')) {
+                    button.addEventListener('click', markAllAsRead);
+                } else if (button.textContent.includes('Clear All')) {
+                    button.addEventListener('click', clearAllNotifications);
+                }
+            });
+            
+            // Add event listeners to filter buttons
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // In a real app, you would filter notifications here
+                    // For this demo, we'll just re-render all notifications
+                    renderNotifications();
+                });
+            });
+            
+            // Add event listeners to nav icons
+            document.querySelectorAll('.nav-icon').forEach(icon => {
+                if (icon.querySelector('.fa-check-double')) {
+                    icon.addEventListener('click', markAllAsRead);
+                }
+            });
+            
+            // Initial render
+            renderNotifications();
+        });
+    </script>
+</body>
+</html>

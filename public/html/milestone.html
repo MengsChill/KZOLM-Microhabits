@@ -40,6 +40,68 @@
             margin: 0 auto;
         }
 
+        /* Top Navigation Bar */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(14, 107, 75, 0.3);
+        }
+
+        .nav-back:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 107, 75, 0.4);
+        }
+
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -60,30 +122,6 @@
             max-width: 600px;
             margin: 0 auto;
             font-weight: 400;
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .back-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(14, 107, 75, 0.3);
         }
 
         .journey-container {
@@ -624,6 +662,19 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .top-nav {
+                padding: 12px 20px;
+            }
+            
+            .brand-name {
+                font-size: 1.3rem;
+            }
+            
+            .nav-back {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
             .journey-container {
                 height: 400px;
             }
@@ -662,21 +713,36 @@
             h1 {
                 font-size: 2.2rem;
             }
+        }
+
+        @media (max-width: 480px) {
+            .top-nav {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
             
-            .back-btn {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 20px;
+            .nav-brand {
+                justify-content: center;
+            }
+            
+            .brand-name {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="mainpage.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Main
-        </a>
+        <!-- Top Navigation Bar -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <div class="brand-name">Kzolm</div>
+            </div>
+            <button class="nav-back" onclick="window.location.href='mainpage.html'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </nav>
         
         <header>
             <h1>Journey of Growth</h1>
