@@ -977,6 +977,91 @@
             }
         }
        
+        /* Privacy Policy & Terms of Use Page Styles */
+        .policy-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #fff;
+        }
+       
+        .policy-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+       
+        .policy-title {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+       
+        .policy-subtitle {
+            font-size: 18px;
+            color: #e0f0e7;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+       
+        .policy-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+       
+        .policy-section {
+            margin-bottom: 30px;
+        }
+       
+        .policy-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+       
+        .policy-section p {
+            margin-bottom: 15px;
+            color: #e0f0e7;
+        }
+       
+        .policy-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+       
+        .policy-section li {
+            margin-bottom: 10px;
+            color: #e0f0e7;
+        }
+       
+        .highlight {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #fff;
+        }
+       
+        .policy-back-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            color: #0e6b4b;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+       
+        .policy-back-button:hover {
+            background-color: #c8e6d3;
+            transform: translateY(-3px);
+        }
+       
         /* Responsive Styles */
         @media (max-width: 900px) {
             .hero-content {
@@ -1032,6 +1117,14 @@
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
+            }
+           
+            .policy-content {
+                padding: 20px;
+            }
+            
+            .policy-title {
+                font-size: 28px;
             }
         }
     </style>
@@ -1143,8 +1236,8 @@
             <div class="footer-links">
                 <a href="../html/dashboard.html">Home</a>
                 <a href="security-verification.html">Account Security</a>
-                <a href="../html/habit.html">My Habits</a>
-                <a href="../html/progress.html">Progress</a>
+                <a href="#privacy-policy-page">Privacy Policy</a>
+                <a href="#terms-of-use-page">Terms of Use</a>
                 <a href="../html/about.html">About <span class="kzolm-link">Kzolm</span></a>
                 <a href="../html/contact.html">Contact</a>
             </div>
@@ -1395,6 +1488,186 @@
     </div>
 
 
+    <!-- Privacy Policy Page -->
+    <div id="privacy-policy-page" class="policy-container" style="display: none;">
+        <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
+            <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
+        </a>
+        <div class="policy-header">
+            <h1 class="policy-title">Privacy Policy</h1>
+            <p class="policy-subtitle">How we protect and use your data at Kzolm Microhabits</p>
+        </div>
+
+        <div class="policy-content">
+            <div class="policy-section">
+                <h2>Introduction</h2>
+                <p>Welcome to Kzolm Microhabits! We're serious about two things: helping you build better habits and protecting your privacy. This policy explains what information we collect, how we use it, and your rights regarding your data.</p>
+                <p>Think of this as our commitment to being transparent about how we handle your information while you're on your microhabits journey.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>What Information We Collect</h2>
+                <p>We collect information that helps us personalize your microhabits experience:</p>
+                <ul>
+                    <li><strong>Account Information:</strong> Your name, email, and password (safely encrypted, of course!)</li>
+                    <li><strong>Habit Data:</strong> The habits you're tracking, your progress, and completion streaks</li>
+                    <li><strong>Usage Information:</strong> How you interact with our app to make it better</li>
+                    <li><strong>Device Information:</strong> Basic info about your device to ensure compatibility</li>
+                </ul>
+                <div class="highlight">
+                    <p><strong>Important:</strong> We don't sell your personal data to third parties. Your habit journey is yours alone.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h2>How We Use Your Information</h2>
+                <p>Your data helps us help you build better habits:</p>
+                <ul>
+                    <li>To create and manage your account</li>
+                    <li>To track your habit progress and celebrate your wins</li>
+                    <li>To provide personalized recommendations for new microhabits</li>
+                    <li>To improve our services based on how people use them</li>
+                    <li>To communicate important updates about your account or our services</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Data Security</h2>
+                <p>We take security as seriously as you take your morning meditation habit. We use industry-standard measures to protect your data:</p>
+                <ul>
+                    <li>Encryption of sensitive data</li>
+                    <li>Regular security assessments</li>
+                    <li>Limited access to your personal information</li>
+                </ul>
+                <p>However, no system is 100% secure, so we encourage you to use strong passwords and keep your login information safe.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Your Rights</h2>
+                <p>You have control over your data:</p>
+                <ul>
+                    <li>Access the personal data we hold about you</li>
+                    <li>Correct inaccurate information</li>
+                    <li>Request deletion of your account and data</li>
+                    <li>Opt-out of marketing communications</li>
+                    <li>Export your habit data</li>
+                </ul>
+                <p>To exercise any of these rights, contact us at privacy@kzolm.com.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Changes to This Policy</h2>
+                <p>As we grow and improve, we may update this policy. We'll notify you of significant changes and always post the latest version on our website.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Contact Us</h2>
+                <p>If you have questions about this privacy policy or how we handle your data, reach out to us at privacy@kzolm.com. We're here to help!</p>
+            </div>
+
+            <p><em>Last updated: November 13, 2023</em></p>
+        </div>
+    </div>
+
+
+    <!-- Terms of Use Page -->
+    <div id="terms-of-use-page" class="policy-container" style="display: none;">
+        <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
+            <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
+        </a>
+        <div class="policy-header">
+            <h1 class="policy-title">Terms of Use</h1>
+            <p class="policy-subtitle">The rules of the road for using Kzolm Microhabits</p>
+        </div>
+
+        <div class="policy-content">
+            <div class="policy-section">
+                <h2>Welcome to Kzolm!</h2>
+                <p>By using Kzolm Microhabits, you're agreeing to these terms. Think of them as the micro-rules for our macro-relationship.</p>
+                <p>We've tried to make these terms as clear and straightforward as possible, because let's face it - nobody actually reads these things. But if you do, you're already demonstrating the kind of attention to detail that builds great habits!</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Your Account</h2>
+                <p>To use Kzolm, you'll need to create an account. Here's what you agree to:</p>
+                <ul>
+                    <li>Provide accurate information about yourself</li>
+                    <li>Keep your password secure (no "password123", please!)</li>
+                    <li>Notify us immediately if you suspect any unauthorized use of your account</li>
+                    <li>Be at least 13 years old to use our services</li>
+                </ul>
+                <div class="highlight">
+                    <p><strong>Remember:</strong> You're responsible for all activity that happens under your account, so keep those login details safe!</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h2>What You Can Do</h2>
+                <p>We encourage you to:</p>
+                <ul>
+                    <li>Use Kzolm to build positive microhabits</li>
+                    <li>Share your progress with friends (bragging rights earned!)</li>
+                    <li>Provide feedback to help us improve</li>
+                    <li>Use our services for personal, non-commercial purposes</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>What You Can't Do</h2>
+                <p>To keep Kzolm a positive place for everyone, please don't:</p>
+                <ul>
+                    <li>Use our service for any illegal purpose</li>
+                    <li>Try to hack, disrupt, or overload our systems</li>
+                    <li>Create multiple accounts to abuse our services</li>
+                    <li>Impersonate others or provide false information</li>
+                    <li>Attempt to reverse engineer our technology</li>
+                </ul>
+                <p>Basically, don't be the person who ruins the group meditation session for everyone else.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Our Content</h2>
+                <p>The Kzolm app, website, logos, and all related content are owned by us or our licensors. You can use our services as intended, but please don't copy, modify, or distribute our content without permission.</p>
+                <p>Your habit data belongs to you. We don't claim ownership of the information you store in your Kzolm account.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Subscription Terms</h2>
+                <p>Some features of Kzolm may require a paid subscription:</p>
+                <ul>
+                    <li>Subscriptions automatically renew unless canceled</li>
+                    <li>You can cancel anytime through your account settings</li>
+                    <li>Refunds are handled on a case-by-case basis</li>
+                    <li>We may change subscription prices with notice</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Limitation of Liability</h2>
+                <p>We work hard to provide a reliable service, but sometimes things happen that are beyond our control. To the extent permitted by law, Kzolm won't be liable for:</p>
+                <ul>
+                    <li>Service interruptions or downtime</li>
+                    <li>Any indirect or consequential damages</li>
+                    <li>Accuracy of habit recommendations (we're good, but we're not mind readers)</li>
+                    <li>Your failure to build the habits you want (consistency is key!)</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>Changes to These Terms</h2>
+                <p>As Kzolm grows and evolves, we may need to update these terms. We'll notify you of significant changes, and continued use of our services means you accept the updated terms.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>Contact Information</h2>
+                <p>If you have questions about these terms, reach out to us at legal@kzolm.com. We're here to help you build better habits, not create legal headaches.</p>
+            </div>
+
+            <p><em>Last updated: November 13, 2023</em></p>
+        </div>
+    </div>
+
+
     <script>
         // 创建背景动画元素
         function createBackgroundAnimations() {
@@ -1522,6 +1795,18 @@
             });
         });
        
+        // Footer链接点击事件
+        document.querySelectorAll('.footer-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href === '#privacy-policy-page' || href === '#terms-of-use-page') {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    showPolicyPage(targetId);
+                }
+            });
+        });
+       
         // 显示文章页面
         function showArticlePage(pageId) {
             // 隐藏所有背景动画
@@ -1535,6 +1820,11 @@
            
             // 隐藏所有文章页面
             document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
                 page.style.display = 'none';
             });
            
@@ -1566,6 +1856,34 @@
             }
         }
        
+        // 显示政策页面
+        function showPolicyPage(pageId) {
+            // 隐藏所有背景动画
+            document.querySelectorAll('.background-animation').forEach(bg => {
+                bg.classList.remove('active');
+            });
+           
+            // 隐藏所有文章页面
+            document.querySelectorAll('.article-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
+                page.style.display = 'none';
+            });
+           
+            // 隐藏主页内容
+            document.querySelector('.page-container').style.display = 'none';
+           
+            // 隐藏全局页脚
+            document.getElementById('global-footer').style.display = 'none';
+           
+            // 显示目标政策页面
+            const targetPage = document.getElementById(pageId);
+            targetPage.style.display = 'block';
+        }
+       
         // 隐藏文章页面，返回主页
         function hideArticlePage() {
             // 隐藏所有背景动画
@@ -1588,6 +1906,20 @@
            
             // 移除所有导航链接的active类
             navLinks.forEach(l => l.classList.remove('active'));
+        }
+       
+        // 隐藏政策页面，返回主页
+        function hidePolicyPage() {
+            // 显示主页内容
+            document.querySelector('.page-container').style.display = 'flex';
+           
+            // 显示全局页脚
+            document.getElementById('global-footer').style.display = 'block';
+           
+            // 隐藏所有政策页面
+            document.querySelectorAll('.policy-container').forEach(page => {
+                page.style.display = 'none';
+            });
         }
        
         // 客户证明点击事件
@@ -1652,18 +1984,6 @@
            
             link.addEventListener('mouseout', function() {
                 this.style.color = '#0e6b4b';
-            });
-        });
-       
-        // Add click effect to footer links
-        document.querySelectorAll('.footer-links a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // In a real implementation, this would navigate to the page
-                // For demo purposes, we'll just show an alert
-                if(this.getAttribute('href') === 'security-verification.html') {
-                    e.preventDefault();
-                    alert('Navigating to Security Verification page...');
-                }
             });
         });
 
