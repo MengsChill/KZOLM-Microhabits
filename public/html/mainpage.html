@@ -1431,6 +1431,35 @@
                 align-items: flex-start;
             }
         }
+        .confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #f00;
+    opacity: 0.8;
+    animation: confetti-fall 5s linear forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
     </style>
 </head>
 <body class="theme-green">
@@ -1572,7 +1601,7 @@
                 </div>
                 <div class="nav-text">TinySteps</div>
             </a>
-            <a href="community.html" class="nav-item">
+            <a href="../html/community.html" class="nav-item">
                 <div class="nav-icon">
                     <svg class="icon" viewBox="0 0 24 24">
                         <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
@@ -1580,22 +1609,7 @@
                 </div>
                 <div class="nav-text">Community</div>
             </a>
-            <a href="settings.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Settings</div>
-            </a>
-            <a href="../html/help&feedback.html" class="nav-item">
-                <div class="nav-icon">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-                    </svg>
-                </div>
-                <div class="nav-text">Help/Feedback</div>
-            </a>
+
             <!-- Add this within the nav-menu section of the sidebar -->
 <a href="music.html" class="nav-item">
     <div class="nav-icon">
@@ -1633,6 +1647,22 @@
     </div>
     <div class="nav-text">Rewards</div>
 </a>
+            <a href="settings.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Settings</div>
+            </a>
+            <a href="../html/help&feedback.html" class="nav-item">
+                <div class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                </div>
+                <div class="nav-text">Help/Feedback</div>
+            </a>
         </div>
        
         <div class="sidebar-footer">
@@ -1644,6 +1674,7 @@
                 </div>
                 <div class="nav-text">Exit</div>
             </a>
+            
         </div>
     </div>
    
@@ -1660,7 +1691,7 @@
                         <div class="profile-name">John Doe</div>
                     </div>
                     <div class="header-actions">
-                        <a href="/menu" class="back-btn">
+                        <a href="../html/dashboard.html" class="back-btn">
                             <svg class="icon icon-small" viewBox="0 0 24 24">
                                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                             </svg>
@@ -1862,7 +1893,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         // Task tracking
         let completedTasks = 1;
         let totalTasks = 3;
@@ -1893,6 +1924,12 @@
             
             // Update task progress text
             document.getElementById('taskProgress').textContent = `${completedTasks} of ${totalTasks} done`;
+            
+            // Check if all tasks are completed
+            if (completedTasks === totalTasks && totalTasks > 0) {
+                showConfetti();
+                showToast('Congratulations! All tasks completed!', 'success');
+            }
         }
         
         function updateProgressBar() {
@@ -1949,6 +1986,9 @@
                 totalTasks++;
                 updateProgressBar();
                 
+                // Update task progress text
+                document.getElementById('taskProgress').textContent = `${completedTasks} of ${totalTasks} done`;
+                
                 // Show success message
                 showToast('Task added successfully!', 'success');
             }
@@ -2004,6 +2044,10 @@
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateTaskProgress);
             });
+            
+            // Remove the default checked state from "Morning routine"
+            document.getElementById('task1').checked = false;
+            updateTaskProgress();
             
             // Close add-on selection when clicking outside
             document.addEventListener('click', function(e) {
@@ -2134,7 +2178,7 @@
             }
         });
 
-        // Statistics functionality - Remove congratulations animation
+        // Statistics functionality
         document.getElementById('viewStatisticsBtn').addEventListener('click', function() {
             showStatistics();
         });
@@ -2332,6 +2376,40 @@
             document.getElementById('imagePreview').classList.remove('has-image');
             document.getElementById('progressImage').value = '';
         }
+
+        // Confetti animation
+        function showConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random properties
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 10 + 5;
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 2;
+                
+                confetti.style.backgroundColor = color;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.left = `${left}%`;
+                confetti.style.animationDuration = `${animationDuration}s`;
+                
+                container.appendChild(confetti);
+            }
+            
+            // Remove confetti after animation completes
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
     </script>
+    <!-- Add this right before the closing </body> tag -->
+<div class="confetti-container" id="confettiContainer"></div>
 </body>
 </html>
