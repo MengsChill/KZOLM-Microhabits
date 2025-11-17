@@ -33,6 +33,10 @@ const storage = multer.diskStorage({
         cb(null, uploadDir)
     },
     filename: function (req, file, cb) {
+        if (!req.session || !req.session.userId) {
+            // Handle case where user is not logged in or session is not populated
+            return cb(new Error("User not authenticated"), false);
+        }
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, 'user-' + req.session.userId + '-' + uniqueSuffix + path.extname(file.originalname))
     }
@@ -136,7 +140,7 @@ db.serialize(() => {
     db.run(`
       CREATE TABLE IF NOT EXISTS achievements (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        name TEXT UNIQUE NOT NULL,
         description TEXT NOT NULL,
         type TEXT NOT NULL,
         threshold REAL NOT NULL,
@@ -155,23 +159,22 @@ db.serialize(() => {
         FOREIGN KEY (achievement_id) REFERENCES achievements (id) ON DELETE CASCADE,
         UNIQUE(user_id, achievement_id)
       )
-    `);
+    `, (err) => { // <-- Callback on the *LAST* table creation
+        if (err) {
+            console.error("CRITICAL: Error creating tables:", err.message);
+            return;
+        }
+        console.log("✅ All tables created or verified.");
 
-    // --- END OF CREATE TABLES ---
-    
-    //
-    // --- SEPARATE SERIALIZE BLOCK FOR SEEDING ---
-    // This block runs *after* the tables above are created.
-    // This will DELETE your corrupt data and insert the correct data.
-    //
-    db.serialize(() => {
+        // --- Force-delete all existing achievements to clear corruption ---
         db.run("DELETE FROM achievements", (deleteErr) => {
             if (deleteErr) {
-                console.error("CRITICAL: Error deleting old achievements:", deleteErr.message);
-                console.error("--- This usually means the DB file is locked by another program. ---");
-                return; 
+                console.error("CRITICAL: Error clearing achievements table:", deleteErr.message);
+                return;
             }
-
+            console.log("✅ Cleared old achievements.");
+            
+            // --- Seeding logic runs *after* tables are created and cleared ---
             const achievements = [
                 { name: 'Beginner', desc: 'Reach 10 points', type: 'points', threshold: 10, icon: 'fas fa-seedling' },
                 { name: 'Learner', desc: 'Reach 50 points', type: 'points', threshold: 50, icon: 'fas fa-leaf' },
@@ -182,8 +185,8 @@ db.serialize(() => {
                 { name: 'Master', desc: 'Reach 3000 points', type: 'points', threshold: 3000, icon: 'fas fa-trophy' }
             ];
 
-            const stmt = db.prepare("INSERT INTO achievements (name, description, type, threshold, icon) VALUES (?, ?, ?, ?, ?)");
-            
+            const stmt = db.prepare("INSERT OR IGNORE INTO achievements (name, description, type, threshold, icon) VALUES (?, ?, ?, ?, ?)");
+        
             let insertCount = 0;
             let hasInsertError = null;
 
@@ -207,20 +210,24 @@ db.serialize(() => {
                 }
 
                 const ach = achievements[index];
-                stmt.run(ach.name, ach.desc, ach.type, ach.threshold, ach.icon, (insertErr) => {
+                stmt.run(ach.name, ach.desc, ach.type, ach.threshold, ach.icon, function(insertErr) {
                     if (insertErr) {
                         console.error("CRITICAL: Error inserting achievement:", ach.name, insertErr.message);
                         hasInsertError = insertErr;
                     } else {
-                        insertCount++;
+                        if (this.changes > 0) {
+                            insertCount++;
+                        }
                     }
                     insertRow(index + 1);
                 });
             }
+            
             // Start the sequential insert
             insertRow(0);
-        });
-    });
+
+        }); // --- END OF DELETE WRAPPER ---
+    }); // --- END OF *LAST* TABLE CALLBACK ---
 }); // --- END OF *OUTER* DB.SERIALIZE BLOCK ---
 
 
@@ -506,9 +513,24 @@ function initializeApp() {
 
     // COMMUNITY API's
 
-    const ensureAuth = (req, res, next) => {
+    const ensureAuth = async (req, res, next) => {
         if (req.session.userId) {
-            next();
+            try {
+                // Check if the user in the session still exists in the DB
+                const user = await dbGet('SELECT id FROM users WHERE id = ?', [req.session.userId]);
+                if (user) {
+                    next(); // User exists, proceed
+                } else {
+                    // This is a "ghost session" for a user that was deleted.
+                    req.session.destroy(err => {
+                        res.clearCookie('connect.sid');
+                        res.status(401).json({ error: "Unauthorized" });
+                    });
+                }
+            } catch (err) {
+                console.error("ensureAuth error:", err);
+                res.status(500).json({ error: "Server error during auth check" });
+            }
         } else {
             res.status(401).json({ error: "Unauthorized" });
         }
@@ -756,7 +778,6 @@ function initializeApp() {
                         await checkAndAwardAchievements(userId);
                     }
                 }
-                
             } else {
                 // REMOVING POINTS
                 const entry = await dbGet(
@@ -908,19 +929,19 @@ function initializeApp() {
 
         try {
             // 1. Get user's total points
-            // --- MODIFICATION: Add defensive INSERT OR IGNORE ---
-            // This ensures a user_stats row exists *before* we try to read it.
-            // This fixes the bug for users created before user_stats was added.
+            // This line is CRITICAL. It creates the stats row if it doesn't exist.
             await dbRun(`INSERT OR IGNORE INTO user_stats (user_id) VALUES (?)`, [userId]);
             
             const stats = await dbGet(`SELECT total_points FROM user_stats WHERE user_id = ?`, [userId]);
+            
+            // This check is safer. If stats is null (which shouldn't happen after the INSERT IGNORE), default to 0.
             const totalPoints = stats ? stats.total_points : 0;
 
             // 2. Get all defined levels
             const allLevels = await dbAll(`SELECT * FROM achievements WHERE type = 'points' ORDER BY threshold ASC`);
             
             if (allLevels.length === 0) {
-                // This is the error you are getting
+                // This error means the seeding failed.
                 console.error("--- PROGRESS API ERROR: 'achievements' table is EMPTY. Sending 404. ---");
                 return res.status(404).json({ error: "No levels defined in achievements table." });
             }
@@ -1042,8 +1063,11 @@ function initializeApp() {
     })
 
     app.put("/api/change-password", (req, res) => {
-        if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" })
-        const { currentPassword, newPassword } = req.body
+        if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" });
+        
+        // Get passwords from request body
+        const { currentPassword, newPassword } = req.body;
+
         db.get("SELECT password FROM users WHERE id = ?", [req.session.userId], async (err, row) => {
             if (err) {
                 console.error(err);

@@ -94,7 +94,6 @@
             font-weight: 600;
             transition: var(--transition);
             box-shadow: 0 4px 15px rgba(14, 107, 75, 0.3);
-            text-decoration: none; /* ADDED FOR <a> */
         }
 
         .nav-back:hover {
@@ -161,21 +160,6 @@
                 inset 0 1px 3px rgba(0, 0, 0, 0.3),
                 0 2px 10px rgba(139, 69, 19, 0.2);
         }
-        
-        /* NEW: This is the foreground bar from your screenshot */
-        .journey-path-fg {
-            position: absolute;
-            top: 50%;
-            left: 50px; /* Must match .journey-path */
-            height: 8px;
-            background: #8B4513; /* Solid brown fill */
-            border-radius: 4px;
-            transform: translateY(-50%);
-            width: 0%; /* Set by JS */
-            transition: width 1s ease-out;
-            z-index: 1; /* Sits above the background path */
-        }
-
 
         .journey-path::before {
             content: '';
@@ -311,7 +295,7 @@
         .user-avatar {
             position: absolute;
             top: 50%;
-            left: 50px; /* MODIFIED: Set by JS */
+            left: 50px;
             transform: translate(-50%, -50%);
             width: 70px;
             height: 70px;
@@ -326,7 +310,7 @@
                 0 8px 25px rgba(0, 0, 0, 0.2),
                 0 0 0 4px rgba(255, 255, 255, 0.9);
             z-index: 20;
-            transition: left 1s ease-out; /* MODIFIED */
+            transition: var(--transition);
         }
 
         .user-avatar::after {
@@ -427,7 +411,6 @@
             gap: 8px;
             transition: var(--transition);
             box-shadow: 0 4px 15px rgba(14, 107, 75, 0.3);
-            text-decoration: none; /* MODIFIED */
         }
 
         .add-task-btn:hover {
@@ -470,19 +453,6 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
         }
-        
-        /* === NEW: Completed Task Styling === */
-        .task-card.completed-card {
-            opacity: 0.6;
-        }
-        .task-card.completed-card .task-name {
-            text-decoration: line-through;
-        }
-        .task-card.completed-card .task-checkbox {
-             background: var(--primary);
-             color: white;
-        }
-
 
         .task-card:hover {
             transform: translateY(-5px);
@@ -760,47 +730,17 @@
                 font-size: 1.2rem;
             }
         }
-
-        /* === NEW: Toast Notification CSS === */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card);
-            color: var(--text);
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            display: none; /* Hidden by default */
-            align-items: center;
-            gap: 10px;
-            z-index: 10000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-        .toast.show { 
-            display: flex;
-            transform: translateY(0); 
-            opacity: 1; 
-        }
-        .toast-success { border-left-color: #4caf50; }
-        .toast-error { border-left-color: #f44336; }
-        .toast-icon { font-size: 18px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Top Navigation Bar -->
         <nav class="top-nav">
             <div class="nav-brand">
                 <div class="brand-name">Kzolm</div>
             </div>
-            <!-- MODIFIED to be an <a> tag -->
-            <a href="/main" class="nav-back">
+            <button class="nav-back" onclick="window.location.href='/menu'">
                 <i class="fas fa-arrow-left"></i> Back
-            </a>
+            </button>
         </nav>
         
         <header>
@@ -810,19 +750,16 @@
         
         <div class="journey-container">
             <div class="journey-background"></div>
-            <!-- NEW: Added foreground path -->
-            <div class="journey-path" id="journey-path"></div>
-            <div class="journey-path-fg" id="journey-path-fg"></div> 
+            <div class="journey-path"></div>
             
-            <div class="journey-milestones" id="journey-milestones">
-                <!-- Milestones are kept from your original design -->
+            <div class="journey-milestones">
                 <div class="milestone" style="left: 10%;">
-                    <div class="milestone-marker">
+                    <div class="milestone-marker active">
                         <i class="fas fa-seedling"></i>
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Beginner</div>
-                    <div class="difficulty-indicator difficulty-easy">10</div>
+                    <div class="difficulty-indicator difficulty-easy">Easy</div>
                 </div>
                 
                 <div class="milestone" style="left: 25%;">
@@ -831,7 +768,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Learner</div>
-                    <div class="difficulty-indicator difficulty-easy">50</div>
+                    <div class="difficulty-indicator difficulty-easy">Easy</div>
                 </div>
                 
                 <div class="milestone" style="left: 40%;">
@@ -840,8 +777,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Explorer</div>
-                    <!-- MODIFIED: Was 200, DB has 150 -->
-                    <div class="difficulty-indicator difficulty-medium">150</div>
+                    <div class="difficulty-indicator difficulty-medium">Medium</div>
                 </div>
                 
                 <div class="milestone" style="left: 55%;">
@@ -850,8 +786,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Adventurer</div>
-                    <!-- MODIFIED: Was 500, DB has 450 -->
-                    <div class="difficulty-indicator difficulty-medium">450</div>
+                    <div class="difficulty-indicator difficulty-medium">Medium</div>
                 </div>
                 
                 <div class="milestone" style="left: 70%;">
@@ -860,8 +795,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Climber</div>
-                    <!-- MODIFIED: Was 1200, DB has 900 -->
-                    <div class="difficulty-indicator difficulty-hard">900</div>
+                    <div class="difficulty-indicator difficulty-hard">Hard</div>
                 </div>
                 
                 <div class="milestone" style="left: 85%;">
@@ -870,8 +804,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Expert</div>
-                    <!-- MODIFIED: Was 3000, DB has 1500 -->
-                    <div class="difficulty-indicator difficulty-hard">1500</div>
+                    <div class="difficulty-indicator difficulty-hard">Hard</div>
                 </div>
                 
                 <div class="milestone" style="left: 95%;">
@@ -880,8 +813,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Master</div>
-                    <!-- MODIFIED: Was 8000, DB has 3000 -->
-                    <div class="difficulty-indicator difficulty-expert">3000</div>
+                    <div class="difficulty-indicator difficulty-expert">Expert</div>
                 </div>
             </div>
             
@@ -892,44 +824,41 @@
         
         <div class="progress-info">
             <div class="progress-text">Start</div>
-            <div class="progress-text" id="currentProgress">...</div>
+            <div class="progress-text" id="currentProgress">0/0 tasks completed</div>
             <div class="progress-text">Destination</div>
         </div>
         
         <div class="progress-stats">
             <div class="stat">
-                <div class="stat-value" id="completedTasks">...</div>
+                <div class="stat-value" id="completedTasks">0</div>
                 <div class="stat-label">Tasks Completed</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="userPoints">...</div>
+                <div class="stat-value" id="userPoints">0</div>
                 <div class="stat-label">Total Points</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="currentLevel">...</div>
+                <div class="stat-value" id="currentLevel">1</div>
                 <div class="stat-label">Current Level</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="nextMilestone">...</div>
-                <div class="stat-label" id="nextMilestoneLabel">Points to Next Level</div>
+                <div class="stat-value" id="nextMilestone">5</div>
+                <div class="stat-label">Tasks to Next</div>
             </div>
         </div>
         
         <div class="tasks-container">
             <div class="tasks-header">
                 <h2 class="tasks-title">Your Tasks</h2>
-                <!-- MODIFIED to be an <a> tag -->
-                <a href="/main" class="add-task-btn" id="addTaskBtn">
+                <button class="add-task-btn" id="addTaskBtn">
                     <i class="fas fa-plus"></i> Add New Task
-                </a>
+                </button>
             </div>
             
             <div class="tasks-list" id="tasksList">
-                <!-- Tasks will be dynamically added here by JS -->
-            </div>
+                </div>
         </div>
         
-        <!-- Celebration Modal -->
         <div class="celebration-modal" id="celebrationModal">
             <div class="celebration-content">
                 <button class="close-modal">&times;</button>
@@ -958,296 +887,321 @@
         </div>
     </div>
 
-    <!-- === NEW: Toast Notification HTML === -->
-    <div class="toast" id="toast">
-        <span class="toast-icon" id="toastIcon"></span>
-        <span id="toastMessage"></span>
-    </div>
-
-    <!-- === REPLACED SCRIPT === -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- GLOBAL STATE ---
-            let allApiLevels = []; // Will store the 7 levels from the backend
-            let allApiTasks = [];  // Will store the user's tasks
-            let currentLevelName = ""; // Used to track for celebration modal
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize variables
+            let completedTasks = 0;
+            let totalTasks = 0;
+            let userPoints = 0;
+            let currentLevel = 1;
+            let userTasks = []; // Holds tasks fetched from server
             
-            // --- DOM ELEMENTS ---
+            // Difficulty progression - tasks needed for each milestone
+            // THIS LOGIC IS KEPT FROM YOUR ORIGINAL FILE
+            const milestones = [
+                { id: 1, position: 10, name: 'Beginner', tasksNeeded: 5, difficulty: 'easy' },
+                { id: 2, position: 25, name: 'Learner', tasksNeeded: 10, difficulty: 'easy' },
+                { id: 3, position: 40, name: 'Explorer', tasksNeeded: 15, difficulty: 'medium' },
+                { id: 4, position: 55, name: 'Adventurer', tasksNeeded: 20, difficulty: 'medium' },
+                { id: 5, position: 70, name: 'Climber', tasksNeeded: 25, difficulty: 'hard' },
+                { id: 6, position: 85, name: 'Expert', tasksNeeded: 30, difficulty: 'hard' },
+                { id: 7, position: 95, name: 'Master', tasksNeeded: 35, difficulty: 'expert' }
+            ];
+            
+            // DOM elements
             const userAvatar = document.getElementById('userAvatar');
             const tasksList = document.getElementById('tasksList');
-            const journeyPath = document.getElementById('journey-path');
-            const journeyPathFg = document.getElementById('journey-path-fg'); // The moving bar
-            const milestoneElements = document.querySelectorAll('.milestone');
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            const currentProgress = document.getElementById('currentProgress');
+            const completedTasksEl = document.getElementById('completedTasks');
+            const userPointsEl = document.getElementById('userPoints');
+            const currentLevelEl = document.getElementById('currentLevel');
+            const nextMilestoneEl = document.getElementById('nextMilestone');
             const celebrationModal = document.getElementById('celebrationModal');
             const closeModal = document.querySelector('.close-modal');
-
-            // Setup navigation
-            document.querySelector('.nav-back').href = '/main';
-            document.getElementById('addTaskBtn').href = '/main';
-
-            // Setup modal close buttons
-            closeModal.addEventListener('click', () => celebrationModal.classList.remove('active'));
-            celebrationModal.addEventListener('click', (e) => {
-                if (e.target === celebrationModal) celebrationModal.classList.remove('active');
-            });
-
-            // --- INITIAL LOAD ---
-            loadPageData();
-        
-            /**
-             * Loads all page data from the backend
-             */
-            async function loadPageData() {
-                // We run these in parallel to load faster
-                const [progressData, tasksData] = await Promise.all([
-                    fetchUserProgress(),
-                    fetchTasks()
-                ]);
-
-                // Once both are finished, we can render
-                
-                if (progressData) {
-                    allApiLevels = progressData.levels; // Store levels globally
-                    
-                    // Check if the level name has changed since last load
-                    if (currentLevelName && currentLevelName !== progressData.currentLevel.name) {
-                        showCelebration(progressData); // Show celebration!
-                    }
-                    currentLevelName = progressData.currentLevel.name; // Update current level
-                    
-                    renderProgressBar(progressData);
-                    renderStats(progressData, tasksData || allApiTasks); // Pass tasks if available
-                }
-                
-                if (tasksData) {
-                    allApiTasks = tasksData; // Store tasks globally
-                    renderTasks(tasksData);
-                    
-                    // Also update stats if progressData is already loaded
-                    if (progressData) {
-                        renderStats(progressData, tasksData);
-                    }
-                }
-            }
-        
-            /**
-             * Fetches data from the /api/user/progress endpoint
-             */
-            async function fetchUserProgress() {
-                try {
-                    const response = await fetch('/api/user/progress');
-                    if (!response.ok) {
-                        if (response.status === 401) window.location.href = '/signin';
-                        throw new Error('Failed to load user progress');
-                    }
-                    return await response.json();
-                } catch (error) {
-                    console.error(error);
-                    showToast('Failed to load user level.', 'error');
-                    return null;
+            const confettiContainer = document.getElementById('confettiContainer');
+            
+            // --- NEW --- Helper functions to map server data
+            function getPointsForPriority(priority) {
+                switch(priority) {
+                    case 'high': return 15;
+                    case 'medium': return 10;
+                    case 'low': return 5;
+                    default: return 5;
                 }
             }
             
-            /**
-             * Fetches all tasks from the API
-             */
-            async function fetchTasks() {
-                 try {
-                    const response = await fetch('/api/tasks?category=all');
-                    if (!response.ok) {
-                        if (response.status === 401) window.location.href = '/signin';
-                        throw new Error('Failed to fetch tasks');
-                    }
-                    return await response.json();
-                } catch (error) {
-                    console.error(error);
-                    showToast('Could not load tasks.', 'error');
-                    return null;
+            function getDifficultyForPriority(priority) {
+                switch(priority) {
+                    case 'high': return 'hard';
+                    case 'medium': return 'medium';
+                    case 'low': return 'easy';
+                    default: return 'easy';
                 }
             }
 
-            /**
-             * Renders the progress bar UI based on data from the API
-             * This respects your hardcoded milestone HTML
-             */
-            function renderProgressBar(progress) {
-                if (!allApiLevels || allApiLevels.length === 0) return;
-
-                // Find the index of the user's current level
-                const currentLevelIndex = allApiLevels.findIndex(l => l.id === progress.currentLevel.id);
-
-                // Update milestone markers (active/locked) based on points
-                milestoneElements.forEach((milestoneEl, index) => {
-                    const apiLevel = allApiLevels[index];
-                    if (!apiLevel) return; // Safety check
-
-                    if (progress.totalPoints >= apiLevel.threshold) {
-                        milestoneEl.classList.add('active');
-                        milestoneEl.classList.remove('locked');
-                    } else {
-                        milestoneEl.classList.remove('active');
-                        milestoneEl.classList.add('locked');
+            // --- NEW --- Load tasks from the server
+            async function loadTasks() {
+                try {
+                    const response = await fetch('/api/tasks');
+                    if (!response.ok) {
+                        if (response.status === 401) window.location.href = '/signin';
+                        console.error('Failed to load tasks');
+                        return;
                     }
-                });
+                    const tasks = await response.json();
+                    
+                    tasksList.innerHTML = ''; // Clear list
+                    userTasks = []; // Clear local cache
+                    
+                    // Reset stats before recalculating
+                    completedTasks = 0;
+                    userPoints = 0;
+                    totalTasks = tasks.length;
 
-                // --- Calculate Avatar & Bar Position ---
-                const levelCount = allApiLevels.length - 1;
-                let avatarPercent = 0;
+                    tasks.forEach(task => {
+                        // Map server data (priority) to the format this page's logic expects (difficulty, points)
+                        const mappedTask = {
+                            ...task, // id, name, description, priority, is_completed
+                            points: getPointsForPriority(task.priority),
+                            difficulty: getDifficultyForPriority(task.priority),
+                            completed: task.is_completed // For compatibility with original logic
+                        };
+                        
+                        userTasks.push(mappedTask);
+                        addTaskToDOM(mappedTask);
+                        
+                        // Recalculate stats based on fetched data
+                        if (mappedTask.completed) {
+                            completedTasks++;
+                            userPoints += mappedTask.points;
+                        }
+                    });
+                    
+                    updateProgress(); // Update stats display
+                    moveAvatarForward(); // Set initial avatar position
+                    checkMilestones(); // Set initial milestone state
+
+                } catch (err) {
+                    console.error('Error loading tasks:', err);
+                }
+            }
+            
+            // --- MODIFIED --- Add task button event
+            addTaskBtn.addEventListener('click', function() {
+                // Redirect to the add habit page
+                window.location.href = '/add-habit';
+            });
+            
+            // Close modal event
+            closeModal.addEventListener('click', function() {
+                celebrationModal.classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            celebrationModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // --- MODIFIED --- Function to add task to DOM
+            function addTaskToDOM(task) {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
                 
-                if (levelCount > 0) { // Avoid division by zero
-                    // Base percentage from completed levels
-                    avatarPercent = (currentLevelIndex / levelCount) * 100;
-                    // Add fractional percentage from current level progress
-                    avatarPercent += (progress.progressPercentage / 100) * (100 / levelCount);
-                } else if (progress.totalPoints >= progress.currentLevel.threshold) {
-                    avatarPercent = 100; // Maxed out
+                let difficultyClass = '';
+                let difficultyText = '';
+                
+                // Uses the 'difficulty' field we mapped from 'priority'
+                switch(task.difficulty) {
+                    case 'easy':
+                        difficultyClass = 'difficulty-easy';
+                        difficultyText = 'Easy';
+                        break;
+                    case 'medium':
+                        difficultyClass = 'difficulty-medium';
+                        difficultyText = 'Medium';
+                        break;
+                    case 'hard':
+                        difficultyClass = 'difficulty-hard';
+                        difficultyText = 'Hard';
+                        break;
+                    case 'expert':
+                        difficultyClass = 'difficulty-expert';
+                        difficultyText = 'Expert';
+                        break;
                 }
                 
-                avatarPercent = Math.max(0, Math.min(100, avatarPercent));
-
-                // Convert percentage to pixel position based on the path's padding
-                const pathStartPixels = 50; // from .journey-path { left: 50px; }
-                const pathWidth = journeyPath.clientWidth; // Width of the path (e.g., 1200px - 100px)
+                taskCard.innerHTML = `
+                    <div class="task-checkbox ${task.is_completed ? 'checked' : ''}" data-task-id="${task.id}">
+                        ${task.is_completed ? '<i class="fas fa-check"></i>' : ''}
+                    </div>
+                    <div class="task-info">
+                        <div class="task-name">${task.name}</div>
+                        <div class="task-desc">${task.description}</div>
+                    </div>
+                    <div class="task-points">+${task.points}</div>
+                    <div class="task-difficulty ${difficultyClass}">${difficultyText}</div>
+                `;
                 
-                // Calculate pixel position
-                let newPosition = pathStartPixels + (avatarPercent / 100) * pathWidth;
+                tasksList.appendChild(taskCard);
+                
+                // Add event listener to checkbox
+                const checkbox = taskCard.querySelector('.task-checkbox');
+                checkbox.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-task-id'));
+                    toggleTaskCompletion(taskId); // This is now async
+                });
+            }
+            
+            // --- REWRITTEN --- Function to toggle task completion
+            async function toggleTaskCompletion(taskId) {
+                const task = userTasks.find(t => t.id === taskId);
+                if (!task) return;
+                
+                const checkbox = document.querySelector(`.task-checkbox[data-task-id="${taskId}"]`);
+                
+                try {
+                    // Call the server API
+                    const response = await fetch(`/api/tasks/${task.id}/toggle`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    
+                    if (!response.ok) {
+                        console.error('Failed to toggle task');
+                        return;
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Server response is the source of truth
+                    const newStatus = result.is_completed;
+                    
+                    // Update local task object
+                    task.is_completed = newStatus;
+                    task.completed = newStatus; // For old logic
+                    
+                    // Manually update local stats to drive the milestone logic
+                    if (newStatus) {
+                        // Complete task
+                        checkbox.classList.add('checked');
+                        checkbox.innerHTML = '<i class="fas fa-check"></i>';
+                        completedTasks++;
+                        userPoints += task.points;
+                    } else {
+                        // Undo completion
+                        checkbox.classList.remove('checked');
+                        checkbox.innerHTML = '';
+                        completedTasks--;
+                        userPoints -= task.points;
+                    }
+                    
+                    // --- Call the ORIGINAL page logic functions ---
+                    // This preserves the milestone/avatar progression
+                    moveAvatarForward();
+                    updateProgress();
+                    // ----------------------------------------------
+
+                } catch (err) {
+                    console.error('Error toggling task:', err);
+                }
+            }
+            
+            // --- UNTOUCHED --- Function to move avatar
+            function moveAvatarForward() {
+                // Calculate progress based on completed tasks with progressive scaling
+                let progressPercentage = 0;
+                
+                if (completedTasks <= 5) {
+                    progressPercentage = (completedTasks / 5) * 10;
+                } else if (completedTasks <= 10) {
+                    progressPercentage = 10 + ((completedTasks - 5) / 5) * 15;
+                } else if (completedTasks <= 15) {
+                    progressPercentage = 25 + ((completedTasks - 10) / 5) * 15;
+                } else if (completedTasks <= 20) {
+                    progressPercentage = 40 + ((completedTasks - 15) / 5) * 15;
+                } else if (completedTasks <= 25) {
+                    progressPercentage = 55 + ((completedTasks - 20) / 5) * 15;
+                } else if (completedTasks <= 30) {
+                    progressPercentage = 70 + ((completedTasks - 25) / 5) * 15;
+                } else {
+                    progressPercentage = 85 + ((completedTasks - 30) / 5) * 10;
+                }
+                
+                // Calculate position based on the path
+                const pathStart = 50; // Starting position in pixels
+                const pathEnd = window.innerWidth - 50; // Ending position in pixels
+                const pathLength = pathEnd - pathStart;
+                
+                // Clamp progress to a max of 95% (end of path)
+                const clampedProgress = Math.min(progressPercentage, 95); 
+                const newPosition = pathStart + (clampedProgress / 100) * pathLength;
                 
                 userAvatar.style.left = `${newPosition}px`;
                 
-                // Update the foreground bar width
-                // Its width is the avatar's position minus the starting offset
-                journeyPathFg.style.width = `${newPosition - pathStartPixels}px`;
-            }
-
-            /**
-             * Renders the 4 stat boxes
-             */
-            function renderStats(progress, tasks) {
-                if (!tasks) tasks = []; // Ensure tasks is an array
-                const totalTasks = tasks.length;
-                const completedCount = tasks.filter(t => t.is_completed).length;
-
-                document.getElementById('completedTasks').textContent = completedCount;
+                // Update level based on progress
+                currentLevel = Math.floor(completedTasks / 5) + 1;
                 
-               // We must check if 'progress' is null before trying to read it
-                if (progress) {
-                    document.getElementById('userPoints').textContent = Math.round(progress.totalPoints);
-                    document.getElementById('currentLevel').textContent = progress.currentLevel.name;
-                    
-                    if (progress.nextLevel) {
-                        document.getElementById('nextMilestone').textContent = Math.round(progress.pointsToNext);
-                        document.getElementById('nextMilestoneLabel').textContent = 'Points to Next Level';
-                    } else {
-                        document.getElementById('nextMilestone').textContent = 'MAX';
-                        document.getElementById('nextMilestoneLabel').textContent = 'You are at the max level!';
-                    }
-                } else {
-                    // Set default text if progress fails to load
-                     document.getElementById('userPoints').textContent = '...';
-                     document.getElementById('currentLevel').textContent = '...';
-                     document.getElementById('nextMilestone').textContent = '...';
-                     document.getElementById('nextMilestoneLabel').textContent = 'Points to Next Level';
-                }
-
-                // Update the progress info text
-                document.getElementById('currentProgress').textContent = `${completedCount}/${totalTasks} tasks completed`;
+                // Check for milestone achievements
+                checkMilestones();
             }
             
-            /**
-             * Renders the list of tasks in the "Your Tasks" section
-             * This uses your original .task-checkbox div design
-             */
-            function renderTasks(tasks) {
-                tasksList.innerHTML = '';
-                
-                if (tasks.length === 0) {
-                    tasksList.innerHTML = '<p style="color: var(--text-light); grid-column: 1 / -1; text-align: center;">No active tasks. Go to the main page to add one!</p>';
-                    return;
-                }
-                
-                tasks.forEach(task => {
-                    const taskCard = document.createElement('div');
-                    taskCard.className = 'task-card';
-                    if (task.is_completed) {
-                        taskCard.classList.add('completed-card');
+            // --- UNTOUCHED --- Function to check milestones
+            function checkMilestones() {
+                milestones.forEach(milestone => {
+                    // Find the milestone element by its index (1-based)
+                    const milestoneElement = document.querySelector(`.journey-milestones .milestone:nth-child(${milestone.id})`);
+                    
+                    if (milestoneElement && completedTasks >= milestone.tasksNeeded && !milestoneElement.classList.contains('active')) {
+                        milestoneElement.classList.add('active');
+                        
+                        // Show celebration for this milestone
+                        showCelebration(milestone);
                     }
-                    
-                    // Create task card using your original design
-                    taskCard.innerHTML = `
-                        <div class="task-checkbox ${task.is_completed ? 'checked' : ''}" data-task-id="${task.id}">
-                            ${task.is_completed ? '<i class="fas fa-check"></i>' : ''}
-                        </div>
-                        <div class="task-info">
-                            <div class="task-name">${task.name}</div>
-                            <div class="task-desc">${task.description || 'No description'}</div>
-                        </div>
-                        <div class="task-points">+5</div>
-                    `;
-                    
-                    tasksList.appendChild(taskCard);
-                });
-                
-                // Add event listeners to the new checkboxes
-                document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-                    checkbox.addEventListener('click', function() {
-                        const taskId = this.getAttribute('data-task-id');
-                        // Find the task to see if it's currently completed or not
-                        const task = allApiTasks.find(t => t.id == taskId);
-                        toggleTask(taskId, !task.is_completed); // Send the *new* desired state
-                    });
                 });
             }
             
-            /**
-             * Toggles a task's completion status via the API
-             */
-            async function toggleTask(taskId, isCompleted) {
-                try {
-                    const response = await fetch(`/api/tasks/${taskId}/toggle`, { method: 'PUT' });
-                    if (!response.ok) {
-                        throw new Error('Failed to toggle task');
-                    }
-                    
-                    // Reload all data to reflect changes
-                    await loadPageData();
-                    
-                    showToast(isCompleted ? 'Task completed! Progress updated!' : 'Task updated.', 'success');
-                    
-                } catch (error) {
-                    console.error(error);
-                    showToast('Failed to update task.', 'error');
-                }
-            }
-
-            /**
-             * Shows the celebration modal
-             */
-            function showCelebration(progress) {
-                document.getElementById('celebrationTitle').textContent = `${progress.currentLevel.name} Achieved!`;
-                document.getElementById('celebrationDesc').textContent = `You've reached the ${progress.currentLevel.name} milestone!`;
-                
-                // Update stats in the modal
-                document.getElementById('statTasks').textContent = allApiTasks.filter(t => t.is_completed).length;
-                document.getElementById('statPoints').textContent = Math.round(progress.totalPoints);
-                document.getElementById('statLevel').textContent = progress.currentLevel.name;
+            // --- UNTOUCHED --- Function to show celebration
+            function showCelebration(milestone) {
+                document.getElementById('celebrationTitle').textContent = `${milestone.name} Achieved!`;
+                document.getElementById('celebrationDesc').textContent = `You've reached the ${milestone.name} milestone! The journey gets tougher from here.`;
+                document.getElementById('statTasks').textContent = completedTasks;
+                document.getElementById('statPoints').textContent = userPoints;
+                document.getElementById('statLevel').textContent = currentLevel;
                 
                 createConfetti();
                 celebrationModal.classList.add('active');
             }
-
-            /**
-             * Creates confetti for the celebration modal
-             */
+            
+            // --- UNTOUCHED --- Function to update progress
+            function updateProgress() {
+                currentProgress.textContent = `${completedTasks}/${totalTasks} tasks completed`;
+                completedTasksEl.textContent = completedTasks;
+                userPointsEl.textContent = userPoints;
+                currentLevelEl.textContent = currentLevel;
+                
+                // Calculate tasks to next milestone
+                let nextMilestone = milestones.find(m => completedTasks < m.tasksNeeded);
+                if (nextMilestone) {
+                    nextMilestoneEl.textContent = nextMilestone.tasksNeeded - completedTasks;
+                } else {
+                    nextMilestoneEl.textContent = 'Max';
+                }
+            }
+            
+            // --- UNTOUCHED --- Function to create confetti
             function createConfetti() {
-                const confettiContainer = document.getElementById('confettiContainer');
-                if (!confettiContainer) return;
                 confettiContainer.innerHTML = '';
+                
                 const colors = ['#f56565', '#48bb78', '#4299e1', '#ed8936', '#9c27b0', '#0e6b4b'];
                 
                 for (let i = 0; i < 120; i++) {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
                     
+                    // Random properties
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     const size = Math.random() * 8 + 4;
                     const left = Math.random() * 100;
@@ -1264,37 +1218,9 @@
                     confettiContainer.appendChild(confetti);
                 }
             }
-            
-            /**
-             * Displays a toast notification
-             */
-            function showToast(message, type) {
-                // Create toast element if it doesn't exist
-                let toast = document.getElementById('toast');
-                if (!toast) {
-                    toast = document.createElement('div');
-                    toast.id = 'toast';
-                    toast.innerHTML = '<span class="toast-icon" id="toastIcon"></span> <span id="toastMessage"></span>';
-                    document.body.appendChild(toast);
-                }
-                
-                const toastMessage = document.getElementById('toastMessage');
-                const toastIcon = document.getElementById('toastIcon');
-                
-                toastMessage.textContent = message;
-                toast.className = 'toast'; // Reset classes
-                
-                if (type === 'success') {
-                    toast.classList.add('toast-success');
-                    toastIcon.textContent = '✓';
-                } else {
-                    toast.classList.add('toast-error');
-                    toastIcon.textContent = '✗';
-                }
-                
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 3000);
-            }
+
+            // --- NEW --- Initial load of tasks
+            await loadTasks();
         });
     </script>
 </body>
