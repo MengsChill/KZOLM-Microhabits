@@ -738,7 +738,7 @@
             <div class="nav-brand">
                 <div class="brand-name">Kzolm</div>
             </div>
-            <button class="nav-back" onclick="window.location.href='/menu'">
+            <button class="nav-back" onclick="window.location.href='/main'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
         </nav>
@@ -850,8 +850,6 @@
         <div class="tasks-container">
             <div class="tasks-header">
                 <h2 class="tasks-title">Your Tasks</h2>
-                <button class="add-task-btn" id="addTaskBtn">
-                    <i class="fas fa-plus"></i> Add New Task
                 </button>
             </div>
             
@@ -987,11 +985,6 @@
                 }
             }
             
-            // --- MODIFIED --- Add task button event
-            addTaskBtn.addEventListener('click', function() {
-                // Redirect to the add habit page
-                window.location.href = '/add-habit';
-            });
             
             // Close modal event
             closeModal.addEventListener('click', function() {
