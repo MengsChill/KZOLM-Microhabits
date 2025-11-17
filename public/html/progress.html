@@ -10,6 +10,7 @@
             --primary-color: #0e6b4b;
             --primary-light: #1a8a63;
             --primary-dark: #0a4d35;
+            --secondary-color: #ff9800; /* Added from mainpage */
             --accent-color: #4CAF50;
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
@@ -19,6 +20,9 @@
             --completed-color: #0e6b4b;
             --missed-color: #e74c3c;
             --partial-color: #f39c12;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Added from mainpage */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Added from mainpage */
+            --secondary-bg: #f8f9fa; /* Added from mainpage */
         }
 
         * {
@@ -36,6 +40,63 @@
             position: relative;
             min-height: 100vh;
         }
+        
+        /* === NEW: Toast Notification === */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { border-left-color: #4caf50; }
+        .toast-error { border-left-color: #f44336; }
+        .toast-icon { font-size: 18px; }
+
+        /* === NEW: Confirmation Dialog === */
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        .dialog-content {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        .dialog-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+        .dialog-message { margin-bottom: 24px; color: var(--text-light); }
+        .dialog-actions { display: flex; gap: 12px; justify-content: center; }
+        .dialog-button { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; transition: background-color 0.2s ease; }
+        .dialog-cancel { background-color: var(--secondary-bg); color: var(--text-color); }
+        .dialog-cancel:hover { background-color: var(--border-color); }
+        .dialog-confirm { background-color: #f44336; color: white; }
+        .dialog-confirm:hover { background-color: #d32f2f; }
+        /* === END NEW STYLES === */
+
 
         /* Top Bar Styles - MODIFIED */
         .top-bar {
@@ -199,7 +260,7 @@
             gap: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
-
+        
         .activity-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -231,8 +292,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+        
+        /* === MODIFIED: Disabled button styling === */
+        .time-btn[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-        .time-btn:hover {
+        .time-btn:not([disabled]):hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
         }
@@ -373,58 +442,8 @@
         .activity-section {
             margin-bottom: 30px;
         }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .activity-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .activity-table th,
-        .activity-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .activity-table th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-
-        .activity-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .activity-table tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-badge.completed {
-            background-color: rgba(14, 107, 75, 0.1);
-            color: var(--completed-color);
-        }
-
-        .status-badge.missed {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: var(--missed-color);
-        }
+        
+        /* === REMOVED TABLE STYLES === */
 
         .quote-container {
             text-align: center;
@@ -448,6 +467,169 @@
             color: var(--primary-color);
             font-weight: 600;
         }
+        
+        /* --- NEW: Task Card Grid Styles (Copied from mainpage) --- */
+        .task-card-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #c0c0c0;
+        }
+        
+        .task-card-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 0; /* Prevents text overflow */
+        }
+
+        .task-card-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        
+        .task-card-checkbox:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .task-card-checkbox:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+            background-size: 16px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .task-card-content {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .task-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .task-card-description {
+            font-size: 14px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .task-completed-card .task-card-title,
+        .task-completed-card .task-card-description {
+            text-decoration: line-through;
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+        
+        .task-card-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+        
+        .task-card-points {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .task-menu-button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .task-menu-button:hover {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+        }
+        .task-card-badges {
+            position: relative; /* Context for menu */
+        }
+        .task-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 8px 0;
+            z-index: 10;
+            display: none;
+            min-width: 120px;
+            border: 1px solid var(--border-color);
+        }
+        .task-menu.show {
+            display: block;
+        }
+        .task-menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .task-menu-item:hover {
+            background-color: var(--secondary-bg);
+        }
+        .task-menu-item.task-delete:hover {
+            color: #f44336;
+        }
+        /* --- End Task Card Styles --- */
+
 
         @media (max-width: 768px) {
             .dashboard-container {
@@ -458,93 +640,103 @@
                 grid-template-columns: 1fr;
             }
             
-            .activity-table th,
-            .activity-table td {
-                padding: 10px;
-            }
-            
             .dashboard-header h1 {
                 font-size: 2rem;
+            }
+            
+            .task-card-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Bar with Back Button in Top Left Corner -->
+    <!-- === NEW: Toast and Dialog HTML === -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <div class="dialog-content">
+            <h3 class="dialog-title" id="dialogTitle">Delete Task</h3>
+            <p class="dialog-message" id="dialogMessage">Are you sure?</p>
+            <div class="dialog-actions">
+                <button class="dialog-button dialog-cancel" id="cancelDelete">Cancel</button>
+                <button class="dialog-button dialog-confirm" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+    <!-- === END NEW HTML === -->
+    
     <div class="top-bar">
-        <a href="mainpage.html" class="back-button">
+        <a href="/main" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="brand-name">kzolm</div>
     </div>
 
-    <!-- Animated Background -->
     <div id="background-animation"></div>
 
-    <!-- Main Content -->
     <div class="dashboard-container">
-        <!-- Header section -->
         <header class="dashboard-header">
             <h1>Microhabits Progress Tracker</h1>
-            <p class="subtitle">Small consistent actions lead to big transformations over time</p>
+            <p class="subtitle" id="page-subtitle">Small consistent actions lead to big transformations over time</p>
         </header>
 
-        <!-- Microhabits Quote -->
         <div class="quote-container">
             <p class="quote">"We are what we repeatedly do. Excellence, then, is not an act, but a habit."</p>
             <p class="quote-author">- Aristotle</p>
         </div>
 
-        <!-- Activity selection -->
         <div class="activity-selection">
-            <div class="activity-item active" data-activity="exercising">
-                <i class="fas fa-running activity-icon"></i>
-                <span>Exercising</span>
+            <div class="activity-item active" data-activity="all">
+                <i class="fas fa-border-all activity-icon"></i>
+                <span>All Activities</span>
             </div>
-            <div class="activity-item" data-activity="water">
-                <i class="fas fa-tint activity-icon"></i>
-                <span>Drinking Water</span>
+            <div class="activity-item" data-activity="health">
+                <i class="fas fa-heartbeat activity-icon"></i>
+                <span>Health & Fitness</span>
             </div>
-            <div class="activity-item" data-activity="reading">
+            <div class="activity-item" data-activity="learning">
                 <i class="fas fa-book activity-icon"></i>
-                <span>Reading</span>
+                <span>Learning</span>
+            </div>
+            <div class="activity-item" data-activity="work">
+                <i class="fas fa-briefcase activity-icon"></i>
+                <span>Work</span>
             </div>
         </div>
 
-        <!-- Time range buttons -->
         <div class="time-range-buttons">
-            <button class="time-btn" data-range="7">Last 7 Days</button>
-            <button class="time-btn active" data-range="30">Last 30 Days</button>
-            <button class="time-btn" data-range="all">All Time</button>
+            <button class="time-btn active" data-range="7" disabled>Last 7 Days</button>
+            <button class="time-btn" data-range="30" disabled>Last 30 Days</button>
+            <button class="time-btn" data-range="all" disabled>All Time</button>
         </div>
-
-        <!-- Stats grid with progress metrics -->
         <section class="stats-grid">
             <div class="stat-card">
                 <h3 class="stat-title">Current Streak</h3>
-                <div class="stat-value" id="streak-value">12 days</div>
+                <div class="stat-value" id="streak-value">...</div>
                 <p class="stat-desc">Keep going!</p>
             </div>
             <div class="stat-card">
                 <h3 class="stat-title">Total Completions</h3>
-                <div class="stat-value" id="completions-value">89</div>
+                <div class="stat-value" id="completions-value">...</div>
                 <p class="stat-desc">Small steps add up</p>
             </div>
             <div class="stat-card">
                 <h3 class="stat-title">Completion Rate</h3>
-                <div class="stat-value" id="rate-value">92%</div>
+                <div class="stat-value" id="rate-value">...%</div>
                 <p class="stat-desc">Excellent consistency</p>
             </div>
         </section>
 
-        <!-- Exercise progress section -->
         <section class="progress-section">
             <h2 class="section-title" id="progress-title">
                 <i class="fas fa-chart-line"></i>
-                Exercising Progress - Last 30 Days
+                Progress - Last 7 Days
             </h2>
             
-            <!-- Calendar view -->
             <div class="calendar-container">
                 <div class="calendar-header">
                     <div>Sun</div>
@@ -556,236 +748,69 @@
                     <div>Sat</div>
                 </div>
                 <div class="calendar-grid" id="calendar-grid">
-                    <!-- Calendar days will be populated by JavaScript -->
-                </div>
+                    </div>
             </div>
         </section>
 
-        <!-- Activity log section with table -->
+        <!-- === MODIFIED: Activity Section changed from table to card grid === -->
         <section class="activity-section">
             <h2 class="section-title">
-                <i class="fas fa-clipboard-list"></i>
-                Activity Log
+                <i class="fas fa-tasks"></i>
+                Your Tasks
             </h2>
-            <div class="table-container">
-                <table class="activity-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activity-table-body">
-                        <!-- Activity log will be populated by JavaScript -->
-                    </tbody>
-                </table>
+            <div class="task-card-grid" id="task-list-container">
+                <!-- Tasks will be rendered here by JS -->
             </div>
         </section>
+        <!-- === END MODIFIED SECTION === -->
     </div>
 
     <script>
-        // Your existing JavaScript code remains exactly the same
-        const habitData = {
-            exercising: {
-                "7": {
-                    streak: "5 days",
-                    completions: "6",
-                    rate: "86%",
-                    calendarData: [0, 1, 1, 1, 1, 1, 1],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Quick HIIT session at home" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "30 minutes of yoga" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Weight training at the gym" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Evening jog" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Felt great today, pushed for an extra 10 minutes" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Had to work late, will make up tomorrow" }
-                    ]
-                },
-                "30": {
-                    streak: "12 days",
-                    completions: "25",
-                    rate: "83%",
-                    calendarData: [
-                        0, 0, 0, 0, 1, 1, 1,
-                        1, 1, 1, 1, 1, 0, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Quick HIIT session at home" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "30 minutes of yoga" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Weight training at the gym" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Evening jog" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Felt great today, pushed for an extra 10 minutes" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Had to work late, will make up tomorrow" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Morning run in the park" },
-                        { date: "Nov 27, 2023", status: "completed", notes: "Quick HIIT session at home" }
-                    ]
-                },
-                "all": {
-                    streak: "12 days",
-                    completions: "89",
-                    rate: "92%",
-                    calendarData: [
-                        0, 0, 0, 0, 1, 1, 1,
-                        1, 1, 1, 1, 1, 0, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Morning run in the park" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Quick HIIT session at home" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "30 minutes of yoga" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Weight training at the gym" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Evening jog" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Felt great today, pushed for an extra 10 minutes" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Had to work late, will make up tomorrow" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Morning run in the park" },
-                        { date: "Nov 27, 2023", status: "completed", notes: "Quick HIIT session at home" },
-                        { date: "Nov 26, 2023", status: "completed", notes: "Rest day - light stretching" }
-                    ]
+        // === SCRIPT MODIFIED ===
+        
+        let currentCategory = 'all'; // Global state for the filter
+        let allTasks = []; // Global state for tasks
+        let itemToDelete = null; // For delete confirmation
+        let deleteType = null; // For delete confirmation
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createBackgroundAnimation();
+            setupEventListeners();
+            loadProgress('all'); // Load "All Activities" by default
+        });
+        
+        async function loadProgress(category) {
+            try {
+                // Build the API URL with the category query
+                const statsUrl = `/api/statistics?category=${category}`;
+                // === MODIFIED: Fetch from /api/tasks (active tasks) instead of /api/tasks/log ===
+                const taskUrl = `/api/tasks?category=${category}`;
+
+                const [statsResponse, taskResponse] = await Promise.all([
+                    fetch(statsUrl),
+                    fetch(taskUrl) 
+                ]);
+
+                if (!statsResponse.ok || !taskResponse.ok) {
+                    if (statsResponse.status === 401 || taskResponse.status === 401) {
+                        window.location.href = '/signin'; // Redirect if not logged in
+                        return;
+                    }
+                    throw new Error('Failed to load progress data');
                 }
-            },
-            water: {
-                "7": {
-                    streak: "7 days",
-                    completions: "7",
-                    rate: "100%",
-                    calendarData: [1, 1, 1, 1, 1, 1, 1],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Drank 9 glasses of water" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Nov 29, 2023", status: "completed", notes: "Drank 8 glasses of water" }
-                    ]
-                },
-                "30": {
-                    streak: "30 days",
-                    completions: "28",
-                    rate: "93%",
-                    calendarData: [
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Drank 9 glasses of water" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Forgot to track water intake" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 27, 2023", status: "completed", notes: "Drank 8 glasses of water" }
-                    ]
-                },
-                "all": {
-                    streak: "30 days",
-                    completions: "112",
-                    rate: "95%",
-                    calendarData: [
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1,
-                        1, 1, 1, 1, 1, 1, 1
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Drank 9 glasses of water" },
-                        { date: "Dec 1, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 30, 2023", status: "completed", notes: "Drank 7 glasses of water" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Forgot to track water intake" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 27, 2023", status: "completed", notes: "Drank 8 glasses of water" },
-                        { date: "Nov 26, 2023", status: "completed", notes: "Drank 8 glasses of water" }
-                    ]
-                }
-            },
-            reading: {
-                "7": {
-                    streak: "3 days",
-                    completions: "4",
-                    rate: "57%",
-                    calendarData: [0, 0, 0, 1, 1, 1, 0],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Read 20 pages of 'Atomic Habits'" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Read 15 pages before bed" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Read 25 pages in the morning" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Read 30 pages at the cafe" },
-                        { date: "Dec 1, 2023", status: "missed", notes: "Too tired to read" },
-                        { date: "Nov 30, 2023", status: "missed", notes: "Busy with work" },
-                        { date: "Nov 29, 2023", status: "missed", notes: "Forgot to read today" }
-                    ]
-                },
-                "30": {
-                    streak: "5 days",
-                    completions: "18",
-                    rate: "60%",
-                    calendarData: [
-                        0, 0, 0, 1, 1, 1, 0,
-                        1, 1, 0, 1, 1, 0, 1,
-                        0, 1, 1, 0, 1, 1, 0,
-                        1, 0, 1, 1, 0, 1, 1,
-                        0, 1, 1, 0
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Read 20 pages of 'Atomic Habits'" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Read 15 pages before bed" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Read 25 pages in the morning" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Read 30 pages at the cafe" },
-                        { date: "Dec 1, 2023", status: "missed", notes: "Too tired to read" },
-                        { date: "Nov 30, 2023", status: "missed", notes: "Busy with work" },
-                        { date: "Nov 29, 2023", status: "completed", notes: "Read 10 pages during lunch" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Read 20 pages before bed" },
-                        { date: "Nov 27, 2023", status: "missed", notes: "Forgot to read today" }
-                    ]
-                },
-                "all": {
-                    streak: "5 days",
-                    completions: "67",
-                    rate: "75%",
-                    calendarData: [
-                        0, 0, 0, 1, 1, 1, 0,
-                        1, 1, 0, 1, 1, 0, 1,
-                        0, 1, 1, 0, 1, 1, 0,
-                        1, 0, 1, 1, 0, 1, 1,
-                        0, 1, 1, 0, 1, 1, 1,
-                        1, 0, 1, 1, 0, 1, 1,
-                        0, 1, 1, 0, 1, 1, 1
-                    ],
-                    logData: [
-                        { date: "Dec 5, 2023", status: "completed", notes: "Read 20 pages of 'Atomic Habits'" },
-                        { date: "Dec 4, 2023", status: "completed", notes: "Read 15 pages before bed" },
-                        { date: "Dec 3, 2023", status: "completed", notes: "Read 25 pages in the morning" },
-                        { date: "Dec 2, 2023", status: "completed", notes: "Read 30 pages at the cafe" },
-                        { date: "Dec 1, 2023", status: "missed", notes: "Too tired to read" },
-                        { date: "Nov 30, 2023", status: "missed", notes: "Busy with work" },
-                        { date: "Nov 29, 2023", status: "completed", notes: "Read 10 pages during lunch" },
-                        { date: "Nov 28, 2023", status: "completed", notes: "Read 20 pages before bed" },
-                        { date: "Nov 27, 2023", status: "missed", notes: "Forgot to read today" },
-                        { date: "Nov 26, 2023", status: "completed", notes: "Read 25 pages on Sunday morning" }
-                    ]
-                }
+
+                const stats = await statsResponse.json();
+                allTasks = await taskResponse.json(); // Store tasks in global array
+
+                updateUI(stats);
+                updateCalendar(stats.progressTrend);
+                renderTasks(); // === MODIFIED: Call new renderTasks function ===
+
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to load tasks.', 'error');
             }
-        };
+        }
 
         function createBackgroundAnimation() {
             const container = document.getElementById('background-animation');
@@ -819,143 +844,270 @@
             }
         }
 
-        function updateUI(activity, range) {
-            const data = habitData[activity][range];
+        function setupEventListeners() {
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all
+                    activityItems.forEach(i => i.classList.remove('active'));
+                    // Add active class to clicked one
+                    this.classList.add('active');
+                    
+                    const selectedActivity = this.dataset.activity;
+                    currentCategory = selectedActivity;
+                    
+                    // Update page subtitle
+                    const subtitle = document.getElementById('page-subtitle');
+                    if(selectedActivity === 'all') {
+                        subtitle.textContent = "Your overall progress across all activities";
+                    } else {
+                        const categoryName = this.querySelector('span').textContent;
+                        subtitle.textContent = `Your progress for "${categoryName}"`;
+                    }
+                    
+                    // Reload data with the new filter
+                    loadProgress(selectedActivity);
+                });
+            });
+
+            // === NEW: Confirmation Dialog Listeners ===
+            const confirmationDialog = document.getElementById('confirmationDialog');
+            document.getElementById('cancelDelete').addEventListener('click', () => {
+                confirmationDialog.style.display = 'none';
+                itemToDelete = null;
+                deleteType = null;
+            });
             
-            document.getElementById('streak-value').textContent = data.streak;
-            document.getElementById('completions-value').textContent = data.completions;
-            document.getElementById('rate-value').textContent = data.rate;
+            document.getElementById('confirmDelete').addEventListener('click', async () => {
+                if (itemToDelete !== null && deleteType === 'task') {
+                    await deleteTask(itemToDelete);
+                }
+                confirmationDialog.style.display = 'none';
+                itemToDelete = null;
+                deleteType = null;
+            });
             
-            const activityNames = {
-                exercising: "Exercising",
-                water: "Drinking Water",
-                reading: "Reading"
-            };
-            
-            const rangeNames = {
-                "7": "Last 7 Days",
-                "30": "Last 30 Days",
-                "all": "All Time"
-            };
-            
-            document.getElementById('progress-title').innerHTML = 
-                `<i class="fas fa-chart-line"></i>${activityNames[activity]} Progress - ${rangeNames[range]}`;
-            
-            updateCalendar(data.calendarData, range);
-            updateActivityLog(data.logData);
+             window.addEventListener('click', (e) => {
+                if (e.target === confirmationDialog) {
+                    confirmationDialog.style.display = 'none';
+                    itemToDelete = null;
+                    deleteType = null;
+                }
+                // Close open task menus if clicking outside
+                if (!e.target.closest('.task-menu-button') && !e.target.closest('.task-menu')) {
+                    document.querySelectorAll('.task-menu').forEach(menu => menu.classList.remove('show'));
+                }
+            });
         }
 
-        function updateCalendar(calendarData, range) {
+        function updateUI(stats) {
+            document.getElementById('streak-value').textContent = `${stats.currentStreak} days`;
+            document.getElementById('completions-value').textContent = stats.tasksCompleted;
+            document.getElementById('rate-value').textContent = `${stats.completionRate}%`;
+        }
+
+        function updateCalendar(progressTrend) {
             const calendarGrid = document.getElementById('calendar-grid');
             calendarGrid.innerHTML = '';
             
-            const now = new Date();
-            
-            let startDate;
-            let daysToShow;
-            
-            if (range === "7") {
-                daysToShow = 7;
-                startDate = new Date(now);
-                startDate.setDate(now.getDate() - 6);
-            } else if (range === "30") {
-                daysToShow = 30;
-                startDate = new Date(now);
-                startDate.setDate(now.getDate() - 29);
-            } else {
-                daysToShow = 42;
-                startDate = new Date(now);
-                startDate.setDate(now.getDate() - 41);
+            const calendarData = progressTrend.data.map(count => count > 0 ? 1 : 0);
+            const dateLabels = progressTrend.labels;
+
+            const padding = 7 - calendarData.length;
+            for(let i = 0; i < padding; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                calendarGrid.appendChild(dayElement);
             }
-            
-            for (let i = 0; i < daysToShow; i++) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + i);
+
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+
+            calendarData.forEach((status, index) => {
+                const dateStr = dateLabels[index];
+                const day = new Date(dateStr + 'T00:00:00').getDate(); // Fix for timezone issues
                 
                 const dayElement = document.createElement('div');
                 dayElement.className = 'calendar-day';
-                
-                if (currentDate.toDateString() === now.toDateString()) {
+
+                if (dateStr === todayStr) {
                     dayElement.classList.add('today');
                 }
                 
-                if (calendarData[i] === 1) {
+                if (status === 1) {
                     dayElement.classList.add('has-activity');
                 }
                 
                 const dayNumber = document.createElement('div');
                 dayNumber.className = 'day-number';
-                dayNumber.textContent = currentDate.getDate();
+                dayNumber.textContent = day;
                 dayElement.appendChild(dayNumber);
                 
-                if (dayElement.classList.contains('has-activity')) {
+                if (status === 1) {
                     const indicator = document.createElement('div');
                     indicator.className = 'activity-indicator';
                     dayElement.appendChild(indicator);
                 }
                 
                 calendarGrid.appendChild(dayElement);
+            });
+        }
+
+        // === NEW: Render Tasks function (from mainpage.html) ===
+        function renderTasks() {
+            const taskListContainer = document.getElementById('task-list-container');
+            taskListContainer.innerHTML = ''; 
+            
+            if (allTasks.length === 0) {
+                taskListContainer.innerHTML = '<p style="text-align:center; color: var(--text-light); margin-top: 20px;">No active tasks found for this category.</p>';
+                return;
+            }
+
+            allTasks.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
+                
+                const isChecked = task.is_completed ? 'checked' : '';
+                if (task.is_completed) {
+                    taskCard.classList.add('task-completed-card');
+                }
+                
+                const description = task.description || 'No description';
+                const basePoints = 5; // From user's rule
+
+                taskCard.innerHTML = `
+                    <div class="task-card-left">
+                        <input type="checkbox" class="task-card-checkbox" id="task-${task.id}" data-id="${task.id}" ${isChecked}>
+                        <label for="task-${task.id}" class="task-card-content">
+                            <span class="task-card-title">${task.name}</span>
+                            <span class="task-card-description">${description}</span>
+                        </label>
+                    </div>
+                    <div class="task-card-badges">
+                        <span class="task-card-points">+${basePoints}</span>
+                        
+                        <button class="task-menu-button" data-id="${task.id}">
+                            <svg class="icon-small" fill="currentColor" viewBox="0 0 24 24" style="width:20px; height:20px;"><path d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                        </button>
+                        <div class="task-menu" id="task-menu-${task.id}">
+                            <div class="task-menu-item task-delete" data-id="${task.id}">
+                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:16px; height:16px; color: #f44336;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Delete
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                taskListContainer.appendChild(taskCard);
+            });
+
+            addTasksEventListeners();
+        }
+
+        // === NEW: Add Task Event Listeners (from mainpage.html) ===
+        function addTasksEventListeners() {
+            document.querySelectorAll('.task-card-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const taskId = e.target.getAttribute('data-id');
+                    toggleTask(taskId, e.target.checked);
+                });
+            });
+            
+            document.querySelectorAll('.task-menu-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    const taskId = e.currentTarget.getAttribute('data-id');
+                    const menu = document.getElementById(`task-menu-${taskId}`);
+                    // Close all other menus
+                    document.querySelectorAll('.task-menu').forEach(m => {
+                        if (m.id !== menu.id) m.classList.remove('show');
+                    });
+                    menu.classList.toggle('show');
+                });
+            });
+            
+            document.querySelectorAll('.task-delete').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const taskId = e.currentTarget.getAttribute('data-id');
+                    showDeleteTaskConfirmation(taskId);
+                });
+            });
+        }
+
+        // === NEW: Show Delete Confirmation (from mainpage.html) ===
+        function showDeleteTaskConfirmation(taskId) {
+            itemToDelete = taskId;
+            deleteType = 'task';
+            
+            document.getElementById('dialogTitle').textContent = 'Delete Task';
+            document.getElementById('dialogMessage').textContent = 'Are you sure? This will permanently delete the task. This action cannot be undone.';
+            
+            document.getElementById('confirmationDialog').style.display = 'flex';
+        }
+
+        // === NEW: Delete Task (from mainpage.html) ===
+        async function deleteTask(taskId) {
+            try {
+                const response = await fetch(`/api/tasks/${taskId}`, { method: 'DELETE' });
+                if (!response.ok) throw new Error('Failed to delete task');
+                
+                showToast('Task deleted successfully!', 'success');
+                // Reload progress for the current category
+                loadProgress(currentCategory);
+                
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to delete task.', 'error');
             }
         }
 
-        function updateActivityLog(logData) {
-            const tableBody = document.getElementById('activity-table-body');
-            tableBody.innerHTML = '';
+        // === NEW: Toggle Task (from mainpage.html) ===
+        async function toggleTask(taskId, isCompleted) {
+            try {
+                const response = await fetch(`/api/tasks/${taskId}/toggle`, { method: 'PUT' });
+                if (!response.ok) throw new Error('Failed to toggle task');
+
+                const task = allTasks.find(t => t.id == taskId);
+                task.is_completed = isCompleted;
+                
+                const card = document.getElementById(`task-${taskId}`).closest('.task-card');
+                if (isCompleted) {
+                    card.classList.add('task-completed-card');
+                } else {
+                    card.classList.remove('task-completed-card');
+                }
+                
+                // After toggling, we must reload the stats to get fresh numbers
+                loadProgress(currentCategory);
+                
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to update task.', 'error');
+                document.getElementById(`task-${taskId}`).checked = !isCompleted;
+            }
+        }
+        
+        // === NEW: Show Toast (from mainpage.html) ===
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
             
-            logData.forEach(entry => {
-                const row = document.createElement('tr');
-                
-                const dateCell = document.createElement('td');
-                dateCell.textContent = entry.date;
-                
-                const statusCell = document.createElement('td');
-                const statusBadge = document.createElement('span');
-                statusBadge.className = `status-badge ${entry.status}`;
-                statusBadge.textContent = entry.status.charAt(0).toUpperCase() + entry.status.slice(1);
-                statusCell.appendChild(statusBadge);
-                
-                const notesCell = document.createElement('td');
-                notesCell.textContent = entry.notes;
-                
-                row.appendChild(dateCell);
-                row.appendChild(statusCell);
-                row.appendChild(notesCell);
-                
-                tableBody.appendChild(row);
-            });
+            toastMessage.textContent = message;
+            toast.className = 'toast';
+            
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                toastIcon.textContent = '✓';
+            } else {
+                toast.classList.add('toast-error');
+                toastIcon.textContent = '✗';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        const timeButtons = document.querySelectorAll('.time-btn');
-        timeButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                timeButtons.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                const selectedActivity = document.querySelector('.activity-item.active').dataset.activity;
-                const selectedRange = this.dataset.range;
-                updateUI(selectedActivity, selectedRange);
-            });
-        });
-
-        const activityItems = document.querySelectorAll('.activity-item');
-        activityItems.forEach(item => {
-            item.addEventListener('click', function() {
-                activityItems.forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-                
-                const selectedActivity = this.dataset.activity;
-                const selectedRange = document.querySelector('.time-btn.active').dataset.range;
-                updateUI(selectedActivity, selectedRange);
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            createBackgroundAnimation();
-            
-            const initialActivity = document.querySelector('.activity-item.active').dataset.activity;
-            const initialRange = document.querySelector('.time-btn.active').dataset.range;
-            updateUI(initialActivity, initialRange);
-        });
     </script>
 </body>
 </html>

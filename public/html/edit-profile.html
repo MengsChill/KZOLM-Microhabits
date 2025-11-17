@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Task Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
     <style>
         :root {
@@ -102,6 +103,53 @@ header {
         .object-item.selected { border-color: var(--primary-color); background: rgba(14, 107, 75, 0.1); }
         .object-icon { font-size: 32px; margin-bottom: 10px; }
         .error-message { color: var(--danger-color); text-align: center; margin-top: 15px; display: none; }
+        
+        /* --- ACHIEVEMENT STYLES --- */
+        .achievements-manage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .achievement-manage-card {
+            background: #f8f9fa;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        .achievement-manage-card.unlocked {
+            opacity: 1.0;
+            cursor: pointer;
+        }
+        .achievement-manage-card.unlocked:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .achievement-manage-card.displayed {
+            border-color: var(--primary-color);
+            background: rgba(14, 107, 75, 0.1);
+        }
+        .achievement-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        .achievement-manage-card.unlocked .achievement-icon {
+            color: var(--primary-color);
+        }
+        .achievement-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        .achievement-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
     </style>
 </head>
 <body>
@@ -162,6 +210,17 @@ header {
                 <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPassword" class="input-field"></div>
                 <button class="save-btn" onclick="changePassword()">🔒 Update Password</button>
             </div>
+            
+            <div class="divider"></div>
+            <div class="section">
+                <h2 class="section-title">Manage Achievements</h2>
+                <p style="text-align: center; color: var(--text-light); margin-bottom: 20px;">
+                    Click an unlocked achievement to display it on your profile.
+                </p>
+                <div class="achievements-manage-grid" id="achievementsManageGrid">
+                    <!-- Achievements loaded by JS -->
+                </div>
+            </div>
             <div class="divider"></div>
             <div class="delete-section">
                 <h2 class="section-title">Delete Account</h2>
@@ -204,6 +263,10 @@ header {
                     } else {
                         document.getElementById('profilePicPreview').textContent = (currentUser.display_name || "U")[0].toUpperCase();
                     }
+                    
+                    // --- Load achievements for management ---
+                    loadManageAchievements();
+                    
                 } else window.location.href = '/signin';
             } catch (err) { console.error(err); }
         });
@@ -273,23 +336,16 @@ header {
         }
 
 function setupObjectVerification() {
-    // 1. Randomly select a category (Fruits, Vehicles, etc.)
     currentChallenge = verificationData[Math.floor(Math.random() * verificationData.length)];
-    
-    // Update the text to tell the user what to look for
     document.getElementById('category').textContent = currentChallenge.category;
-
     const container = document.getElementById('objectsContainer');
     container.innerHTML = '';
-
-    // 2. Randomize the order of the objects using .sort()
     [...currentChallenge.allObjects].sort(() => Math.random() - 0.5).forEach(obj => {
         const div = document.createElement('div');
         div.className = 'object-item';
         div.innerHTML = `<div class="object-icon">${obj}</div>`;
         div.onclick = () => {
             div.classList.toggle('selected');
-            // Updated selection logic
             if(selectedObjects.includes(obj)) {
                 selectedObjects = selectedObjects.filter(i => i !== obj);
                 div.classList.remove('selected');
@@ -377,6 +433,75 @@ function verifyObjects() {
             document.getElementById('settingsSuccessModal').style.display='flex';
         }
         function closeSettingsSuccessModal() { document.getElementById('settingsSuccessModal').style.display='none'; }
+        
+        /**
+         * Loads all achievements for the management grid
+         */
+        async function loadManageAchievements() {
+            try {
+                // This API gets ALL achievements, locked and unlocked
+                const res = await fetch('/api/user/achievements/manage');
+                if (!res.ok) throw new Error('Failed to fetch achievements');
+                
+                const achievements = await res.json();
+                const grid = document.getElementById('achievementsManageGrid');
+                grid.innerHTML = '';
+                
+                if (achievements.length === 0) {
+                     grid.innerHTML = '<p>No achievements defined by the system.</p>';
+                     return;
+                }
+                
+                achievements.forEach(ach => {
+                    const card = document.createElement('div');
+                    card.className = 'achievement-manage-card';
+                    if (ach.unlocked) card.classList.add('unlocked');
+                    if (ach.is_displayed) card.classList.add('displayed');
+                    
+                    card.innerHTML = `
+                        <div class="achievement-icon"><i class="${ach.icon}"></i></div>
+                        <div class="achievement-name">${ach.name}</div>
+                        <div class="achievement-desc">${ach.description}</div>
+                    `;
+                    
+                    if (ach.unlocked) {
+                        card.title = 'Click to toggle display on profile';
+                        // Add the click handler to toggle display
+                        card.onclick = () => toggleAchievementDisplay(ach.id, !ach.is_displayed);
+                    } else {
+                        card.title = 'Keep earning points to unlock!';
+                    }
+                    
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById('achievementsManageGrid').innerHTML = '<p>Could not load achievements.</p>';
+            }
+        }
+
+        /**
+         * Toggles the display status of an achievement
+         */
+        async function toggleAchievementDisplay(achievementId, shouldDisplay) {
+            try {
+                const res = await fetch('/api/user/achievements/display', {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ achievement_id: achievementId, display: shouldDisplay })
+                });
+                
+                if (res.ok) {
+                    // Reload the grid to show the change
+                    loadManageAchievements();
+                    showSettingsSuccessModal(shouldDisplay ? 'Achievement set to display!' : 'Achievement hidden from profile.');
+                } else {
+                    alert('Failed to update achievement.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
     </script>
 </body>
 </html>

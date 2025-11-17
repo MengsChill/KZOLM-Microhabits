@@ -1131,7 +1131,6 @@
 </head>
 <body>
    
-    <!-- Background Animation Containers -->
     <div class="background-animation" id="microhabits-bg"></div>
     <div class="background-animation" id="benefits-bg"></div>
     <div class="background-animation" id="getting-started-bg"></div>
@@ -1154,7 +1153,6 @@
             </nav>
            
             <div class="header-icons">
-                <!-- Search icon removed as requested -->
                 <a href="/profile" class="icon-button" aria-label="User Account"><i class="fas fa-user"></i></a>
             </div>
         </header>
@@ -1167,7 +1165,7 @@
                 <h1>Small Steps,<br>Big Change</h1>
                 <p>Build the life you want through tiny, consistent actions that actually stick.</p>
                
-                <a href="../html/mainpage.html" class="cta-button">
+                <a href="/main" class="cta-button">
                     EXPLORE NOW
                     <span>&rarr;</span>
                 </a>
@@ -1228,14 +1226,12 @@
     </div>
 
 
-    <!-- Global Footer - Will be hidden when navigation buttons are clicked -->
     <footer class="simple-footer" id="global-footer">
         <div class="footer-container">
             <div class="footer-logo">Kzolm Microhabits</div>
            
             <div class="footer-links">
                 <a href="../html/dashboard.html">Home</a>
-                <a href="security-verification.html">Account Security</a>
                 <a href="#privacy-policy-page">Privacy Policy</a>
                 <a href="#terms-of-use-page">Terms of Use</a>
                 <a href="../html/about.html">About <span class="kzolm-link">Kzolm</span></a>
@@ -1488,7 +1484,6 @@
     </div>
 
 
-    <!-- Privacy Policy Page -->
     <div id="privacy-policy-page" class="policy-container" style="display: none;">
         <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
             <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
@@ -1570,7 +1565,6 @@
     </div>
 
 
-    <!-- Terms of Use Page -->
     <div id="terms-of-use-page" class="policy-container" style="display: none;">
         <a href="#" class="policy-back-button" onclick="hidePolicyPage()">
             <i class="fas fa-arrow-left"></i> &nbsp; Back to Home
@@ -1809,6 +1803,9 @@
        
         // 显示文章页面
         function showArticlePage(pageId) {
+            // *** FIX: Scroll to top ***
+            window.scrollTo(0, 0);
+
             // 隐藏所有背景动画
             document.querySelectorAll('.background-animation').forEach(bg => {
                 bg.classList.remove('active');
@@ -1858,6 +1855,9 @@
        
         // 显示政策页面
         function showPolicyPage(pageId) {
+            // *** FIX: Scroll to top ***
+            window.scrollTo(0, 0);
+            
             // 隐藏所有背景动画
             document.querySelectorAll('.background-animation').forEach(bg => {
                 bg.classList.remove('active');
@@ -1886,6 +1886,9 @@
        
         // 隐藏文章页面，返回主页
         function hideArticlePage() {
+            // *** FIX: Scroll to top ***
+            window.scrollTo(0, 0);
+
             // 隐藏所有背景动画
             document.querySelectorAll('.background-animation').forEach(bg => {
                 bg.classList.remove('active');
@@ -1910,6 +1913,9 @@
        
         // 隐藏政策页面，返回主页
         function hidePolicyPage() {
+            // *** FIX: Scroll to top ***
+            window.scrollTo(0, 0);
+
             // 显示主页内容
             document.querySelector('.page-container').style.display = 'flex';
            

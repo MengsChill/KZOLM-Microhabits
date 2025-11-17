@@ -190,7 +190,7 @@
     <section class="signup-box">
       <h2>Create Your Account</h2>
 
-      <form id="signup-form" action="/signup" method="POST">
+      <form id="signup-form">
         <label>Your email</label>
         <input type="email" name="email" id="email" placeholder="Enter your email" required />
 
@@ -223,7 +223,6 @@
           </span>
         </div>
 
-        <!-- Security Question Section -->
         <label>Security Question</label>
         <select name="securityQuestion" id="securityQuestion" required>
           <option value="">Select a security question</option>
@@ -241,12 +240,12 @@
         <div id="success-msg" class="success-msg"></div>
 
         <button type="submit" class="btn signup">Sign Up</button>
-        <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="../html/signin.html" style="color: #9ef86c;">Sign in here</a></p>
+        <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="/signin" style="color: #9ef86c;">Sign in here</a></p>
       </form>
     </section>
 
     <section class="signup-image">
-      <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Person drinking water and reading">
+      <img src="https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%D%D&auto=format&fit=crop&w=600&q=80" alt="Person drinking water and reading">
     </section>
   </main>
 
@@ -298,6 +297,7 @@
     // Password validation
     function validatePassword() {
       const pwd = passwordField.value;
+      let allValid = true;
 
       if (/[A-Z]/.test(pwd)) {
         requirements.uppercase.textContent = '✅ At least 1 uppercase letter';
@@ -305,6 +305,7 @@
       } else {
         requirements.uppercase.textContent = '❌ At least 1 uppercase letter';
         requirements.uppercase.style.color = 'red';
+        allValid = false;
       }
 
       if (/\d/.test(pwd)) {
@@ -313,6 +314,7 @@
       } else {
         requirements.number.textContent = '❌ At least 1 number';
         requirements.number.style.color = 'red';
+        allValid = false;
       }
 
       if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
@@ -321,6 +323,7 @@
       } else {
         requirements.special.textContent = '❌ At least 1 special character';
         requirements.special.style.color = 'red';
+        allValid = false;
       }
 
       if (!commonPasswords.includes(pwd)) {
@@ -329,20 +332,22 @@
       } else {
         requirements.common.textContent = '❌ Cannot be a common password';
         requirements.common.style.color = 'red';
+        allValid = false;
       }
+      return allValid;
     }
 
     passwordField.addEventListener('input', validatePassword);
 
-    // Form submission validation
-    form.addEventListener('submit', function(e) {
+    // === UPDATED: Form submission handler ===
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
       // Hide previous messages
       errorMsg.style.display = 'none';
       successMsg.style.display = 'none';
       
-      const allValid = Object.values(requirements).every(req => req.textContent.startsWith('✅'));
+      const allValid = validatePassword();
       if (!allValid) {
         errorMsg.textContent = 'Password does not meet all requirements.';
         errorMsg.style.display = 'block';
@@ -354,38 +359,63 @@
         errorMsg.style.display = 'block';
         return;
       }
+      
+      const email = document.getElementById('email').value;
+      const securityQuestion = document.getElementById('securityQuestion').value;
+      const securityAnswer = document.getElementById('securityAnswer').value;
 
-      if (!document.getElementById('securityQuestion').value) {
+      if (!securityQuestion) {
         errorMsg.textContent = 'Please select a security question.';
         errorMsg.style.display = 'block';
         return;
       }
 
-      if (!document.getElementById('securityAnswer').value.trim()) {
+      if (!securityAnswer.trim()) {
         errorMsg.textContent = 'Please provide an answer to the security question.';
         errorMsg.style.display = 'block';
         return;
       }
 
-      // All validations passed - store user data
-      const userData = {
-        email: document.getElementById('email').value,
+      // All validations passed - send to server
+      const formData = {
+        email: email,
         password: passwordField.value,
-        securityQuestion: document.getElementById('securityQuestion').value,
-        securityAnswer: document.getElementById('securityAnswer').value.trim().toLowerCase()
+        securityQuestion: securityQuestion,
+        securityAnswer: securityAnswer
       };
 
-      // Store user data in localStorage (in a real app, this would be sent to a server)
-      localStorage.setItem('userData', JSON.stringify(userData));
-      
-      // Show success message
-      successMsg.textContent = 'Account created successfully! Redirecting to sign in...';
-      successMsg.style.display = 'block';
-      
-      // Redirect to sign in page after 2 seconds
-      setTimeout(() => {
-        window.location.href = '/signin';
-      }, 2000);
+      try {
+        const response = await fetch('/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) { // Status 200-299
+          // Show success message
+          successMsg.textContent = 'Account created successfully! Redirecting to sign in...';
+          successMsg.style.display = 'block';
+          
+          // Redirect to sign in page after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/signin';
+          }, 2000);
+
+        } else {
+          // Show error message from server
+          errorMsg.textContent = data.error || 'An unknown error occurred.';
+          errorMsg.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error('Signup fetch error:', err);
+        errorMsg.textContent = 'Could not connect to the server. Please try again later.';
+        errorMsg.style.display = 'block';
+      }
     });
   </script>
 </body>

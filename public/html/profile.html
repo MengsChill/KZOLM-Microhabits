@@ -59,7 +59,10 @@
         .edit-profile-btn {
             background: var(--primary-color); color: white; padding: 10px 25px; border: none; border-radius: 20px;
             font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+            display: none; /* Hide by default, show with JS */
+            transition: background-color 0.2s ease;
         }
+        .edit-profile-btn:hover { background-color: var(--primary-dark); }
         .back-to-main-btn {
             display: inline-block;
             margin-bottom: 20px;
@@ -86,20 +89,36 @@
         .profile-content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
         .content-card { padding: 25px; }
         .content-card-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
-        .activity-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
-        .activity-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .activity-icon.check { background: #e0f2f1; color: var(--primary-dark); }
-        .activity-icon.streak { background: #fff3e0; color: #e65100; }
-        .achievements-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; }
-        .badge-item { background: var(--background-color); padding: 15px; border-radius: 12px; }
-        .badge-icon { font-size: 32px; color: var(--secondary-color); margin-bottom: 8px; }
+        
+        .achievements-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+            gap: 15px; 
+            text-align: center; 
+        }
+        .badge-item { 
+            background: var(--background-color); 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+        }
+        .badge-icon { 
+            font-size: 32px; 
+            color: var(--primary-color); /* Changed from secondary */
+            margin-bottom: 8px; 
+        }
+        .badge-item p { 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--text-color); 
+        }
         @media (max-width: 1024px) { .profile-content-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body class="theme-green">
 <div class="main-content">
         <div class="top-nav-buttons" style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <a href="/menu" class="back-to-main-btn" style="margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back to Main</a>
+            <a href="/main" class="back-to-main-btn" style="margin-bottom: 0;"><i class="fas fa-arrow-left"></i> Back to Main</a>
             <a href="/community" class="back-to-main-btn" style="margin-bottom: 0;"><i class="fas fa-users"></i> Community</a>
         </div>
         <div class="card profile-header">
@@ -109,25 +128,21 @@
             <div class="profile-avatar" id="profileAvatar">U</div>
             <h1 class="profile-name" id="profileName">Loading...</h1>
             <p class="profile-bio" id="profileBio">Loading...</p>
-            <a href="/edit-profile.html" class="edit-profile-btn"><i class="fas fa-pencil-alt"></i> Edit Profile</a>
+            <a href="/edit-profile.html" class="edit-profile-btn" id="editProfileBtn"><i class="fas fa-pencil-alt"></i> Edit Profile</a>
         </div>
 
         <div class="card profile-stats">
-            <div class="stat-item"><h3>0</h3><p>Habits Tracked</p></div>
-            <div class="stat-item"><h3>0 Days</h3><p>Current Streak</p></div>
-            <div class="stat-item"><h3>0</h3><p>Achievements</p></div>
-            <div class="stat-item"><h3>2 Days</h3><p>Since Joining KZOLM</p></div>
+            <div class="stat-item"><h3 id="statPoints">0</h3><p>Total Points</p></div>
+            <div class="stat-item"><h3 id="statStreak">0 Days</h3><p>Current Streak</p></div>
+            <div class="stat-item"><h3 id="statLevel">...</h3><p>Level</p></div>
+            <div class="stat-item"><h3 id="statJoined">...</h3><p>Since Joining</p></div>
         </div>
 
         <div class="profile-content-grid">
-            <div class="card content-card">
-                <h2 class="content-card-title">Activity Feed</h2>
-                <div class="activity-item"><div class="activity-icon check"><i class="fas fa-check"></i></div><p>Welcome to Kzolm!</p></div>
-            </div>
-            <div class="card content-card">
-                <h2 class="content-card-title">Achievements</h2>
-                <div class="achievements-grid">
-                    <div class="badge-item"><div class="badge-icon"><i class="fas fa-seedling"></i></div><p>New Leaf</p></div>
+            <div class="card content-card" style="grid-column: 1 / -1;"> <!-- Make achievements full width -->
+                <h2 class="content-card-title">Displayed Achievements</h2>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements loaded by JS -->
                 </div>
             </div>
         </div>
@@ -135,50 +150,147 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
-            const urlParams = new URLSearchParams(window.location.search)
-            const userId = urlParams.get('user_id')
+            let loggedInUserId = null;
+            try {
+                const myUserResponse = await fetch('/api/user'); 
+                if (myUserResponse.ok) {
+                    const myUser = await myUserResponse.json();
+                    loggedInUserId = myUser.id;
+                }
+            } catch (e) {
+                console.warn('User not logged in or session expired.');
+            }
 
-            let apiUrl = '/api/user'
-            if (userId) {
-                apiUrl = `/api/user/${userId}`
-                document.querySelector('.edit-profile-btn').style.display = 'none'
+            const urlParams = new URLSearchParams(window.location.search);
+            const profileIdFromUrl = urlParams.get('user_id'); 
+
+            let apiUrl;
+            let profileIdToShow; 
+
+            if (profileIdFromUrl) {
+                apiUrl = `/api/user/${profileIdFromUrl}`;
+                profileIdToShow = parseInt(profileIdFromUrl);
             } else {
-                document.querySelector('.edit-profile-btn').style.display = 'inline-block'
+                apiUrl = '/api/user';
+                profileIdToShow = loggedInUserId;
             }
 
             try {
-                const response = await fetch(apiUrl)
+                if (!profileIdToShow && !profileIdFromUrl) {
+                    window.location.href = '/signin';
+                    return;
+                }
+
+                const response = await fetch(apiUrl);
                 if (!response.ok) { 
-                    if (!userId) window.location.href = '/signin'
-                    else throw new Error('User not found')
-                    return 
+                    throw new Error('User not found');
                 }
-                const user = await response.json()
                 
-                document.getElementById('profileName').textContent = user.display_name
-                document.getElementById('profileBio').textContent = user.bio || "No bio set."
+                const user = await response.json();
                 
-                const avatarDiv = document.getElementById('profileAvatar')
+                document.getElementById('profileName').textContent = user.display_name;
+                document.getElementById('profileBio').textContent = user.bio || "No bio set.";
+                
+                const avatarDiv = document.getElementById('profileAvatar');
                 if (user.profile_image) {
-                    avatarDiv.innerHTML = `<img src="/uploads/${user.profile_image}" alt="Profile">`
+                    avatarDiv.innerHTML = `<img src="/uploads/${user.profile_image}" alt="Profile">`;
                 } else {
-                    avatarDiv.textContent = (user.display_name || "U")[0].toUpperCase()
+                    avatarDiv.textContent = (user.display_name || "U")[0].toUpperCase();
                 }
                 
-                const bannerImg = document.getElementById('bannerImage')
+                const bannerImg = document.getElementById('bannerImage');
                 if (user.banner_image) {
-                    bannerImg.src = '/uploads/' + user.banner_image
-                    bannerImg.style.display = 'block'
+                    bannerImg.src = '/uploads/' + user.banner_image;
+                    bannerImg.style.display = 'block';
+                }
+
+                const editButton = document.getElementById('editProfileBtn');
+                if (loggedInUserId && profileIdToShow === loggedInUserId) {
+                    editButton.style.display = 'inline-block';
+                } else {
+                    editButton.style.display = 'none';
+                }
+                
+                // Fetch and render achievements for this user
+                fetchAchievements(profileIdToShow);
+                // Fetch and render stats for this user
+                fetchProfileStats(profileIdToShow);
+
+            } catch (error) {
+                document.getElementById('profileName').textContent = "User Not Found";
+                document.getElementById('profileBio').textContent = "This user profile does not exist.";
+                document.getElementById('editProfileBtn').style.display = 'none';
+            }
+        });
+        
+        /**
+         * Fetches and renders the user's displayed achievements
+         */
+        async function fetchAchievements(userId) {
+            try {
+                // This API only returns achievements where is_displayed = 1
+                const response = await fetch(`/api/user/${userId}/achievements`);
+                if (!response.ok) return;
+                const achievements = await response.json();
+                
+                const grid = document.getElementById('achievementsGrid');
+                grid.innerHTML = ''; // Clear
+                
+                if (achievements.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1 / -1; color: var(--text-light); font-size: 14px; text-align: left;">No displayed achievements.</p>';
+                    return;
+                }
+                
+                // Render the new "level" badges
+                achievements.forEach(ach => {
+                    const badge = document.createElement('div');
+                    badge.className = 'badge-item';
+                    badge.title = ach.description; // Show description on hover
+                    badge.innerHTML = `
+                        <div class="badge-icon"><i class="${ach.icon}"></i></div>
+                        <p>${ach.name}</p>
+                    `;
+                    grid.appendChild(badge);
+                });
+            } catch (error) {
+                console.error('Failed to load achievements', error);
+                const grid = document.getElementById('achievementsGrid');
+                grid.innerHTML = '<p style="color: var(--text-light);">Could not load achievements.</p>';
+            }
+        }
+        
+        /**
+         * Fetches and renders the user's stats
+         */
+         async function fetchProfileStats(userId) {
+            // We need to get stats for a specific user.
+            // We'll call the progress and stats APIs, but they default to the logged-in user.
+            // For simplicity, we'll only load stats for the logged-in user's profile for now.
+            // A more complex setup would require modifying stats APIs to accept a user_id.
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('user_id')) return; // Don't load stats if viewing someone else
+            
+            try {
+                const [progressRes, statsRes] = await Promise.all([
+                    fetch('/api/user/progress'),
+                    fetch('/api/statistics')
+                ]);
+                
+                if (progressRes.ok && statsRes.ok) {
+                    const progress = await progressRes.json();
+                    const stats = await statsRes.json();
+                    
+                    document.getElementById('statPoints').textContent = Math.round(progress.totalPoints);
+                    document.getElementById('statStreak').textContent = `${stats.currentStreak} Days`;
+                    document.getElementById('statLevel').textContent = progress.currentLevel.name;
+                    // Note: "Since Joining" is hardcoded in the original, would require storing join date
+                    document.getElementById('statJoined').textContent = '...'; 
                 }
             } catch (error) {
-                if (userId) {
-                    document.getElementById('profileName').textContent = "User Not Found"
-                    document.getElementById('profileBio').textContent = "This user profile does not exist."
-                } else {
-                    window.location.href = '/signin'
-                }
+                console.error("Failed to load profile stats", error);
             }
-        })
+         }
     </script>
 </body>
 </html>
