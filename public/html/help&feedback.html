@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help & Feedback - Microhabits Progress Tracker</title>
+    <title>Help & Feedback - Microhabits</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #0e6b4b;
-            --primary-light: #1a8a63;
-            --primary-dark: #0a4d35;
-            --accent-color: #4CAF50;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
             --text-color: #333333;
             --text-light: #666666;
             --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -26,383 +28,448 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
+            padding-top: 20px;
         }
 
-        /* Header */
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-        }
-
-        .logo i {
-            font-size: 1.8rem;
-        }
-
-        .back-button {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 20px;
         }
 
-        .page-title {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary-color);
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
-        .page-title h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .back-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
-        .page-title p {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Content Sections */
-        .content-grid {
+        /* Help & Feedback Content */
+        .help-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 50px;
         }
 
-        @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .section {
-            background-color: var(--card-bg);
-            border-radius: 15px;
+        .help-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .section-title {
-            font-size: 1.5rem;
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
             margin-bottom: 20px;
-            color: var(--primary-color);
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .section-title i {
-            color: var(--primary-light);
+        .page-title i {
+            color: var(--primary-color);
         }
 
-        /* FAQ Section */
-        .faq-item {
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-        }
-
-        .faq-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .faq-question {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--primary-dark);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .faq-answer {
+        .page-description {
             color: var(--text-light);
-            line-height: 1.7;
+            margin-bottom: 25px;
+            font-size: 16px;
         }
 
-        /* Contact Section */
-        .contact-info {
-            margin-bottom: 30px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: rgba(14, 107, 75, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background-color: rgba(14, 107, 75, 0.1);
-        }
-
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .contact-details h3 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            color: var(--primary-dark);
-        }
-
-        .contact-details p {
-            color: var(--text-light);
-        }
-
-        /* Feedback Form */
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary-dark);
+            font-weight: 500;
+            color: var(--text-color);
         }
 
         .form-control {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: white;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
+        }
+
+        .form-text {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
         }
 
         textarea.form-control {
-            min-height: 120px;
+            min-height: 150px;
             resize: vertical;
         }
 
-        .submit-button {
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .help-sidebar {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .submit-button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
+        .sidebar-title i {
+            color: var(--primary-color);
         }
 
-        /* Footer */
-        footer {
-            background-color: var(--primary-dark);
-            color: white;
-            padding: 30px 0;
-            margin-top: 50px;
+        .faq-list {
+            list-style: none;
+            margin-bottom: 30px;
         }
 
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .faq-item {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item:hover {
+            color: var(--primary-color);
+        }
+
+        .faq-question {
+            font-weight: 500;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .footer-links {
+        .faq-answer {
+            margin-top: 10px;
+            color: var(--text-light);
+            font-size: 14px;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .contact-info {
+            background-color: rgba(14, 107, 75, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .contact-item {
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .footer-links a {
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: var(--primary-color);
             color: white;
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .footer-links a:hover {
-            text-decoration: underline;
+        .contact-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .contact-text p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #2e7d32;
+        }
+
+        .alert-error {
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #d32f2f;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .help-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .footer-container {
+            .form-actions {
                 flex-direction: column;
-                gap: 20px;
-                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .help-content, .help-sidebar {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>Kzolm</span>
-            </a>
-            <a href="../html/mainpage.html" class="back-button">
-                <i class="fas fa-arrow-left"></i>
-                Back
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Content -->
+    <!-- Back Button -->
     <div class="container">
-        <div class="page-title">
-            <h1>Help & Feedback</h1>
-            <p>Find answers to common questions, contact our support team, or share your feedback with us.</p>
-        </div>
+        <a href="../html/mainpage.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </a>
+    </div>
 
-        <div class="content-grid">
-            <!-- FAQ Section -->
-            <div class="section">
-                <h2 class="section-title">
-                    <i class="fas fa-question-circle"></i>
-                    Frequently Asked Questions
-                </h2>
-                <div class="faq-list">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            How do I add a new habit to track?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Currently, you can track three predefined habits: Exercising, Drinking Water, and Reading. We're working on adding custom habit creation in a future update.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            Can I change the time range for my progress view?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes! You can switch between "Last 7 Days", "Last 30 Days", and "All Time" views using the time range buttons at the top of the dashboard.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            How is my completion rate calculated?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Your completion rate is calculated as the percentage of days you've completed your habit out of the total days in the selected time range.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            Is my data stored securely?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Yes, all your habit data is stored locally on your device. We don't collect or store any personal information on our servers.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            Can I use the app on multiple devices?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Currently, the app works independently on each device. We're developing sync functionality that will be available in a future update.
-                        </div>
-                    </div>
+    <!-- Help & Feedback Content -->
+    <div class="container">
+        <div class="help-container">
+            <!-- Main Content -->
+            <div class="help-content">
+                <h1 class="page-title"><i class="fas fa-question-circle"></i> Help & Feedback</h1>
+                <p class="page-description">We're here to help! Send us your questions, feedback, or report any issues you're experiencing.</p>
+
+                <!-- Success Alert -->
+                <div class="alert alert-success" id="successAlert">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Your message has been sent successfully! We'll get back to you soon.</span>
                 </div>
+
+                <!-- Error Alert -->
+                <div class="alert alert-error" id="errorAlert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorMessage">Please fill in all required fields.</span>
+                </div>
+
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Your Name *</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email address" required>
+                        <div class="form-text">We'll use this to respond to your inquiry</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="category">Category *</label>
+                        <select class="form-select" id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="technical">Technical Issue</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="account">Account Help</option>
+                            <option value="billing">Billing Issue</option>
+                            <option value="feedback">General Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Subject *</label>
+                        <input type="text" class="form-control" id="subject" placeholder="Brief description of your issue" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="message">Message *</label>
+                        <textarea class="form-control" id="message" placeholder="Please describe your issue or feedback in detail..." required></textarea>
+                        <div class="form-text">Be as detailed as possible so we can help you better</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="priority">Priority</label>
+                        <select class="form-select" id="priority">
+                            <option value="low">Low - General question or feedback</option>
+                            <option value="medium" selected>Medium - Feature not working properly</option>
+                            <option value="high">High - Critical issue affecting usage</option>
+                            <option value="urgent">Urgent - System down or security issue</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="clearForm()">Clear Form</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Contact & Feedback Section -->
-            <div class="section">
-                <h2 class="section-title">
-                    <i class="fas fa-comments"></i>
-                    Contact & Feedback
-                </h2>
-                
+            <!-- Sidebar -->
+            <div class="help-sidebar">
+                <h2 class="sidebar-title"><i class="fas fa-lightbulb"></i> Frequently Asked Questions</h2>
+                <ul class="faq-list">
+                    <li class="faq-item">
+                        <div class="faq-question">
+                            How do I reset my password?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            You can reset your password by clicking on "Forgot Password" on the login page. We'll send a reset link to your email.
+                        </div>
+                    </li>
+                    <li class="faq-item">
+                        <div class="faq-question">
+                            Can I track multiple habits at once?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! You can create and track multiple habits simultaneously. There's no limit to the number of habits you can track.
+                        </div>
+                    </li>
+                    <li class="faq-item">
+                        <div class="faq-question">
+                            How do I join the community?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            The community is automatically available to all registered users. Just create an account and start engaging with others!
+                        </div>
+                    </li>
+                    <li class="faq-item">
+                        <div class="faq-question">
+                            Is my data secure?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Absolutely! We use industry-standard encryption and security practices to protect your personal data and habit information.
+                        </div>
+                    </li>
+                </ul>
+
                 <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Call Us</h3>
-                            <p>+1 (800) 555-1234</p>
-                        </div>
-                    </div>
+                    <h2 class="sidebar-title"><i class="fas fa-headset"></i> Contact Information</h2>
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i class="fas fa-envelope"></i>
                         </div>
-                        <div class="contact-details">
-                            <h3>Email Us</h3>
+                        <div class="contact-text">
+                            <h4>Email Support</h4>
                             <p>support@microhabits.com</p>
                         </div>
                     </div>
@@ -410,105 +477,108 @@
                         <div class="contact-icon">
                             <i class="fas fa-clock"></i>
                         </div>
-                        <div class="contact-details">
-                            <h3>Response Time</h3>
-                            <p>We typically respond within 24 hours</p>
+                        <div class="contact-text">
+                            <h4>Response Time</h4>
+                            <p>Within 24 hours</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="contact-text">
+                            <h4>Support Hours</h4>
+                            <p>Mon-Fri, 9AM-6PM EST</p>
                         </div>
                     </div>
                 </div>
-
-                <h3 class="section-title" style="font-size: 1.3rem;">
-                    <i class="fas fa-edit"></i>
-                    Send Us Feedback
-                </h3>
-                <form id="feedback-form">
-                    <div class="form-group">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" class="form-control" placeholder="Enter your name">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input type="text" id="subject" class="form-control" placeholder="What is this regarding?">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" class="form-control" placeholder="Tell us what you think..."></textarea>
-                    </div>
-                    <button type="submit" class="submit-button">
-                        <i class="fas fa-paper-plane"></i>
-                        Send Feedback
-                    </button>
-                </form>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="copyright">
-                &copy; 2023 Microhabits Tracker. All rights reserved.
-            </div>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">About Us</a>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // FAQ toggle functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const answer = question.nextElementSibling;
-                const icon = question.querySelector('i');
-                
-                // Toggle answer visibility
-                if (answer.style.display === 'block') {
-                    answer.style.display = 'none';
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
-                } else {
-                    answer.style.display = 'block';
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-up');
-                }
+        // FAQ functionality
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('active');
             });
         });
 
-        // Form submission handling
-        document.getElementById('feedback-form').addEventListener('submit', function(e) {
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const category = document.getElementById('category').value;
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            const priority = document.getElementById('priority').value;
             
-            // Simple validation
-            if (!name || !email || !subject || !message) {
-                alert('Please fill in all fields before submitting.');
+            // Hide alerts
+            document.getElementById('successAlert').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+            
+            // Validate form
+            if (!name || !email || !category || !subject || !message) {
+                document.getElementById('errorMessage').textContent = 'Please fill in all required fields.';
+                document.getElementById('errorAlert').style.display = 'flex';
                 return;
             }
             
-            // In a real application, you would send this data to a server
-            // For this demo, we'll just show a success message
-            alert('Thank you for your feedback! We appreciate your input and will get back to you soon.');
+            if (!isValidEmail(email)) {
+                document.getElementById('errorMessage').textContent = 'Please enter a valid email address.';
+                document.getElementById('errorAlert').style.display = 'flex';
+                return;
+            }
             
-            // Reset the form
+            // Create feedback object
+            const feedback = {
+                id: Date.now(),
+                name,
+                email,
+                category,
+                subject,
+                message,
+                priority,
+                status: 'new',
+                date: new Date().toISOString(),
+                read: false
+            };
+            
+            // Save to localStorage
+            saveFeedback(feedback);
+            
+            // Show success message
+            document.getElementById('successAlert').style.display = 'flex';
+            
+            // Reset form
             this.reset();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Initially hide all FAQ answers
-        document.querySelectorAll('.faq-answer').forEach(answer => {
-            answer.style.display = 'none';
-        });
+        // Email validation
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Save feedback to localStorage
+        function saveFeedback(feedback) {
+            let feedbackList = JSON.parse(localStorage.getItem('userFeedback')) || [];
+            feedbackList.unshift(feedback);
+            localStorage.setItem('userFeedback', JSON.stringify(feedbackList));
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('successAlert').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+        }
     </script>
 </body>
 </html>
