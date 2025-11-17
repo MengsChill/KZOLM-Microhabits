@@ -1018,123 +1018,29 @@
       }
     }
 
-   // Eye toggle functionality - SIMPLIFIED AND WORKING
-function setupToggle(toggle, inputField) {
-    // Set initial state - password is hidden, show slash eye
-    toggle.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-            <line x1="1" y1="1" x2="23" y2="23"></line>
-        </svg>`;
-    
-    toggle.addEventListener('click', function() {
-        if (inputField.type === 'password') {
-            // Show password - change to open eye
-            inputField.type = 'text';
-            toggle.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                </svg>`;
+    // Eye toggle functionality (unchanged logic, just re-initialized)
+    function setupToggle(toggle, inputId) {
+      toggle.addEventListener('click', () => {
+        const input = document.getElementById(inputId);
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94L6.06 6.06M1 1l22 22"></path>
+              <path d="M10.59 10.59a3 3 0 0 1 4.24 4.24"></path>
+              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
+            </svg>`;
         } else {
-            // Hide password - change to eye with slash
-            inputField.type = 'password';
-            toggle.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                </svg>`;
+          input.type = 'password';
+          toggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
+            </svg>`;
         }
-    });
-}
-
-// Initialize eye toggles
-document.addEventListener('DOMContentLoaded', function() {
-    // Main sign-in password toggle
-    const signinPasswordInput = document.querySelector('input[name="password"]');
-    const signinToggle = document.querySelector('.password-field .toggle:not(.toggle-new):not(.toggle-confirm)');
-    if (signinToggle && signinPasswordInput) {
-        setupToggle(signinToggle, signinPasswordInput);
+      });
     }
-    
-    // New password toggle (in reset section)
-    const newPasswordInput = document.getElementById('new-password');
-    const newToggle = document.querySelector('.toggle-new');
-    if (newToggle && newPasswordInput) {
-        setupToggle(newToggle, newPasswordInput);
-    }
-    
-    // Confirm password toggle (in reset section)
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const confirmToggle = document.querySelector('.toggle-confirm');
-    if (confirmToggle && confirmPasswordInput) {
-        setupToggle(confirmToggle, confirmPasswordInput);
-    }
-    
-    // Add password validation listener
-    if (newPasswordInput) {
-        newPasswordInput.addEventListener('input', validatePassword);
-    }
-});
-// Initialize eye toggles
-document.addEventListener('DOMContentLoaded', function() {
-    // Main sign-in password toggle
-    const signinPasswordInput = document.querySelector('input[name="password"]');
-    const signinToggle = document.querySelector('.password-field .toggle:not(.toggle-new):not(.toggle-confirm)');
-    if (signinToggle && signinPasswordInput) {
-        setupToggle(signinToggle, signinPasswordInput);
-    }
-    
-    // New password toggle (in reset section)
-    const newPasswordInput = document.getElementById('new-password');
-    const newToggle = document.querySelector('.toggle-new');
-    if (newToggle && newPasswordInput) {
-        setupToggle(newToggle, newPasswordInput);
-    }
-    
-    // Confirm password toggle (in reset section)
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const confirmToggle = document.querySelector('.toggle-confirm');
-    if (confirmToggle && confirmPasswordInput) {
-        setupToggle(confirmToggle, confirmPasswordInput);
-    }
-    
-    // Add password validation listener
-    if (newPasswordInput) {
-        newPasswordInput.addEventListener('input', validatePassword);
-    }
-});
-
-// Initialize eye toggles - FIXED VERSION
-document.addEventListener('DOMContentLoaded', function() {
-    // Main sign-in password toggle
-    const signinPasswordInput = document.querySelector('input[name="password"]');
-    const signinToggle = document.querySelector('.password-field .toggle:not(.toggle-new):not(.toggle-confirm)');
-    if (signinToggle && signinPasswordInput) {
-        setupToggle(signinToggle, signinPasswordInput);
-    }
-    
-    // New password toggle (in reset section)
-    const newPasswordInput = document.getElementById('new-password');
-    const newToggle = document.querySelector('.toggle-new');
-    if (newToggle && newPasswordInput) {
-        setupToggle(newToggle, newPasswordInput);
-    }
-    
-    // Confirm password toggle (in reset section)
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const confirmToggle = document.querySelector('.toggle-confirm');
-    if (confirmToggle && confirmPasswordInput) {
-        setupToggle(confirmToggle, confirmPasswordInput);
-    }
-    
-    // Add password validation listener
-    if (newPasswordInput) {
-        newPasswordInput.addEventListener('input', validatePassword);
-    }
-});
 
     // Initialize eye toggles
     document.addEventListener('DOMContentLoaded', function() {
