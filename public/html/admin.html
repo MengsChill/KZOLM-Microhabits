@@ -20,6 +20,7 @@
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --sidebar-width: 250px;
+            --sidebar-collapsed: 70px;
             --topbar-height: 70px;
         }
 
@@ -54,10 +55,24 @@
             z-index: 100;
         }
 
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        .sidebar.collapsed .sidebar-header h2 span,
+        .sidebar.collapsed .menu-item span {
+            display: none;
+        }
+
+        .sidebar.collapsed .sidebar-header h2 {
+            justify-content: center;
+        }
+
         .sidebar-header {
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
         }
 
         .sidebar-header h2 {
@@ -65,8 +80,9 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 10px;
+            transition: var(--transition);
         }
 
         .sidebar-menu {
@@ -81,6 +97,9 @@
             text-decoration: none;
             transition: var(--transition);
             border-left: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .menu-item:hover, .menu-item.active {
@@ -93,6 +112,7 @@
             width: 24px;
             margin-right: 12px;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
         /* Top Bar */
@@ -110,6 +130,10 @@
             right: 0;
             z-index: 99;
             transition: var(--transition);
+        }
+
+        .sidebar.collapsed ~ .top-bar {
+            left: var(--sidebar-collapsed);
         }
 
         .top-bar-left {
@@ -134,6 +158,7 @@
             border-radius: 20px;
             padding: 8px 15px;
             width: 300px;
+            position: relative;
         }
 
         .search-bar input {
@@ -145,10 +170,45 @@
             color: var(--text-color);
         }
 
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 5px;
+            display: none;
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-result-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
         .top-bar-right {
             display: flex;
             align-items: center;
             gap: 20px;
+            position: relative;
         }
 
         .notification-icon, .user-profile {
@@ -171,22 +231,146 @@
             justify-content: center;
         }
 
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 320px;
+            margin-top: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        .notification-dropdown.active {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(14, 107, 75, 0.1);
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .notification-content h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .notification-footer {
+            padding: 10px 15px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .notification-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
+        .user-profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 200px;
+            margin-top: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        .user-profile-dropdown.active {
+            display: block;
+        }
+
+        .user-profile-item {
+            padding: 12px 15px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .user-profile-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .user-profile-item i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .user-profile-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 5px 0;
         }
 
         /* Main Content */
@@ -198,6 +382,10 @@
             transition: var(--transition);
         }
 
+        .sidebar.collapsed ~ .main-content {
+            margin-left: var(--sidebar-collapsed);
+        }
+
         .page-title {
             font-size: 28px;
             font-weight: 600;
@@ -205,6 +393,15 @@
             color: var(--primary-dark);
         }
 
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Dashboard Styles */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -375,14 +572,7 @@
             color: #f44336;
         }
 
-        /* Recent Content Section */
-        .recent-content {
-            background-color: var(--card-color);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-        }
-
+        /* Content Table */
         .content-table {
             width: 100%;
             border-collapse: collapse;
@@ -429,9 +619,147 @@
             font-size: 16px;
         }
 
+        /* Users Page Styles */
+        .users-table-container {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+        }
+
+        /* Profile Page Styles */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .profile-sidebar {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .profile-stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .profile-details {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-section {
+            margin-bottom: 25px;
+        }
+
+        .profile-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-field {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .profile-label {
+            width: 150px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .profile-value {
+            flex: 1;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .card-grid {
+            .card-grid, .profile-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -460,6 +788,11 @@
             .search-bar {
                 width: 200px;
             }
+
+            .notification-dropdown {
+                right: -50px;
+                width: 280px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -474,6 +807,16 @@
             .main-content {
                 padding: 20px 15px;
             }
+            
+            .table-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .notification-dropdown {
+                right: -100px;
+                width: 250px;
+            }
         }
     </style>
 </head>
@@ -482,37 +825,37 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-leaf"></i> Microhabits Admin</h2>
+                <h2><i class="fas fa-leaf"></i> <span>Microhabits Admin</span></h2>
             </div>
             <div class="sidebar-menu">
-                <a href="#" class="menu-item active">
+                <a class="menu-item active" data-page="dashboard">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a class="menu-item" data-page="users">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a class="menu-item" href="../html/adminanalytics.html" data-page="analytics">
                     <i class="fas fa-chart-line"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a class="menu-item" href= "../html/adminhabit.html" data-page="habits">
                     <i class="fas fa-tasks"></i>
                     <span>Habits</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a class="menu-item" data-page="community">
                     <i class="fas fa-comments"></i>
                     <span>Community</span>
                 </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Help & Support</span>
-                </a>
+                <a class="menu-item" href="../html/adminsettings.html" data-page="settings">
+    <i class="fas fa-cog"></i>
+    <span>Settings</span>
+</a>
+                <a class="menu-item" href="../html/admin.html" data-page="help">
+    <i class="fas fa-question-circle"></i>
+    <span>Help & Support</span>
+</a>
             </div>
         </div>
 
@@ -524,19 +867,93 @@
                 </button>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="Search..." id="searchInput">
+                    <div class="search-results" id="searchResults">
+                        <div class="search-result-item">
+                            <div><strong>John Doe</strong> - User</div>
+                            <div class="notification-time">Active 2 hours ago</div>
+                        </div>
+                        <div class="search-result-item">
+                            <div><strong>Morning Exercise</strong> - Habit</div>
+                            <div class="notification-time">1,245 active users</div>
+                        </div>
+                        <div class="search-result-item">
+                            <div><strong>Healthy Eating Guide</strong> - Article</div>
+                            <div class="notification-time">Published yesterday</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="top-bar-right">
-                <div class="notification-icon">
+                <div class="notification-icon" id="notificationIcon">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge">3</span>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-header">
+                            <h3>Notifications</h3>
+                            <a href="#" style="color: var(--primary-color); font-size: 14px;">Mark all as read</a>
+                        </div>
+                        <div class="notification-list">
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>New User Registration</h4>
+                                    <p>John Doe joined Microhabits</p>
+                                    <div class="notification-time">10 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>Habit Completed</h4>
+                                    <p>Sarah completed "Morning Meditation"</p>
+                                    <div class="notification-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>New Comment</h4>
+                                    <p>Mike commented on "Healthy Eating"</p>
+                                    <div class="notification-time">2 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-footer">
+                            <a href="#" data-page="notifications">View All Notifications</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-profile">
+                <div class="user-profile" id="userProfile">
                     <div class="user-avatar">AD</div>
                     <div>
                         <div>Admin User</div>
                         <div style="font-size: 12px; color: var(--text-light);">Administrator</div>
+                    </div>
+                    <div class="user-profile-dropdown" id="userProfileDropdown">
+                        <a href="#" class="user-profile-item" data-page="profile">
+                            <i class="fas fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Account Settings</span>
+                        </a>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Notification Settings</span>
+                        </a>
+                        <div class="user-profile-divider"></div>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -544,261 +961,241 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <h1 class="page-title">Dashboard Overview</h1>
-            
-            <!-- Stats Cards -->
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: rgba(14, 107, 75, 0.1); color: var(--primary-color);">
-                        <i class="fas fa-users"></i>
+            <!-- Dashboard Page -->
+            <div class="page-content active" id="dashboard">
+                <h1 class="page-title">Dashboard Overview</h1>
+                
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(14, 107, 75, 0.1); color: var(--primary-color);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>12,458</h3>
+                            <p>Total Users</p>
+                        </div>
                     </div>
-                    <div class="stat-info">
-                        <h3>12,458</h3>
-                        <p>Total Users</p>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>78%</h3>
+                            <p>Active Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(255, 152, 0, 0.1); color: var(--secondary-color);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3,245</h3>
+                            <p>Habits Created</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>1,248</h3>
+                            <p>Community Posts</p>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
-                        <i class="fas fa-chart-line"></i>
+
+                <!-- Charts and Activity -->
+                <div class="card-grid">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h2 class="card-title">User Growth</h2>
+                            <select style="padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border-color);">
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
+                                <option>Last 90 Days</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
                     </div>
-                    <div class="stat-info">
-                        <h3>78%</h3>
-                        <p>Active Users</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: rgba(255, 152, 0, 0.1); color: var(--secondary-color);">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>3,245</h3>
-                        <p>Habits Created</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>1,248</h3>
-                        <p>Community Posts</p>
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Activity</h2>
+                        </div>
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <h4>New User Registration</h4>
+                                    <p>John Doe joined Microhabits</p>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <h4>Habit Completed</h4>
+                                    <p>Sarah completed "Morning Meditation"</p>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <h4>New Comment</h4>
+                                    <p>Mike commented on "Healthy Eating"</p>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-share"></i>
+                                </div>
+                                <div class="activity-info">
+                                    <h4>Progress Shared</h4>
+                                    <p>Emma shared her 30-day streak</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts and Activity -->
-            <div class="card-grid">
-                <div class="chart-card">
-                    <div class="card-header">
-                        <h2 class="card-title">User Growth</h2>
-                        <select style="padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border-color);">
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                            <option>Last 90 Days</option>
-                        </select>
+            <!-- Profile Page -->
+            <div class="page-content" id="profile">
+                <h1 class="page-title">Admin Profile</h1>
+                <div class="profile-container">
+                    <div class="profile-sidebar">
+                        <div class="profile-avatar">AD</div>
+                        <div class="profile-name">Admin User</div>
+                        <div class="profile-role">Administrator</div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">245</div>
+                                <div class="profile-stat-label">Days Active</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">12</div>
+                                <div class="profile-stat-label">Habits</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="userGrowthChart"></canvas>
+                    <div class="profile-details">
+                        <div class="profile-section">
+                            <h3>Personal Information</h3>
+                            <div class="profile-field">
+                                <div class="profile-label">Full Name</div>
+                                <div class="profile-value">Admin User</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Email</div>
+                                <div class="profile-value">admin@microhabits.com</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Phone</div>
+                                <div class="profile-value">+1 (555) 123-4567</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Location</div>
+                                <div class="profile-value">New York, USA</div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <h3>Account Information</h3>
+                            <div class="profile-field">
+                                <div class="profile-label">Username</div>
+                                <div class="profile-value">admin_user</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Role</div>
+                                <div class="profile-value">Administrator</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Member Since</div>
+                                <div class="profile-value">January 15, 2022</div>
+                            </div>
+                            <div class="profile-field">
+                                <div class="profile-label">Last Login</div>
+                                <div class="profile-value">Today, 09:24 AM</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="activity-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Recent Activity</h2>
-                    </div>
-                    <ul class="activity-list">
-                        <li class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <div class="activity-info">
-                                <h4>New User Registration</h4>
-                                <p>John Doe joined Microhabits</p>
-                            </div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                            <div class="activity-info">
-                                <h4>Habit Completed</h4>
-                                <p>Sarah completed "Morning Meditation"</p>
-                            </div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-comment"></i>
-                            </div>
-                            <div class="activity-info">
-                                <h4>New Comment</h4>
-                                <p>Mike commented on "Healthy Eating"</p>
-                            </div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-share"></i>
-                            </div>
-                            <div class="activity-info">
-                                <h4>Progress Shared</h4>
-                                <p>Emma shared her 30-day streak</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Recent Users -->
-            <div class="card-grid">
-                <div class="user-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Recent Users</h2>
-                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 14px;">View All</a>
-                    </div>
-                    <ul class="user-list">
-                        <li class="user-item">
-                            <div class="user-avatar-small">JD</div>
-                            <div class="user-info">
-                                <h4>John Doe</h4>
-                                <p>john.doe@example.com</p>
-                            </div>
-                            <span class="user-status status-active">Active</span>
-                        </li>
-                        <li class="user-item">
-                            <div class="user-avatar-small">SJ</div>
-                            <div class="user-info">
-                                <h4>Sarah Johnson</h4>
-                                <p>sarah.j@example.com</p>
-                            </div>
-                            <span class="user-status status-active">Active</span>
-                        </li>
-                        <li class="user-item">
-                            <div class="user-avatar-small">MB</div>
-                            <div class="user-info">
-                                <h4>Mike Brown</h4>
-                                <p>mike.b@example.com</p>
-                            </div>
-                            <span class="user-status status-inactive">Inactive</span>
-                        </li>
-                        <li class="user-item">
-                            <div class="user-avatar-small">EW</div>
-                            <div class="user-info">
-                                <h4>Emma Wilson</h4>
-                                <p>emma.w@example.com</p>
-                            </div>
-                            <span class="user-status status-active">Active</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="user-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Top Habits</h2>
-                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 14px;">View All</a>
-                    </div>
-                    <ul class="user-list">
-                        <li class="user-item">
-                            <div class="activity-icon" style="background-color: rgba(14, 107, 75, 0.1); color: var(--primary-color);">
-                                <i class="fas fa-running"></i>
-                            </div>
-                            <div class="user-info">
-                                <h4>Morning Exercise</h4>
-                                <p>1,245 active users</p>
-                            </div>
-                        </li>
-                        <li class="user-item">
-                            <div class="activity-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <div class="user-info">
-                                <h4>Daily Reading</h4>
-                                <p>987 active users</p>
-                            </div>
-                        </li>
-                        <li class="user-item">
-                            <div class="activity-icon" style="background-color: rgba(255, 152, 0, 0.1); color: var(--secondary-color);">
-                                <i class="fas fa-apple-alt"></i>
-                            </div>
-                            <div class="user-info">
-                                <h4>Healthy Eating</h4>
-                                <p>856 active users</p>
-                            </div>
-                        </li>
-                        <li class="user-item">
-                            <div class="activity-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
-                                <i class="fas fa-bed"></i>
-                            </div>
-                            <div class="user-info">
-                                <h4>Sleep Schedule</h4>
-                                <p>723 active users</p>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </div>
 
-            <!-- Recent Content -->
-            <div class="recent-content">
-                <div class="card-header">
-                    <h2 class="card-title">Recent Content</h2>
-                    <a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 14px;">View All</a>
+            <!-- Users Page -->
+            <div class="page-content" id="users">
+                <h1 class="page-title">User Management</h1>
+                <div class="table-actions">
+                    <div>
+                        <button class="btn btn-primary"><i class="fas fa-plus"></i> Add New User</button>
+                        <button class="btn btn-secondary" style="margin-left: 10px;"><i class="fas fa-download"></i> Export Users</button>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search users..." style="padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); width: 250px;">
+                    </div>
                 </div>
-                <table class="content-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Category</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>10 Tips for Building Healthy Habits</td>
-                            <td>Admin User</td>
-                            <td>Wellness</td>
-                            <td>May 15, 2023</td>
-                            <td><span class="badge badge-published">Published</span></td>
-                            <td>
-                                <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>The Science of Habit Formation</td>
-                            <td>Sarah Johnson</td>
-                            <td>Science</td>
-                            <td>May 12, 2023</td>
-                            <td><span class="badge badge-published">Published</span></td>
-                            <td>
-                                <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Morning Routines of Successful People</td>
-                            <td>Mike Brown</td>
-                            <td>Productivity</td>
-                            <td>May 10, 2023</td>
-                            <td><span class="badge badge-draft">Draft</span></td>
-                            <td>
-                                <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>How to Stay Motivated When Building Habits</td>
-                            <td>Emma Wilson</td>
-                            <td>Motivation</td>
-                            <td>May 8, 2023</td>
-                            <td><span class="badge badge-published">Published</span></td>
-                            <td>
-                                <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                <button class="action-btn"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="users-table-container">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Habits</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="user-avatar-small">JD</div>
+                                        <div>John Doe</div>
+                                    </div>
+                                </td>
+                                <td>john.doe@example.com</td>
+                                <td>May 15, 2023</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>12</td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                    <button class="action-btn"><i class="fas fa-envelope"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="user-avatar-small">SJ</div>
+                                        <div>Sarah Johnson</div>
+                                    </div>
+                                </td>
+                                <td>sarah.j@example.com</td>
+                                <td>Apr 22, 2023</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>8</td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                    <button class="action-btn"><i class="fas fa-envelope"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Other pages would go here (analytics, habits, community, settings, help) -->
         </div>
     </div>
 
@@ -806,6 +1203,116 @@
         // Toggle sidebar on mobile
         document.getElementById('toggleSidebar').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Sidebar hover functionality
+        const sidebar = document.getElementById('sidebar');
+        let sidebarHoverTimeout;
+
+        sidebar.addEventListener('mouseenter', function() {
+            clearTimeout(sidebarHoverTimeout);
+            this.classList.remove('collapsed');
+        });
+
+        sidebar.addEventListener('mouseleave', function() {
+            sidebarHoverTimeout = setTimeout(() => {
+                this.classList.add('collapsed');
+            }, 300);
+        });
+
+        // Navigation functionality
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all menu items
+                document.querySelectorAll('.menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // Add active class to clicked menu item
+                this.classList.add('active');
+                
+                // Hide all page content
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show the selected page content
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('focus', function() {
+            searchResults.classList.add('active');
+        });
+
+        searchInput.addEventListener('blur', function() {
+            // Delay hiding to allow clicking on results
+            setTimeout(() => {
+                searchResults.classList.remove('active');
+            }, 200);
+        });
+
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                searchResults.classList.add('active');
+            } else {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Notification dropdown
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+
+        notificationIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('active');
+            userProfileDropdown.classList.remove('active');
+        });
+
+        // User profile dropdown
+        const userProfile = document.getElementById('userProfile');
+        const userProfileDropdown = document.getElementById('userProfileDropdown');
+
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userProfileDropdown.classList.toggle('active');
+            notificationDropdown.classList.remove('active');
+        });
+
+        // Close dropdowns when clicking elsewhere
+        document.addEventListener('click', function() {
+            notificationDropdown.classList.remove('active');
+            userProfileDropdown.classList.remove('active');
+            searchResults.classList.remove('active');
+        });
+
+        // Profile navigation from dropdown
+        document.querySelectorAll('.user-profile-item[data-page="profile"]').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all menu items
+                document.querySelectorAll('.menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // Hide all page content
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show the profile page
+                document.getElementById('profile').classList.add('active');
+                
+                // Close dropdown
+                userProfileDropdown.classList.remove('active');
+            });
         });
 
         // Initialize charts

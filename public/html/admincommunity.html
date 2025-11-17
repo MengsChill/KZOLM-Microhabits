@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Management - Microhabits Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 250px;
+            --sidebar-collapsed: 70px;
+            --topbar-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-dark);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        .sidebar.collapsed .sidebar-header h2 span,
+        .sidebar.collapsed .menu-item span {
+            display: none;
+        }
+
+        .sidebar.collapsed .sidebar-header h2 {
+            justify-content: center;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .sidebar-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--primary-light);
+        }
+
+        .menu-item i {
+            width: 24px;
+            margin-right: 12px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: var(--topbar-height);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            z-index: 99;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed ~ .top-bar {
+            left: var(--sidebar-collapsed);
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            margin-right: 20px;
+            display: none;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-color);
+            border-radius: 20px;
+            padding: 8px 15px;
+            width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-left: 8px;
+            color: var(--text-color);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-top: 5px;
+            display: none;
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-result-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .notification-icon, .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 320px;
+            margin-top: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        .notification-dropdown.active {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(14, 107, 75, 0.1);
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .notification-content h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .notification-footer {
+            padding: 10px 15px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .notification-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 200px;
+            margin-top: 10px;
+            display: none;
+            z-index: 100;
+        }
+
+        .user-profile-dropdown.active {
+            display: block;
+        }
+
+        .user-profile-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .user-profile-item:hover {
+            background-color: var(--background-color);
+        }
+
+        .user-profile-item i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        .user-profile-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 5px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            margin-top: var(--topbar-height);
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: var(--sidebar-collapsed);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+
+        /* Community-specific styles */
+        .community-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .stat-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .community-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .community-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .posts-container, .comments-container, .reports-container {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(14, 107, 75, 0.1);
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .content-table th, .content-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-table th {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .content-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .user-details h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .post-preview {
+            max-width: 300px;
+        }
+
+        .post-preview h4 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .post-preview p {
+            font-size: 13px;
+            color: var(--text-light);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-published {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+        }
+
+        .badge-pending {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+
+        .badge-flagged {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .badge-removed {
+            background-color: rgba(158, 158, 158, 0.1);
+            color: #9e9e9e;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .comment-text {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .community-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .top-bar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .toggle-sidebar {
+                display: block;
+            }
+            
+            .search-bar {
+                width: 200px;
+            }
+
+            .notification-dropdown {
+                right: -50px;
+                width: 280px;
+            }
+
+            .community-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .table-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .community-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .notification-dropdown {
+                right: -100px;
+                width: 250px;
+            }
+
+            .community-filters {
+                flex-direction: column;
+            }
+
+            .community-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-leaf"></i> <span>Microhabits Admin</span></h2>
+            </div>
+            <div class="sidebar-menu">
+                <a class="menu-item" href="admindashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="menu-item" href="adminusers.html">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a class="menu-item" href="adminanalytics.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a class="menu-item" href="adminhabits.html">
+                    <i class="fas fa-tasks"></i>
+                    <span>Habits</span>
+                </a>
+                <a class="menu-item active" href="admincommunity.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Community</span>
+                </a>
+                <a class="menu-item" href="adminsettings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a class="menu-item" href="adminhelp.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search community..." id="searchInput">
+                    <div class="search-results" id="searchResults">
+                        <div class="search-result-item">
+                            <div><strong>Morning Routine Tips</strong> - Discussion</div>
+                            <div class="notification-time">245 comments</div>
+                        </div>
+                        <div class="search-result-item">
+                            <div><strong>John Doe</strong> - User</div>
+                            <div class="notification-time">Active 2 hours ago</div>
+                        </div>
+                        <div class="search-result-item">
+                            <div><strong>Meditation Challenge</strong> - Group</div>
+                            <div class="notification-time">1,245 members</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <div class="notification-icon" id="notificationIcon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">7</span>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-header">
+                            <h3>Notifications</h3>
+                            <a href="#" style="color: var(--primary-color); font-size: 14px;">Mark all as read</a>
+                        </div>
+                        <div class="notification-list">
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-flag"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>Content Flagged</h4>
+                                    <p>New post reported for inappropriate content</p>
+                                    <div class="notification-time">30 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>New Comment</h4>
+                                    <p>Sarah commented on "Healthy Eating Tips"</p>
+                                    <div class="notification-time">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>New Group Created</h4>
+                                    <p>"30-Day Fitness Challenge" group created</p>
+                                    <div class="notification-time">5 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-footer">
+                            <a href="#" data-page="notifications">View All Notifications</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar"></div>
+                    <div>
+                        <div>Admin User</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Administrator</div>
+                    </div>
+                    <div class="user-profile-dropdown" id="userProfileDropdown">
+                        <a href="adminprofile.html" class="user-profile-item">
+                            <i class="fas fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Account Settings</span>
+                        </a>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Notification Settings</span>
+                        </a>
+                        <div class="user-profile-divider"></div>
+                        <a href="#" class="user-profile-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="community-header">
+                <h1 class="page-title">Community Management</h1>
+                <button class="btn btn-primary" id="addPostBtn">
+                    <i class="fas fa-plus"></i> Create Post
+                </button>
+            </div>
+            
+            <!-- Community Stats -->
+            <div class="community-stats">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: rgba(14, 107, 75, 0.1); color: var(--primary-color);">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>1,248</h3>
+                        <p>Total Posts</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
+                        <i class="fas fa-reply"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5,742</h3>
+                        <p>Total Comments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: rgba(255, 152, 0, 0.1); color: var(--secondary-color);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>42</h3>
+                        <p>Active Groups</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>18</h3>
+                        <p>Content Reports</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Tabs -->
+            <div class="community-tabs">
+                <div class="tab active" data-tab="posts">Posts</div>
+                <div class="tab" data-tab="comments">Comments</div>
+                <div class="tab" data-tab="reports">Reports</div>
+                <div class="tab" data-tab="groups">Groups</div>
+            </div>
+
+            <!-- Posts Tab -->
+            <div class="tab-content active" id="posts-tab">
+                <div class="community-filters">
+                    <select class="filter-select">
+                        <option>All Categories</option>
+                        <option>Health & Wellness</option>
+                        <option>Fitness</option>
+                        <option>Productivity</option>
+                        <option>Personal Development</option>
+                        <option>Mindfulness</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option>Published</option>
+                        <option>Pending Review</option>
+                        <option>Flagged</option>
+                        <option>Removed</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Sort by Date</option>
+                        <option>Sort by Popularity</option>
+                        <option>Sort by Comments</option>
+                    </select>
+                    <input type="text" placeholder="Search posts..." class="form-control" style="width: 250px;">
+                </div>
+
+                <div class="posts-container">
+                    <div class="table-actions">
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Post</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Comments</th>
+                                <th>Likes</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="post-preview">
+                                        <h4>My Morning Routine Transformation</h4>
+                                        <p>After 30 days of following the microhabits approach, my mornings have completely changed...</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">JD</div>
+                                        <div class="user-details">
+                                            <h4>John Doe</h4>
+                                            <p>@johndoe</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Personal Development</td>
+                                <td>42</td>
+                                <td>128</td>
+                                <td>May 15, 2023</td>
+                                <td><span class="badge badge-published">Published</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="post-preview">
+                                        <h4>5-minute Meditation Benefits</h4>
+                                        <p>I started with just 5 minutes of meditation daily and the results have been amazing...</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">SJ</div>
+                                        <div class="user-details">
+                                            <h4>Sarah Johnson</h4>
+                                            <p>@sarahj</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Mindfulness</td>
+                                <td>35</td>
+                                <td>96</td>
+                                <td>May 12, 2023</td>
+                                <td><span class="badge badge-published">Published</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="post-preview">
+                                        <h4>Weekly Meal Prep Tips</h4>
+                                        <p>How I save 5 hours every week with simple meal prep habits...</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">MJ</div>
+                                        <div class="user-details">
+                                            <h4>Mike Johnson</h4>
+                                            <p>@mikej</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Health & Wellness</td>
+                                <td>28</td>
+                                <td>74</td>
+                                <td>May 10, 2023</td>
+                                <td><span class="badge badge-flagged">Flagged</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="post-preview">
+                                        <h4>30-Day Reading Challenge Results</h4>
+                                        <p>Completed the reading challenge and here's what I learned...</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">ES</div>
+                                        <div class="user-details">
+                                            <h4>Emma Smith</h4>
+                                            <p>@emmas</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Personal Development</td>
+                                <td>51</td>
+                                <td>142</td>
+                                <td>May 8, 2023</td>
+                                <td><span class="badge badge-pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Comments Tab -->
+            <div class="tab-content" id="comments-tab">
+                <div class="community-filters">
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option>Published</option>
+                        <option>Pending Review</option>
+                        <option>Flagged</option>
+                        <option>Removed</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Sort by Date</option>
+                        <option>Sort by Likes</option>
+                    </select>
+                    <input type="text" placeholder="Search comments..." class="form-control" style="width: 250px;">
+                </div>
+
+                <div class="comments-container">
+                    <div class="table-actions">
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Comment</th>
+                                <th>Author</th>
+                                <th>Post</th>
+                                <th>Likes</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="comment-text">This is exactly what I needed! Starting tomorrow.</td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">AL</div>
+                                        <div class="user-details">
+                                            <h4>Alex Lee</h4>
+                                            <p>@alexl</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>My Morning Routine Transformation</td>
+                                <td>12</td>
+                                <td>May 16, 2023</td>
+                                <td><span class="badge badge-published">Published</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comment-text">Has anyone tried combining this with the 5-minute meditation?</td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">RK</div>
+                                        <div class="user-details">
+                                            <h4>Rachel Kim</h4>
+                                            <p>@rachelk</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>5-minute Meditation Benefits</td>
+                                <td>8</td>
+                                <td>May 14, 2023</td>
+                                <td><span class="badge badge-published">Published</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="comment-text">This doesn't work for people with dietary restrictions.</td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">TP</div>
+                                        <div class="user-details">
+                                            <h4>Thomas Park</h4>
+                                            <p>@thomasp</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Weekly Meal Prep Tips</td>
+                                <td>3</td>
+                                <td>May 11, 2023</td>
+                                <td><span class="badge badge-flagged">Flagged</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="reports-tab">
+                <div class="reports-container">
+                    <div class="table-actions">
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Reported Content</th>
+                                <th>Reported By</th>
+                                <th>Reason</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Comment: "This doesn't work for people with dietary restrictions."</td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">SJ</div>
+                                        <div class="user-details">
+                                            <h4>Sarah Johnson</h4>
+                                            <p>@sarahj</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Inappropriate Content</td>
+                                <td>May 12, 2023</td>
+                                <td><span class="badge badge-pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="action-btn"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Post: "Weekly Meal Prep Tips"</td>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar-small">AL</div>
+                                        <div class="user-details">
+                                            <h4>Alex Lee</h4>
+                                            <p>@alexl</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Spam</td>
+                                <td>May 11, 2023</td>
+                                <td><span class="badge badge-pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn"><i class="fas fa-check"></i></button>
+                                    <button class="action-btn"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div class="modal" id="createPostModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Post</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="postTitle">Post Title</label>
+                    <input type="text" id="postTitle" class="form-control" placeholder="Enter post title">
+                </div>
+                <div class="form-group">
+                    <label for="postContent">Content</label>
+                    <textarea id="postContent" class="form-control" rows="6" placeholder="Write your post content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="postCategory">Category</label>
+                    <select id="postCategory" class="form-control">
+                        <option value="">Select Category</option>
+                        <option value="health">Health & Wellness</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="development">Personal Development</option>
+                        <option value="mindfulness">Mindfulness</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="postTags">Tags</label>
+                    <input type="text" id="postTags" class="form-control" placeholder="Enter tags separated by commas">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="savePostBtn">Publish Post</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Sidebar hover functionality
+        const sidebar = document.getElementById('sidebar');
+        let sidebarHoverTimeout;
+
+        sidebar.addEventListener('mouseenter', function() {
+            clearTimeout(sidebarHoverTimeout);
+            this.classList.remove('collapsed');
+        });
+
+        sidebar.addEventListener('mouseleave', function() {
+            sidebarHoverTimeout = setTimeout(() => {
+                this.classList.add('collapsed');
+            }, 300);
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('focus', function() {
+            searchResults.classList.add('active');
+        });
+
+        searchInput.addEventListener('blur', function() {
+            setTimeout(() => {
+                searchResults.classList.remove('active');
+            }, 200);
+        });
+
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                searchResults.classList.add('active');
+            } else {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Notification dropdown
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+
+        notificationIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('active');
+            userProfileDropdown.classList.remove('active');
+        });
+
+        // User profile dropdown
+        const userProfile = document.getElementById('userProfile');
+        const userProfileDropdown = document.getElementById('userProfileDropdown');
+
+        userProfile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userProfileDropdown.classList.toggle('active');
+            notificationDropdown.classList.remove('active');
+        });
+
+        // Close dropdowns when clicking elsewhere
+        document.addEventListener('click', function() {
+            notificationDropdown.classList.remove('active');
+            userProfileDropdown.classList.remove('active');
+            searchResults.classList.remove('active');
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show the selected tab content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+
+        // Modal functionality
+        const addPostBtn = document.getElementById('addPostBtn');
+        const createPostModal = document.getElementById('createPostModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const savePostBtn = document.getElementById('savePostBtn');
+
+        addPostBtn.addEventListener('click', function() {
+            createPostModal.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', function() {
+            createPostModal.classList.remove('active');
+        });
+
+        cancelBtn.addEventListener('click', function() {
+            createPostModal.classList.remove('active');
+        });
+
+        savePostBtn.addEventListener('click', function() {
+            // In a real application, you would save the post data here
+            alert('Post published successfully!');
+            createPostModal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === createPostModal) {
+                createPostModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
