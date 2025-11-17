@@ -790,6 +790,15 @@
     // Common passwords list
     const commonPasswords = ['123456', 'password', 'Password123', '123456789', 'qwerty'];
     
+    // Admin credentials (you can change these)
+    const ADMIN_EMAIL = "admin@kzolm.com";
+    const ADMIN_PASSWORD = "Admin123!";
+
+    // Add this function to check for admin login
+    function checkAdminLogin(email, password) {
+        return email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+    }
+
     // NEW: Popup Page Functions
     function showGuestPage() {
       document.getElementById('guest-page').style.display = 'block';
@@ -1031,39 +1040,52 @@
       }
     });
 
-    // Form submission handler
+    // Form submission handler (WITH ADMIN FUNCTIONALITY)
     document.getElementById('signinForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const email = document.querySelector('input[name="email"]').value;
-      const password = document.querySelector('input[name="password"]').value;
-      const errorMessage = document.getElementById('errorMessage');
-      const successMessage = document.getElementById('successMessage');
-      
-      // Hide any previous messages
-      errorMessage.style.display = 'none';
-      successMessage.style.display = 'none';
-      
-      // Get user data from localStorage
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      
-      if (userData && userData.email === email && userData.password === password) {
-        // Successful login
-        successMessage.style.display = 'block';
-        setTimeout(() => {
-          // Redirect to dashboard
-          window.location.href = '../html/dashboard.html';
-        }, 1500);
-      } else {
-        // Failed login
-        errorMessage.textContent = 'Incorrect email or password. Please try again.';
-        errorMessage.style.display = 'block';
+        e.preventDefault();
         
-        // Clear password field and focus it
-        document.querySelector('input[name="password"]').value = '';
-        document.querySelector('input[name="password"]').focus();
-      }
+        const email = document.querySelector('input[name="email"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Hide any previous messages
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        
+        // Check for admin login first
+        if (checkAdminLogin(email, password)) {
+            // Admin login successful
+            successMessage.textContent = 'Admin login successful! Redirecting to admin dashboard...';
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                // Redirect to admin dashboard
+                window.location.href = '../html/admin.html';
+            }, 1500);
+            return;
+        }
+        
+        // Get user data from localStorage (existing functionality)
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        
+        if (userData && userData.email === email && userData.password === password) {
+            // Successful regular user login
+            successMessage.textContent = 'Success! Redirecting to dashboard...';
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                // Redirect to regular dashboard
+                window.location.href = '../html/dashboard.html';
+            }, 1500);
+        } else {
+            // Failed login
+            errorMessage.textContent = 'Incorrect email or password. Please try again.';
+            errorMessage.style.display = 'block';
+            
+            // Clear password field and focus it
+            document.querySelector('input[name="password"]').value = '';
+            document.querySelector('input[name="password"]').focus();
+        }
     });
-  </script>
+</script>
 </body>
 </html>
