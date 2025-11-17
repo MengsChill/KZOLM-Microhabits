@@ -501,14 +501,7 @@
             font-weight: 600;
         }
 
-        .task-difficulty {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: white;
-            margin-left: 10px;
-            font-weight: 600;
-        }
+        /* REMOVED .task-difficulty CSS rule */
 
         .celebration-modal {
             position: fixed;
@@ -921,22 +914,11 @@
             
             // --- NEW --- Helper functions to map server data
             function getPointsForPriority(priority) {
-                switch(priority) {
-                    case 'high': return 15;
-                    case 'medium': return 10;
-                    case 'low': return 5;
-                    default: return 5;
-                }
+                // UPDATED: All tasks now give 5 points
+                return 5;
             }
             
-            function getDifficultyForPriority(priority) {
-                switch(priority) {
-                    case 'high': return 'hard';
-                    case 'medium': return 'medium';
-                    case 'low': return 'easy';
-                    default: return 'easy';
-                }
-            }
+            // --- REMOVED --- getDifficultyForPriority function
 
             // --- NEW --- Load tasks from the server
             async function loadTasks() {
@@ -958,11 +940,11 @@
                     totalTasks = tasks.length;
 
                     tasks.forEach(task => {
-                        // Map server data (priority) to the format this page's logic expects (difficulty, points)
+                        // Map server data (priority) to the format this page's logic expects (points)
                         const mappedTask = {
                             ...task, // id, name, description, priority, is_completed
                             points: getPointsForPriority(task.priority),
-                            difficulty: getDifficultyForPriority(task.priority),
+                            // difficulty property removed
                             completed: task.is_completed // For compatibility with original logic
                         };
                         
@@ -1003,28 +985,7 @@
                 const taskCard = document.createElement('div');
                 taskCard.className = 'task-card';
                 
-                let difficultyClass = '';
-                let difficultyText = '';
-                
-                // Uses the 'difficulty' field we mapped from 'priority'
-                switch(task.difficulty) {
-                    case 'easy':
-                        difficultyClass = 'difficulty-easy';
-                        difficultyText = 'Easy';
-                        break;
-                    case 'medium':
-                        difficultyClass = 'difficulty-medium';
-                        difficultyText = 'Medium';
-                        break;
-                    case 'hard':
-                        difficultyClass = 'difficulty-hard';
-                        difficultyText = 'Hard';
-                        break;
-                    case 'expert':
-                        difficultyClass = 'difficulty-expert';
-                        difficultyText = 'Expert';
-                        break;
-                }
+                // --- REMOVED --- Difficulty switch and variables
                 
                 taskCard.innerHTML = `
                     <div class="task-checkbox ${task.is_completed ? 'checked' : ''}" data-task-id="${task.id}">
@@ -1035,8 +996,7 @@
                         <div class="task-desc">${task.description}</div>
                     </div>
                     <div class="task-points">+${task.points}</div>
-                    <div class="task-difficulty ${difficultyClass}">${difficultyText}</div>
-                `;
+                    `;
                 
                 tasksList.appendChild(taskCard);
                 

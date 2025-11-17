@@ -777,11 +777,20 @@
   </footer>
 
   <script>
-    // === SCRIPT UPDATED FOR BACKEND INTEGRATION ===
+    // === SCRIPT MERGED WITH HARDCODED ADMIN ===
   
     // Common passwords list
     const commonPasswords = ['123456', 'password', 'Password123', '123456789', 'qwerty'];
     let resetEmail = ''; // Store email for the reset process
+    
+    // === MERGED: Hardcoded admin credentials ===
+    const ADMIN_EMAIL = "admin@kzolm.com";
+    const ADMIN_PASSWORD = "Admin123!";
+
+    // === MERGED: Admin check function ===
+    function checkAdminLogin(email, password) {
+      return email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+    }
     
     // NEW: Popup Page Functions
     function showGuestPage() {
@@ -865,7 +874,7 @@
       return allValid;
     }
 
-    // === UPDATED: Show reset password section ===
+    // === UPDATED: Show reset password section (Backend Version) ===
     async function showResetPassword() {
       const emailInput = document.getElementById('signin-email');
       resetEmail = emailInput.value.trim(); // Get email from sign-in form
@@ -936,7 +945,7 @@
       resetEmail = ''; // Clear the email
     }
 
-    // === UPDATED: Reset password function ===
+    // === UPDATED: Reset password function (Backend Version) ===
     async function resetPassword() {
       const userAnswer = document.getElementById('security-answer').value.trim();
       const newPassword = document.getElementById('new-password').value;
@@ -1060,7 +1069,7 @@
       }
     });
 
-    // === UPDATED: Form submission handler ===
+    // === UPDATED: Form submission handler (WITH ADMIN CHECK) ===
     document.getElementById('signinForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -1073,6 +1082,19 @@
       errorMessage.style.display = 'none';
       successMessage.style.display = 'none';
       
+      // === MERGED: Check for admin login first ===
+      if (checkAdminLogin(email, password)) {
+          // Admin login successful
+          successMessage.textContent = 'Admin login successful! Redirecting to admin dashboard...';
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+              // Redirect to admin dashboard
+              window.location.href = '../html/admin.html';
+          }, 1500);
+          return; // Stop further execution
+      }
+      
+      // === Original Backend Logic for Regular Users ===
       try {
         const response = await fetch('/signin', {
           method: 'POST',

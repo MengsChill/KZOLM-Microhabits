@@ -2356,12 +2356,7 @@
                 <div class="feature-section">
                     <h2 class="feature-section-title">Your Achievements</h2>
                     <div class="achievements-grid">
-                        <div class="achievement-card">
-                            <div class="achievement-icon">🔥</div>
-                            <div class="achievement-name">7-Day Streak</div>
-                            <div class="achievement-desc">Complete tasks for 7 consecutive days</div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -2379,7 +2374,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUser();
             await loadTasks(); // This will now also update stats
-            // generateStreakCalendar(); // <-- REMOVED
             setupEventListeners();
         });
 
@@ -2790,13 +2784,63 @@
              }
         }
 
-        function showAchievementsPage() {
+        // === MODIFIED FUNCTION ===
+        async function showAchievementsPage() {
             document.getElementById('mainContent').style.display = 'none';
             document.getElementById('addTaskPage').style.display = 'none';
             document.getElementById('statisticsPage').style.display = 'none';
             document.getElementById('shareProgressPage').style.display = 'none';
             document.getElementById('achievementsPage').style.display = 'flex';
+            
+            // Load and render achievements when the page is shown
+            try {
+                await loadAndRenderAchievements();
+            } catch (error) {
+                console.error('Failed to load achievements:', error);
+                showToast('Could not load achievements.', 'error');
+            }
         }
+        
+        // === NEW FUNCTION ===
+        async function loadAndRenderAchievements() {
+            const grid = document.querySelector('#achievementsPage .achievements-grid');
+            grid.innerHTML = '<p>Loading achievements...</p>'; // Show loading state
+            
+            try {
+                const response = await fetch('/api/achievements');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch achievements');
+                }
+                const achievements = await response.json();
+                
+                grid.innerHTML = ''; // Clear loading state
+                
+                if (achievements.length === 0) {
+                    grid.innerHTML = '<p>No achievements unlocked yet. Keep going!</p>';
+                    return;
+                }
+                
+                achievements.forEach(ach => {
+                    const isLocked = !ach.is_unlocked;
+                    const cardClass = isLocked ? 'achievement-card achievement-locked' : 'achievement-card';
+                    const icon = ach.icon || '🏆'; // Use icon from data or default
+                    
+                    const cardHTML = `
+                        <div class="${cardClass}">
+                            <div class="achievement-icon">${icon}</div>
+                            <div class="achievement-name">${ach.name}</div>
+                            <div class="achievement-desc">${ach.description}</div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', cardHTML);
+                });
+                
+            } catch (error) {
+                console.error(error);
+                grid.innerHTML = '<p style="color: red;">Could not load achievements.</p>';
+            }
+        }
+        
         
         // === UTILITY FUNCTIONS ===
 
