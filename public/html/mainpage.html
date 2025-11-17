@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Tracker - Stay Productive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -2801,13 +2802,14 @@
             }
         }
         
-        // === NEW FUNCTION ===
+        // === MODIFIED FUNCTION (now matches edit-profile.html) ===
         async function loadAndRenderAchievements() {
             const grid = document.querySelector('#achievementsPage .achievements-grid');
             grid.innerHTML = '<p>Loading achievements...</p>'; // Show loading state
             
             try {
-                const response = await fetch('/api/achievements');
+                // CHANGED: Using the same endpoint as edit-profile.html
+                const response = await fetch('/api/user/achievements/manage'); 
                 if (!response.ok) {
                     throw new Error('Failed to fetch achievements');
                 }
@@ -2816,18 +2818,20 @@
                 grid.innerHTML = ''; // Clear loading state
                 
                 if (achievements.length === 0) {
-                    grid.innerHTML = '<p>No achievements unlocked yet. Keep going!</p>';
+                    grid.innerHTML = '<p>No achievements defined. Keep playing!</p>';
                     return;
                 }
                 
                 achievements.forEach(ach => {
-                    const isLocked = !ach.is_unlocked;
+                    // CHANGED: Using 'ach.unlocked' from the new endpoint
+                    const isLocked = !ach.unlocked; 
                     const cardClass = isLocked ? 'achievement-card achievement-locked' : 'achievement-card';
-                    const icon = ach.icon || '🏆'; // Use icon from data or default
+                    // CHANGED: Using 'ach.icon' as a class, not an emoji
+                    const iconHTML = `<i class="${ach.icon || 'fas fa-trophy'}"></i>`; 
                     
                     const cardHTML = `
                         <div class="${cardClass}">
-                            <div class="achievement-icon">${icon}</div>
+                            <div class="achievement-icon">${iconHTML}</div> 
                             <div class="achievement-name">${ach.name}</div>
                             <div class="achievement-desc">${ach.description}</div>
                         </div>
@@ -2837,7 +2841,7 @@
                 
             } catch (error) {
                 console.error(error);
-                grid.innerHTML = '<p style="color: red;">Could not load achievements.</p>';
+                grid.innerHTML = '<p style="color: red;">Could not load achievements.</p>'; 
             }
         }
         
