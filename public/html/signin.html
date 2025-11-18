@@ -555,18 +555,17 @@
 
   <main class="signin-container">
     <section class="signin-box">
-      <!-- Sign In Section (shown by default) -->
       <div id="signin-section">
         <h2>Welcome Back!</h2>
 
-        <form id="signinForm" action="/signin" method="POST">
+        <form id="signinForm">
           <label>Your email</label>
-          <input type="email" name="email" placeholder="Enter your email" required />
+          <input type="email" name="email" id="signin-email" placeholder="Enter your email" required />
 
           <label>Password</label>
           <div class="password-field">
-            <input type="password" name="password" placeholder="Enter your password" required />
-            <span class="toggle">
+            <input type="password" name="password" id="signin-password" placeholder="Enter your password" required />
+            <span class="toggle toggle-signin">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path>
@@ -574,12 +573,10 @@
             </span>
           </div>
 
-          <!-- Error message container -->
           <div class="error-message" id="errorMessage">
             Incorrect email or password. Please try again.
           </div>
 
-          <!-- Success message container -->
           <div class="success-message" id="successMessage">
             Success! Redirecting to dashboard...
           </div>
@@ -592,7 +589,6 @@
         <p class="or">or try these options</p>
         
         <div class="alternative-options">
-          <!-- UPDATED: Now opens popup pages -->
           <a href="#" class="option-card" onclick="showGuestPage()">
             <i class="fas fa-user-clock"></i>
             <span>Continue as Guest</span>
@@ -608,13 +604,13 @@
         </div>
       </div>
 
-      <!-- Reset Password Section with Security Questions (hidden by default) -->
       <div id="reset-section" class="reset-section">
         <h2>Reset Your Password</h2>
         <p>Please answer your security question to verify your identity.</p>
         
-        <!-- Security Question Display -->
-        <div class="security-question" id="security-question-display">What was the name of your first pet?</div>
+        <div class="security-question" id="security-question-display">
+          Loading question...
+        </div>
         
         <label>Answer to Security Question</label>
         <input type="text" id="security-answer" placeholder="Enter your answer">
@@ -641,7 +637,6 @@
           </span>
         </div>
         
-        <!-- Password Requirements -->
         <ul class="password-requirements">
           <li id="req-uppercase">❌ At least 1 uppercase letter</li>
           <li id="req-number">❌ At least 1 number</li>
@@ -649,12 +644,10 @@
           <li id="req-common">❌ Cannot be a common password</li>
         </ul>
         
-        <!-- Error message container -->
         <div class="error-message" id="reset-error-message">
           Please check your entries and try again.
         </div>
         
-        <!-- Success message container -->
         <div class="success-message" id="reset-success-message">
           Password reset successfully!
         </div>
@@ -671,7 +664,6 @@
     </section>
   </main>
 
-  <!-- NEW: Guest Dashboard Popup Page -->
   <div id="guest-page" class="popup-page">
     <div class="popup-content">
       <button class="close-popup" onclick="closeAllPopups()">&times;</button>
@@ -702,7 +694,6 @@
     </div>
   </div>
 
-  <!-- NEW: Quick Start Demo Popup Page -->
   <div id="demo-page" class="popup-page">
     <div class="popup-content">
       <button class="close-popup" onclick="closeAllPopups()">&times;</button>
@@ -741,7 +732,6 @@
     </div>
   </div>
 
-  <!-- NEW: Health Assessment Popup Page -->
   <div id="assessment-page" class="popup-page">
     <div class="popup-content">
       <button class="close-popup" onclick="closeAllPopups()">&times;</button>
@@ -787,8 +777,20 @@
   </footer>
 
   <script>
+    // === SCRIPT MERGED WITH HARDCODED ADMIN ===
+  
     // Common passwords list
     const commonPasswords = ['123456', 'password', 'Password123', '123456789', 'qwerty'];
+    let resetEmail = ''; // Store email for the reset process
+    
+    // === MERGED: Hardcoded admin credentials ===
+    const ADMIN_EMAIL = "admin@kzolm.com";
+    const ADMIN_PASSWORD = "Admin123!";
+
+    // === MERGED: Admin check function ===
+    function checkAdminLogin(email, password) {
+      return email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+    }
     
     // NEW: Popup Page Functions
     function showGuestPage() {
@@ -810,32 +812,29 @@
     }
     
     function startGuestSession() {
-      alert('Starting guest session! You can now explore Kzolm with limited access.');
+      alert('Starting guest session! (Demo)');
       closeAllPopups();
-      // Here you would typically redirect to the guest dashboard
     }
     
     function startDemo() {
-      alert('Starting interactive demo! This would launch the actual demo experience.');
+      alert('Starting interactive demo! (Demo)');
       closeAllPopups();
-      // Here you would typically start the demo flow
     }
     
     function startBasicAssessment() {
-      alert('Starting basic health assessment! This would begin the 5-minute assessment.');
+      alert('Starting basic health assessment! (Demo)');
       closeAllPopups();
-      // Here you would typically start the basic assessment
     }
     
     function startComprehensiveAssessment() {
-      alert('Starting comprehensive health assessment! This would begin the 15-minute detailed assessment.');
+      alert('Starting comprehensive health assessment! (Demo)');
       closeAllPopups();
-      // Here you would typically start the comprehensive assessment
     }
     
     // Password validation function
     function validatePassword() {
       const pwd = document.getElementById('new-password').value;
+      let allValid = true;
 
       if (/[A-Z]/.test(pwd)) {
         document.getElementById('req-uppercase').textContent = '✅ At least 1 uppercase letter';
@@ -843,6 +842,7 @@
       } else {
         document.getElementById('req-uppercase').textContent = '❌ At least 1 uppercase letter';
         document.getElementById('req-uppercase').style.color = 'red';
+        allValid = false;
       }
 
       if (/\d/.test(pwd)) {
@@ -851,6 +851,7 @@
       } else {
         document.getElementById('req-number').textContent = '❌ At least 1 number';
         document.getElementById('req-number').style.color = 'red';
+        allValid = false;
       }
 
       if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
@@ -859,6 +860,7 @@
       } else {
         document.getElementById('req-special').textContent = '❌ At least 1 special character';
         document.getElementById('req-special').style.color = 'red';
+        allValid = false;
       }
 
       if (!commonPasswords.includes(pwd)) {
@@ -867,32 +869,60 @@
       } else {
         document.getElementById('req-common').textContent = '❌ Cannot be a common password';
         document.getElementById('req-common').style.color = 'red';
+        allValid = false;
       }
+      return allValid;
     }
 
-    // Show reset password section
-    function showResetPassword() {
+    // === UPDATED: Show reset password section (Backend Version) ===
+    async function showResetPassword() {
+      const emailInput = document.getElementById('signin-email');
+      resetEmail = emailInput.value.trim(); // Get email from sign-in form
+      
+      const errorDiv = document.getElementById('errorMessage');
+      const resetErrorDiv = document.getElementById('reset-error-message');
+      
+      // Clear previous messages
+      errorDiv.style.display = 'none';
+      resetErrorDiv.style.display = 'none';
+      document.getElementById('reset-success-message').style.display = 'none';
+
+      if (!resetEmail) {
+        errorDiv.textContent = 'Please enter your email address first, then click "Forgot password".';
+        errorDiv.style.display = 'block';
+        emailInput.focus();
+        return;
+      }
+
+      // Show loading state
       document.getElementById('signin-section').style.display = 'none';
       document.getElementById('reset-section').style.display = 'block';
-      
-      // Get user data from localStorage
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      
-      if (userData && userData.securityQuestion) {
-        // Display the user's security question
-        document.getElementById('security-question-display').textContent = userData.securityQuestion;
-        
-        // Store the correct answer for verification
-        sessionStorage.setItem('securityAnswer', userData.securityAnswer);
-      } else {
-        // Default question if no user data found
-        document.getElementById('security-question-display').textContent = "What was the name of your first pet?";
-        sessionStorage.setItem('securityAnswer', 'fluffy'); // Default answer
+      const questionDisplay = document.getElementById('security-question-display');
+      questionDisplay.textContent = 'Fetching your question...';
+
+      try {
+        // Fetch the security question from the server
+        const response = await fetch(`/api/password-reset/question?email=${encodeURIComponent(resetEmail)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          questionDisplay.textContent = data.securityQuestion;
+        } else {
+          // Show server error, then go back to sign-in
+          questionDisplay.textContent = 'Could not find user.';
+          resetErrorDiv.textContent = data.error || 'User not found.';
+          resetErrorDiv.style.display = 'block';
+          setTimeout(showSignIn, 2000);
+        }
+      } catch (err) {
+        // Show fetch error, then go back to sign-in
+        questionDisplay.textContent = 'Error connecting to server.';
+        resetErrorDiv.textContent = 'Could not connect. Please try again later.';
+        resetErrorDiv.style.display = 'block';
+        setTimeout(showSignIn, 2000);
       }
       
-      // Clear previous messages and inputs
-      document.getElementById('reset-error-message').style.display = 'none';
-      document.getElementById('reset-success-message').style.display = 'none';
+      // Clear reset form inputs
       document.getElementById('security-answer').value = '';
       document.getElementById('new-password').value = '';
       document.getElementById('confirm-password').value = '';
@@ -908,18 +938,18 @@
       document.getElementById('req-common').style.color = 'red';
     }
 
-    // Show sign in section
+    // Show sign in section (unchanged)
     function showSignIn() {
       document.getElementById('reset-section').style.display = 'none';
       document.getElementById('signin-section').style.display = 'block';
+      resetEmail = ''; // Clear the email
     }
 
-    // Reset password function
-    function resetPassword() {
-      const userAnswer = document.getElementById('security-answer').value.trim().toLowerCase();
+    // === UPDATED: Reset password function (Backend Version) ===
+    async function resetPassword() {
+      const userAnswer = document.getElementById('security-answer').value.trim();
       const newPassword = document.getElementById('new-password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
-      const storedAnswer = sessionStorage.getItem('securityAnswer');
       
       const errorDiv = document.getElementById('reset-error-message');
       const successDiv = document.getElementById('reset-success-message');
@@ -928,58 +958,67 @@
       errorDiv.style.display = 'none';
       successDiv.style.display = 'none';
       
-      // Validate inputs
+      // Client-side validation
       if (!userAnswer || !newPassword || !confirmPassword) {
         errorDiv.textContent = 'Please fill in all fields';
         errorDiv.style.display = 'block';
         return;
       }
       
-      if (userAnswer !== storedAnswer) {
-        errorDiv.textContent = 'Incorrect answer to security question. Please try again.';
-        errorDiv.style.display = 'block';
-        return;
-      }
-      
       if (newPassword !== confirmPassword) {
-        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.textContent = 'New passwords do not match';
         errorDiv.style.display = 'block';
         return;
       }
       
       // Check password requirements
-      const allValid = 
-        /[A-Z]/.test(newPassword) && 
-        /\d/.test(newPassword) && 
-        /[!@#$%^&*(),.?":{}|<>]/.test(newPassword) && 
-        !commonPasswords.includes(newPassword);
-      
+      const allValid = validatePassword(); // Function now returns boolean
       if (!allValid) {
         errorDiv.textContent = 'Password does not meet all requirements.';
         errorDiv.style.display = 'block';
         return;
       }
       
-      // Success - Password reset
-      successDiv.textContent = 'Password reset successfully! Redirecting to sign in...';
-      successDiv.style.display = 'block';
-      
-      // Update the password in localStorage
-      const userData = JSON.parse(localStorage.getItem('userData'));
-      if (userData) {
-        userData.password = newPassword;
-        localStorage.setItem('userData', JSON.stringify(userData));
+      // Send reset request to the server
+      try {
+        const response = await fetch('/api/password-reset/reset', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: resetEmail, // The email we stored when 'Forgot Password' was clicked
+            securityAnswer: userAnswer,
+            newPassword: newPassword
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Success!
+          successDiv.textContent = 'Password reset successfully! Redirecting to sign in...';
+          successDiv.style.display = 'block';
+          
+          // Return to sign in after 2 seconds
+          setTimeout(() => {
+            showSignIn();
+          }, 2000);
+
+        } else {
+          // Show error from server
+          errorDiv.textContent = data.error || 'Failed to reset password.';
+          errorDiv.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error('Reset password fetch error:', err);
+        errorDiv.textContent = 'Could not connect to the server. Please try again.';
+        errorDiv.style.display = 'block';
       }
-      
-      // Return to sign in after 2 seconds
-      setTimeout(() => {
-        showSignIn();
-        // Clear the security answer from storage
-        sessionStorage.removeItem('securityAnswer');
-      }, 2000);
     }
 
-    // Eye toggle functionality
+    // Eye toggle functionality (unchanged logic, just re-initialized)
     function setupToggle(toggle, inputId) {
       toggle.addEventListener('click', () => {
         const input = document.getElementById(inputId);
@@ -1006,11 +1045,10 @@
     // Initialize eye toggles
     document.addEventListener('DOMContentLoaded', function() {
       // Sign in password toggle
-      document.querySelectorAll('.toggle').forEach(toggle => {
-        if (!toggle.classList.contains('toggle-new') && !toggle.classList.contains('toggle-confirm')) {
-          setupToggle(toggle, 'password');
-        }
-      });
+      const signinToggle = document.querySelector('.toggle-signin');
+      if (signinToggle) {
+        setupToggle(signinToggle, 'signin-password');
+      }
       
       // New password toggle
       const newToggle = document.querySelector('.toggle-new');
@@ -1031,12 +1069,12 @@
       }
     });
 
-    // Form submission handler
-    document.getElementById('signinForm').addEventListener('submit', function(e) {
+    // === UPDATED: Form submission handler (WITH ADMIN CHECK) ===
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
-      const email = document.querySelector('input[name="email"]').value;
-      const password = document.querySelector('input[name="password"]').value;
+      const email = document.getElementById('signin-email').value;
+      const password = document.getElementById('signin-password').value;
       const errorMessage = document.getElementById('errorMessage');
       const successMessage = document.getElementById('successMessage');
       
@@ -1044,26 +1082,53 @@
       errorMessage.style.display = 'none';
       successMessage.style.display = 'none';
       
-      // Get user data from localStorage
-      const userData = JSON.parse(localStorage.getItem('userData'));
+      // === MERGED: Check for admin login first ===
+      if (checkAdminLogin(email, password)) {
+          // Admin login successful
+          successMessage.textContent = 'Admin login successful! Redirecting to admin dashboard...';
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+              // Redirect to admin dashboard
+              window.location.href = '../html/admin.html';
+          }, 1500);
+          return; // Stop further execution
+      }
       
-      if (userData && userData.email === email && userData.password === password) {
-        // Successful login
-        successMessage.style.display = 'block';
-        setTimeout(() => {
-          // Redirect to dashboard
-          window.location.href = '../html/dashboard.html';
-        }, 1500);
-      } else {
-        // Failed login
-        errorMessage.textContent = 'Incorrect email or password. Please try again.';
+      // === Original Backend Logic for Regular Users ===
+      try {
+        const response = await fetch('/signin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Successful login
+          successMessage.style.display = 'block';
+          setTimeout(() => {
+            // Redirect to dashboard
+            window.location.href = data.redirectUrl; // Use redirect URL from server
+          }, 1500);
+        } else {
+          // Failed login
+          errorMessage.textContent = data.error || 'Incorrect email or password.';
+          errorMessage.style.display = 'block';
+          
+          // Clear password field and focus it
+          document.getElementById('signin-password').value = '';
+          document.getElementById('signin-password').focus();
+        }
+
+      } catch (err) {
+        console.error('Signin fetch error:', err);
+        errorMessage.textContent = 'Could not connect to the server. Please try again.';
         errorMessage.style.display = 'block';
-        
-        // Clear password field and focus it
-        document.querySelector('input[name="password"]').value = '';
-        document.querySelector('input[name="password"]').focus();
       }
     });
-  </script>
+</script>
 </body>
 </html>

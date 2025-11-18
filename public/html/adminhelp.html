@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Help & Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0e6b4b;
+            --primary-light: #4caf50;
+            --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-title i {
+            color: var(--primary-color);
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .stat-new {
+            color: #e74c3c;
+        }
+
+        .stat-pending {
+            color: #f39c12;
+        }
+
+        .stat-resolved {
+            color: #27ae60;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Feedback Table */
+        .feedback-table-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .feedback-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .feedback-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .feedback-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .feedback-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-details h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .category-technical {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .category-feature {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .category-bug {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .category-account {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .priority-low {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .priority-medium {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .priority-high {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .priority-urgent {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-new {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-resolved {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-view:hover {
+            background-color: #bbdefb;
+        }
+
+        .btn-resolve {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .btn-resolve:hover {
+            background-color: #c8e6c9;
+        }
+
+        .btn-delete {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-delete:hover {
+            background-color: #ffcdd2;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .feedback-detail {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 120px;
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .message-content {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-stats {
+                flex-wrap: wrap;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .feedback-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+            
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .dashboard-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stat-card {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="help&feedback.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to User Form
+        </a>
+
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-headset"></i>
+                Help & Feedback Dashboard
+            </h1>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-value stat-new" id="newCount">0</div>
+                    <div class="stat-label">New</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value stat-pending" id="pendingCount">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value stat-resolved" id="resolvedCount">0</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search feedback...">
+            </div>
+            <div class="filter-controls">
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="new">New</option>
+                    <option value="pending">Pending</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="technical">Technical Issue</option>
+                    <option value="feature">Feature Request</option>
+                    <option value="bug">Bug Report</option>
+                    <option value="account">Account Help</option>
+                    <option value="billing">Billing Issue</option>
+                    <option value="feedback">General Feedback</option>
+                    <option value="other">Other</option>
+                </select>
+                <select class="filter-select" id="priorityFilter">
+                    <option value="all">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Feedback Table -->
+        <div class="feedback-table-container">
+            <table class="feedback-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Category</th>
+                        <th>Subject</th>
+                        <th>Priority</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="feedbackTableBody">
+                    <!-- Feedback items will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <h3>No feedback submissions yet</h3>
+            <p>When users submit feedback through the form, they will appear here.</p>
+            <a href="help&feedback.html" class="btn btn-primary">View Feedback Form</a>
+        </div>
+    </div>
+
+    <!-- Modal for viewing feedback details -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Feedback Details</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-resolve" id="resolveBtn">Mark as Resolved</button>
+                <button class="btn btn-delete" id="deleteBtn">Delete</button>
+                <button class="btn btn-outline" id="closeModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - in a real app, this would come from a server/database
+        let feedbackData = JSON.parse(localStorage.getItem('userFeedback')) || [];
+
+        // DOM elements
+        const feedbackTableBody = document.getElementById('feedbackTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const priorityFilter = document.getElementById('priorityFilter');
+        const newCount = document.getElementById('newCount');
+        const pendingCount = document.getElementById('pendingCount');
+        const resolvedCount = document.getElementById('resolvedCount');
+        const totalCount = document.getElementById('totalCount');
+        const feedbackModal = document.getElementById('feedbackModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalClose = document.getElementById('modalClose');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const resolveBtn = document.getElementById('resolveBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+
+        let currentFeedbackId = null;
+
+        // Initialize the dashboard
+        function initDashboard() {
+            updateStats();
+            renderFeedbackTable();
+            setupEventListeners();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const newItems = feedbackData.filter(item => item.status === 'new').length;
+            const pendingItems = feedbackData.filter(item => item.status === 'pending').length;
+            const resolvedItems = feedbackData.filter(item => item.status === 'resolved').length;
+            
+            newCount.textContent = newItems;
+            pendingCount.textContent = pendingItems;
+            resolvedCount.textContent = resolvedItems;
+            totalCount.textContent = feedbackData.length;
+        }
+
+        // Render feedback table
+        function renderFeedbackTable(filteredData = null) {
+            const dataToRender = filteredData || feedbackData;
+            
+            if (dataToRender.length === 0) {
+                feedbackTableBody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            feedbackTableBody.innerHTML = dataToRender.map(feedback => `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">${feedback.name.charAt(0).toUpperCase()}</div>
+                            <div class="user-details">
+                                <h4>${feedback.name}</h4>
+                                <p>${feedback.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="category-badge category-${feedback.category}">
+                            ${getCategoryLabel(feedback.category)}
+                        </span>
+                    </td>
+                    <td>${feedback.subject}</td>
+                    <td>
+                        <span class="priority-badge priority-${feedback.priority}">
+                            ${feedback.priority.charAt(0).toUpperCase() + feedback.priority.slice(1)}
+                        </span>
+                    </td>
+                    <td>${formatDate(feedback.date)}</td>
+                    <td>
+                        <span class="status-badge status-${feedback.status}">
+                            ${feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-view" onclick="viewFeedback(${feedback.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-resolve" onclick="resolveFeedback(${feedback.id})" ${feedback.status === 'resolved' ? 'disabled' : ''}>
+                                <i class="fas fa-check"></i> Resolve
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get category label
+        function getCategoryLabel(category) {
+            const categoryLabels = {
+                'technical': 'Technical Issue',
+                'feature': 'Feature Request',
+                'bug': 'Bug Report',
+                'account': 'Account Help',
+                'billing': 'Billing Issue',
+                'feedback': 'General Feedback',
+                'other': 'Other'
+            };
+            
+            return categoryLabels[category] || category;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // View feedback details
+        function viewFeedback(id) {
+            const feedback = feedbackData.find(item => item.id === id);
+            if (!feedback) return;
+            
+            currentFeedbackId = id;
+            
+            modalBody.innerHTML = `
+                <div class="feedback-detail">
+                    <div class="detail-row">
+                        <div class="detail-label">User:</div>
+                        <div class="detail-value">${feedback.name} (${feedback.email})</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Category:</div>
+                        <div class="detail-value">
+                            <span class="category-badge category-${feedback.category}">
+                                ${getCategoryLabel(feedback.category)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Subject:</div>
+                        <div class="detail-value">${feedback.subject}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Priority:</div>
+                        <div class="detail-value">
+                            <span class="priority-badge priority-${feedback.priority}">
+                                ${feedback.priority.charAt(0).toUpperCase() + feedback.priority.slice(1)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status:</div>
+                        <div class="detail-value">
+                            <span class="status-badge status-${feedback.status}">
+                                ${feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date:</div>
+                        <div class="detail-value">${formatDate(feedback.date)}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Message:</div>
+                        <div class="detail-value">
+                            <div class="message-content">${feedback.message}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            feedbackModal.style.display = 'flex';
+        }
+
+        // Resolve feedback
+        function resolveFeedback(id) {
+            const feedbackIndex = feedbackData.findIndex(item => item.id === id);
+            if (feedbackIndex === -1) return;
+            
+            feedbackData[feedbackIndex].status = 'resolved';
+            localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
+            
+            updateStats();
+            renderFeedbackTable();
+            applyFilters();
+        }
+
+        // Delete feedback
+        function deleteFeedback() {
+            if (!currentFeedbackId) return;
+            
+            feedbackData = feedbackData.filter(item => item.id !== currentFeedbackId);
+            localStorage.setItem('userFeedback', JSON.stringify(feedbackData));
+            
+            updateStats();
+            renderFeedbackTable();
+            applyFilters();
+            
+            feedbackModal.style.display = 'none';
+            currentFeedbackId = null;
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            const categoryValue = categoryFilter.value;
+            const priorityValue = priorityFilter.value;
+            
+            let filteredData = feedbackData.filter(feedback => {
+                // Search filter
+                const matchesSearch = 
+                    feedback.name.toLowerCase().includes(searchTerm) ||
+                    feedback.email.toLowerCase().includes(searchTerm) ||
+                    feedback.subject.toLowerCase().includes(searchTerm) ||
+                    feedback.message.toLowerCase().includes(searchTerm);
+                
+                // Status filter
+                const matchesStatus = statusValue === 'all' || feedback.status === statusValue;
+                
+                // Category filter
+                const matchesCategory = categoryValue === 'all' || feedback.category === categoryValue;
+                
+                // Priority filter
+                const matchesPriority = priorityValue === 'all' || feedback.priority === priorityValue;
+                
+                return matchesSearch && matchesStatus && matchesCategory && matchesPriority;
+            });
+            
+            renderFeedbackTable(filteredData);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            categoryFilter.addEventListener('change', applyFilters);
+            priorityFilter.addEventListener('change', applyFilters);
+            
+            modalClose.addEventListener('click', () => {
+                feedbackModal.style.display = 'none';
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                feedbackModal.style.display = 'none';
+            });
+            
+            resolveBtn.addEventListener('click', () => {
+                if (currentFeedbackId) {
+                    resolveFeedback(currentFeedbackId);
+                    feedbackModal.style.display = 'none';
+                }
+            });
+            
+            deleteBtn.addEventListener('click', deleteFeedback);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === feedbackModal) {
+                    feedbackModal.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize the dashboard when the page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

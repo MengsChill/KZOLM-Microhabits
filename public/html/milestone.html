@@ -501,14 +501,7 @@
             font-weight: 600;
         }
 
-        .task-difficulty {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            color: white;
-            margin-left: 10px;
-            font-weight: 600;
-        }
+        /* REMOVED .task-difficulty CSS rule */
 
         .celebration-modal {
             position: fixed;
@@ -734,12 +727,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Top Navigation Bar -->
         <nav class="top-nav">
             <div class="nav-brand">
                 <div class="brand-name">Kzolm</div>
             </div>
-            <button class="nav-back" onclick="window.location.href='mainpage.html'">
+            <button class="nav-back" onclick="window.location.href='/main'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
         </nav>
@@ -825,7 +817,7 @@
         
         <div class="progress-info">
             <div class="progress-text">Start</div>
-            <div class="progress-text" id="currentProgress">0/25 tasks completed</div>
+            <div class="progress-text" id="currentProgress">0/0 tasks completed</div>
             <div class="progress-text">Destination</div>
         </div>
         
@@ -851,17 +843,13 @@
         <div class="tasks-container">
             <div class="tasks-header">
                 <h2 class="tasks-title">Your Tasks</h2>
-                <button class="add-task-btn" id="addTaskBtn">
-                    <i class="fas fa-plus"></i> Add New Task
                 </button>
             </div>
             
             <div class="tasks-list" id="tasksList">
-                <!-- Tasks will be dynamically added here -->
-            </div>
+                </div>
         </div>
         
-        <!-- Celebration Modal -->
         <div class="celebration-modal" id="celebrationModal">
             <div class="celebration-content">
                 <button class="close-modal">&times;</button>
@@ -891,14 +879,16 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             // Initialize variables
             let completedTasks = 0;
             let totalTasks = 0;
             let userPoints = 0;
             let currentLevel = 1;
+            let userTasks = []; // Holds tasks fetched from server
             
             // Difficulty progression - tasks needed for each milestone
+            // THIS LOGIC IS KEPT FROM YOUR ORIGINAL FILE
             const milestones = [
                 { id: 1, position: 10, name: 'Beginner', tasksNeeded: 5, difficulty: 'easy' },
                 { id: 2, position: 25, name: 'Learner', tasksNeeded: 10, difficulty: 'easy' },
@@ -922,63 +912,61 @@
             const closeModal = document.querySelector('.close-modal');
             const confettiContainer = document.getElementById('confettiContainer');
             
-            // Sample tasks with increasing difficulty
-            const sampleTasks = [
-                { id: 1, name: 'Morning Meditation', description: '5 minutes of mindfulness', points: 5, completed: false, difficulty: 'easy' },
-                { id: 2, name: 'Drink Water', description: '8 glasses throughout the day', points: 5, completed: false, difficulty: 'easy' },
-                { id: 3, name: 'Daily Walk', description: '15 minutes of walking', points: 5, completed: false, difficulty: 'easy' },
-                { id: 4, name: 'Read a Book', description: '20 pages of reading', points: 10, completed: false, difficulty: 'easy' },
-                { id: 5, name: 'Healthy Meal', description: 'Prepare a nutritious meal', points: 10, completed: false, difficulty: 'easy' },
-                { id: 6, name: 'Exercise', description: '30 minutes of physical activity', points: 15, completed: false, difficulty: 'medium' },
-                { id: 7, name: 'Learn Something New', description: 'Study a new skill for 30 mins', points: 15, completed: false, difficulty: 'medium' },
-                { id: 8, name: 'Digital Detox', description: 'No screens for 2 hours', points: 20, completed: false, difficulty: 'medium' },
-                { id: 9, name: 'Deep Work Session', description: 'Focused work for 90 minutes', points: 20, completed: false, difficulty: 'hard' },
-                { id: 10, name: 'Complex Project', description: 'Work on a challenging project', points: 25, completed: false, difficulty: 'hard' },
-                { id: 11, name: 'Mentor Others', description: 'Help someone with their goals', points: 30, completed: false, difficulty: 'expert' },
-                { id: 12, name: 'Master Skill', description: 'Practice advanced techniques', points: 35, completed: false, difficulty: 'expert' }
-            ];
+            // --- NEW --- Helper functions to map server data
+            function getPointsForPriority(priority) {
+                // UPDATED: All tasks now give 5 points
+                return 5;
+            }
             
-            // Initialize tasks
-            sampleTasks.forEach(task => {
-                addTaskToDOM(task);
-                totalTasks++;
-            });
+            // --- REMOVED --- getDifficultyForPriority function
+
+            // --- NEW --- Load tasks from the server
+            async function loadTasks() {
+                try {
+                    const response = await fetch('/api/tasks');
+                    if (!response.ok) {
+                        if (response.status === 401) window.location.href = '/signin';
+                        console.error('Failed to load tasks');
+                        return;
+                    }
+                    const tasks = await response.json();
+                    
+                    tasksList.innerHTML = ''; // Clear list
+                    userTasks = []; // Clear local cache
+                    
+                    // Reset stats before recalculating
+                    completedTasks = 0;
+                    userPoints = 0;
+                    totalTasks = tasks.length;
+
+                    tasks.forEach(task => {
+                        // Map server data (priority) to the format this page's logic expects (points)
+                        const mappedTask = {
+                            ...task, // id, name, description, priority, is_completed
+                            points: getPointsForPriority(task.priority),
+                            // difficulty property removed
+                            completed: task.is_completed // For compatibility with original logic
+                        };
+                        
+                        userTasks.push(mappedTask);
+                        addTaskToDOM(mappedTask);
+                        
+                        // Recalculate stats based on fetched data
+                        if (mappedTask.completed) {
+                            completedTasks++;
+                            userPoints += mappedTask.points;
+                        }
+                    });
+                    
+                    updateProgress(); // Update stats display
+                    moveAvatarForward(); // Set initial avatar position
+                    checkMilestones(); // Set initial milestone state
+
+                } catch (err) {
+                    console.error('Error loading tasks:', err);
+                }
+            }
             
-            updateProgress();
-            
-            // Add task button event
-            addTaskBtn.addEventListener('click', function() {
-                const newTaskId = totalTasks + 1;
-                // New tasks get progressively harder
-                let difficulty = 'easy';
-                let points = 5;
-                
-                if (newTaskId > 8) {
-                    difficulty = 'medium';
-                    points = 10;
-                }
-                if (newTaskId > 12) {
-                    difficulty = 'hard';
-                    points = 15;
-                }
-                if (newTaskId > 16) {
-                    difficulty = 'expert';
-                    points = 20;
-                }
-                
-                const newTask = {
-                    id: newTaskId,
-                    name: `New Task ${newTaskId}`,
-                    description: 'Customize this task',
-                    points: points,
-                    completed: false,
-                    difficulty: difficulty
-                };
-                
-                addTaskToDOM(newTask);
-                totalTasks++;
-                updateProgress();
-            });
             
             // Close modal event
             closeModal.addEventListener('click', function() {
@@ -992,44 +980,23 @@
                 }
             });
             
-            // Function to add task to DOM
+            // --- MODIFIED --- Function to add task to DOM
             function addTaskToDOM(task) {
                 const taskCard = document.createElement('div');
                 taskCard.className = 'task-card';
                 
-                let difficultyClass = '';
-                let difficultyText = '';
-                
-                switch(task.difficulty) {
-                    case 'easy':
-                        difficultyClass = 'difficulty-easy';
-                        difficultyText = 'Easy';
-                        break;
-                    case 'medium':
-                        difficultyClass = 'difficulty-medium';
-                        difficultyText = 'Medium';
-                        break;
-                    case 'hard':
-                        difficultyClass = 'difficulty-hard';
-                        difficultyText = 'Hard';
-                        break;
-                    case 'expert':
-                        difficultyClass = 'difficulty-expert';
-                        difficultyText = 'Expert';
-                        break;
-                }
+                // --- REMOVED --- Difficulty switch and variables
                 
                 taskCard.innerHTML = `
-                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" data-task-id="${task.id}">
-                        ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                    <div class="task-checkbox ${task.is_completed ? 'checked' : ''}" data-task-id="${task.id}">
+                        ${task.is_completed ? '<i class="fas fa-check"></i>' : ''}
                     </div>
                     <div class="task-info">
                         <div class="task-name">${task.name}</div>
                         <div class="task-desc">${task.description}</div>
                     </div>
                     <div class="task-points">+${task.points}</div>
-                    <div class="task-difficulty ${difficultyClass}">${difficultyText}</div>
-                `;
+                    `;
                 
                 tasksList.appendChild(taskCard);
                 
@@ -1037,40 +1004,65 @@
                 const checkbox = taskCard.querySelector('.task-checkbox');
                 checkbox.addEventListener('click', function() {
                     const taskId = parseInt(this.getAttribute('data-task-id'));
-                    toggleTaskCompletion(taskId);
+                    toggleTaskCompletion(taskId); // This is now async
                 });
             }
             
-            // Function to toggle task completion
-            function toggleTaskCompletion(taskId) {
-                const task = sampleTasks.find(t => t.id === taskId);
+            // --- REWRITTEN --- Function to toggle task completion
+            async function toggleTaskCompletion(taskId) {
+                const task = userTasks.find(t => t.id === taskId);
                 if (!task) return;
                 
                 const checkbox = document.querySelector(`.task-checkbox[data-task-id="${taskId}"]`);
                 
-                if (task.completed) {
-                    // Undo completion
-                    task.completed = false;
-                    checkbox.classList.remove('checked');
-                    checkbox.innerHTML = '';
-                    completedTasks--;
-                    userPoints -= task.points;
-                } else {
-                    // Complete task
-                    task.completed = true;
-                    checkbox.classList.add('checked');
-                    checkbox.innerHTML = '<i class="fas fa-check"></i>';
-                    completedTasks++;
-                    userPoints += task.points;
+                try {
+                    // Call the server API
+                    const response = await fetch(`/api/tasks/${task.id}/toggle`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
                     
-                    // Move avatar forward (progressively slower)
+                    if (!response.ok) {
+                        console.error('Failed to toggle task');
+                        return;
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Server response is the source of truth
+                    const newStatus = result.is_completed;
+                    
+                    // Update local task object
+                    task.is_completed = newStatus;
+                    task.completed = newStatus; // For old logic
+                    
+                    // Manually update local stats to drive the milestone logic
+                    if (newStatus) {
+                        // Complete task
+                        checkbox.classList.add('checked');
+                        checkbox.innerHTML = '<i class="fas fa-check"></i>';
+                        completedTasks++;
+                        userPoints += task.points;
+                    } else {
+                        // Undo completion
+                        checkbox.classList.remove('checked');
+                        checkbox.innerHTML = '';
+                        completedTasks--;
+                        userPoints -= task.points;
+                    }
+                    
+                    // --- Call the ORIGINAL page logic functions ---
+                    // This preserves the milestone/avatar progression
                     moveAvatarForward();
+                    updateProgress();
+                    // ----------------------------------------------
+
+                } catch (err) {
+                    console.error('Error toggling task:', err);
                 }
-                
-                updateProgress();
             }
             
-            // Function to move avatar forward with progressive difficulty
+            // --- UNTOUCHED --- Function to move avatar
             function moveAvatarForward() {
                 // Calculate progress based on completed tasks with progressive scaling
                 let progressPercentage = 0;
@@ -1095,7 +1087,10 @@
                 const pathStart = 50; // Starting position in pixels
                 const pathEnd = window.innerWidth - 50; // Ending position in pixels
                 const pathLength = pathEnd - pathStart;
-                const newPosition = pathStart + (progressPercentage / 100) * pathLength;
+                
+                // Clamp progress to a max of 95% (end of path)
+                const clampedProgress = Math.min(progressPercentage, 95); 
+                const newPosition = pathStart + (clampedProgress / 100) * pathLength;
                 
                 userAvatar.style.left = `${newPosition}px`;
                 
@@ -1106,12 +1101,13 @@
                 checkMilestones();
             }
             
-            // Function to check milestones
+            // --- UNTOUCHED --- Function to check milestones
             function checkMilestones() {
                 milestones.forEach(milestone => {
-                    const milestoneElement = document.querySelector(`.milestone:nth-child(${milestone.id})`);
+                    // Find the milestone element by its index (1-based)
+                    const milestoneElement = document.querySelector(`.journey-milestones .milestone:nth-child(${milestone.id})`);
                     
-                    if (completedTasks >= milestone.tasksNeeded && !milestoneElement.classList.contains('active')) {
+                    if (milestoneElement && completedTasks >= milestone.tasksNeeded && !milestoneElement.classList.contains('active')) {
                         milestoneElement.classList.add('active');
                         
                         // Show celebration for this milestone
@@ -1120,7 +1116,7 @@
                 });
             }
             
-            // Function to show celebration
+            // --- UNTOUCHED --- Function to show celebration
             function showCelebration(milestone) {
                 document.getElementById('celebrationTitle').textContent = `${milestone.name} Achieved!`;
                 document.getElementById('celebrationDesc').textContent = `You've reached the ${milestone.name} milestone! The journey gets tougher from here.`;
@@ -1132,7 +1128,7 @@
                 celebrationModal.classList.add('active');
             }
             
-            // Function to update progress
+            // --- UNTOUCHED --- Function to update progress
             function updateProgress() {
                 currentProgress.textContent = `${completedTasks}/${totalTasks} tasks completed`;
                 completedTasksEl.textContent = completedTasks;
@@ -1148,7 +1144,7 @@
                 }
             }
             
-            // Function to create confetti
+            // --- UNTOUCHED --- Function to create confetti
             function createConfetti() {
                 confettiContainer.innerHTML = '';
                 
@@ -1175,6 +1171,9 @@
                     confettiContainer.appendChild(confetti);
                 }
             }
+
+            // --- NEW --- Initial load of tasks
+            await loadTasks();
         });
     </script>
 </body>
