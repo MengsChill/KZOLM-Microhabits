@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="../image/kzolm-page-icon.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Management - Microhabits Admin</title>
+    <title>Habits Management - Microhabits Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -395,15 +395,30 @@
             color: var(--primary-dark);
         }
 
-        /* Community-specific styles */
-        .community-header {
+        /* Habits-specific styles */
+        .habits-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .community-stats {
+        .habits-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .habits-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
@@ -448,49 +463,7 @@
             font-size: 14px;
         }
 
-        .community-filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .filter-select {
-            padding: 10px 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: white;
-            color: var(--text-color);
-            cursor: pointer;
-        }
-
-        .community-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            border-bottom: 2px solid transparent;
-        }
-
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .posts-container, .comments-container, .reports-container {
+        .habits-table-container {
             background-color: var(--card-color);
             border-radius: 12px;
             padding: 25px;
@@ -564,50 +537,31 @@
             border-bottom: none;
         }
 
-        .user-info {
+        .habit-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
 
-        .user-avatar-small {
+        .habit-icon {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
+            font-size: 18px;
+            color: white;
         }
 
-        .user-details h4 {
+        .habit-details h4 {
             font-size: 15px;
             margin-bottom: 5px;
         }
 
-        .user-details p {
+        .habit-details p {
             font-size: 13px;
             color: var(--text-light);
-        }
-
-        .post-preview {
-            max-width: 300px;
-        }
-
-        .post-preview h4 {
-            font-size: 15px;
-            margin-bottom: 5px;
-        }
-
-        .post-preview p {
-            font-size: 13px;
-            color: var(--text-light);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .badge {
@@ -622,19 +576,27 @@
             color: #4caf50;
         }
 
-        .badge-pending {
+        .badge-draft {
             background-color: rgba(255, 152, 0, 0.1);
             color: #ff9800;
         }
 
-        .badge-flagged {
-            background-color: rgba(244, 67, 54, 0.1);
-            color: #f44336;
-        }
-
-        .badge-removed {
+        .badge-archived {
             background-color: rgba(158, 158, 158, 0.1);
             color: #9e9e9e;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 4px;
         }
 
         .action-btn {
@@ -644,13 +606,6 @@
             cursor: pointer;
             margin-right: 10px;
             font-size: 16px;
-        }
-
-        .comment-text {
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         /* Modal Styles */
@@ -733,9 +688,10 @@
             box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.2);
         }
 
-        textarea.form-control {
-            resize: vertical;
-            min-height: 100px;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .modal-footer {
@@ -748,8 +704,8 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .community-stats {
-                grid-template-columns: repeat(2, 1fr);
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -783,7 +739,7 @@
                 width: 280px;
             }
 
-            .community-header {
+            .habits-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
@@ -796,7 +752,7 @@
         }
 
         @media (max-width: 576px) {
-            .community-stats {
+            .habits-stats {
                 grid-template-columns: 1fr;
             }
             
@@ -813,12 +769,8 @@
                 width: 250px;
             }
 
-            .community-filters {
+            .habits-filters {
                 flex-direction: column;
-            }
-
-            .community-tabs {
-                flex-wrap: wrap;
             }
         }
     </style>
@@ -843,11 +795,11 @@
                     <i class="fas fa-chart-line"></i>
                     <span>Analytics</span>
                 </a>
-                <a class="menu-item" href="adminhabits.html">
+                <a class="menu-item active" href="adminhabits.html">
                     <i class="fas fa-tasks"></i>
                     <span>Habits</span>
                 </a>
-                <a class="menu-item active" href="admincommunity.html">
+                <a class="menu-item" href="admincommunity.html">
                     <i class="fas fa-comments"></i>
                     <span>Community</span>
                 </a>
@@ -870,19 +822,19 @@
                 </button>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search community..." id="searchInput">
+                    <input type="text" placeholder="Search habits..." id="searchInput">
                     <div class="search-results" id="searchResults">
                         <div class="search-result-item">
-                            <div><strong>Morning Routine Tips</strong> - Discussion</div>
-                            <div class="notification-time">245 comments</div>
+                            <div><strong>Morning Meditation</strong> - Health & Wellness</div>
+                            <div class="notification-time">12,458 active users</div>
                         </div>
                         <div class="search-result-item">
-                            <div><strong>John Doe</strong> - User</div>
-                            <div class="notification-time">Active 2 hours ago</div>
+                            <div><strong>Daily Exercise</strong> - Fitness</div>
+                            <div class="notification-time">10,927 active users</div>
                         </div>
                         <div class="search-result-item">
-                            <div><strong>Meditation Challenge</strong> - Group</div>
-                            <div class="notification-time">1,245 members</div>
+                            <div><strong>Reading</strong> - Personal Development</div>
+                            <div class="notification-time">9,845 active users</div>
                         </div>
                     </div>
                 </div>
@@ -890,7 +842,7 @@
             <div class="top-bar-right">
                 <div class="notification-icon" id="notificationIcon">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">7</span>
+                    <span class="notification-badge">3</span>
                     <div class="notification-dropdown" id="notificationDropdown">
                         <div class="notification-header">
                             <h3>Notifications</h3>
@@ -899,32 +851,32 @@
                         <div class="notification-list">
                             <div class="notification-item">
                                 <div class="notification-icon-small">
-                                    <i class="fas fa-flag"></i>
+                                    <i class="fas fa-tasks"></i>
                                 </div>
                                 <div class="notification-content">
-                                    <h4>Content Flagged</h4>
-                                    <p>New post reported for inappropriate content</p>
-                                    <div class="notification-time">30 minutes ago</div>
-                                </div>
-                            </div>
-                            <div class="notification-item">
-                                <div class="notification-icon-small">
-                                    <i class="fas fa-comment"></i>
-                                </div>
-                                <div class="notification-content">
-                                    <h4>New Comment</h4>
-                                    <p>Sarah commented on "Healthy Eating Tips"</p>
+                                    <h4>New Habit Created</h4>
+                                    <p>"Evening Journaling" was added to the library</p>
                                     <div class="notification-time">2 hours ago</div>
                                 </div>
                             </div>
                             <div class="notification-item">
                                 <div class="notification-icon-small">
-                                    <i class="fas fa-users"></i>
+                                    <i class="fas fa-chart-line"></i>
                                 </div>
                                 <div class="notification-content">
-                                    <h4>New Group Created</h4>
-                                    <p>"30-Day Fitness Challenge" group created</p>
+                                    <h4>Habit Completion Spike</h4>
+                                    <p>"Morning Meditation" completions increased by 15%</p>
                                     <div class="notification-time">5 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon-small">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <h4>Low Completion Rate</h4>
+                                    <p>"Weekly Planning" has low completion this week</p>
+                                    <div class="notification-time">Yesterday</div>
                                 </div>
                             </div>
                         </div>
@@ -964,449 +916,324 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="community-header">
-                <h1 class="page-title">Community Management</h1>
-                <button class="btn btn-primary" id="addPostBtn">
-                    <i class="fas fa-plus"></i> Create Post
+            <div class="habits-header">
+                <h1 class="page-title">Habits Management</h1>
+                <button class="btn btn-primary" id="addHabitBtn">
+                    <i class="fas fa-plus"></i> Add New Habit
                 </button>
             </div>
             
-            <!-- Community Stats -->
-            <div class="community-stats">
+            <!-- Habits Stats -->
+            <div class="habits-stats">
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: rgba(14, 107, 75, 0.1); color: var(--primary-color);">
-                        <i class="fas fa-comments"></i>
+                        <i class="fas fa-tasks"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>8</h3>
-                        <p>Total Posts</p>
+                        <h3>3,245</h3>
+                        <p>Total Habits</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
-                        <i class="fas fa-reply"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>10</h3>
-                        <p>Total Comments</p>
+                        <h3>72%</h3>
+                        <p>Average Completion Rate</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: rgba(255, 152, 0, 0.1); color: var(--secondary-color);">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-fire"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>3</h3>
-                        <p>Active Groups</p>
+                        <h3>42</h3>
+                        <p>Most Popular Habit</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196f3;">
-                        <i class="fas fa-flag"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>1</h3>
-                        <p>Content Reports</p>
+                        <h3>12.4K</h3>
+                        <p>Active Habit Users</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Community Tabs -->
-            <div class="community-tabs">
-                <div class="tab active" data-tab="posts">Posts</div>
-                <div class="tab" data-tab="comments">Comments</div>
-                <div class="tab" data-tab="reports">Reports</div>
-                <div class="tab" data-tab="groups">Groups</div>
+            <!-- Filters -->
+            <div class="habits-filters">
+                <select class="filter-select">
+                    <option>All Categories</option>
+                    <option>Health & Wellness</option>
+                    <option>Fitness</option>
+                    <option>Productivity</option>
+                    <option>Personal Development</option>
+                    <option>Mindfulness</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Statuses</option>
+                    <option>Published</option>
+                    <option>Draft</option>
+                    <option>Archived</option>
+                </select>
+                <select class="filter-select">
+                    <option>Sort by Popularity</option>
+                    <option>Sort by Completion Rate</option>
+                    <option>Sort by Date Created</option>
+                    <option>Sort Alphabetically</option>
+                </select>
+                <input type="text" placeholder="Search habits..." class="form-control" style="width: 250px;">
             </div>
 
-            <!-- Posts Tab -->
-            <div class="tab-content active" id="posts-tab">
-                <div class="community-filters">
-                    <select class="filter-select">
-                        <option>All Categories</option>
-                        <option>Health & Wellness</option>
-                        <option>Fitness</option>
-                        <option>Productivity</option>
-                        <option>Personal Development</option>
-                        <option>Mindfulness</option>
-                    </select>
-                    <select class="filter-select">
-                        <option>All Statuses</option>
-                        <option>Published</option>
-                        <option>Pending Review</option>
-                        <option>Flagged</option>
-                        <option>Removed</option>
-                    </select>
-                    <select class="filter-select">
-                        <option>Sort by Date</option>
-                        <option>Sort by Popularity</option>
-                        <option>Sort by Comments</option>
-                    </select>
-                    <input type="text" placeholder="Search posts..." class="form-control" style="width: 250px;">
-                </div>
-
-                <div class="posts-container">
-                    <div class="table-actions">
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-filter"></i> Filter
-                            </button>
-                        </div>
+            <!-- Habits Table -->
+            <div class="habits-table-container">
+                <div class="table-actions">
+                    <div>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
                     </div>
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>Post</th>
-                                <th>Author</th>
-                                <th>Category</th>
-                                <th>Comments</th>
-                                <th>Likes</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="post-preview">
-                                        <h4>My Morning Routine Transformation</h4>
-                                        <p>After 30 days of following the microhabits approach, my mornings have completely changed...</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">JD</div>
-                                        <div class="user-details">
-                                            <h4>John Doe</h4>
-                                            <p>@johndoe</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Personal Development</td>
-                                <td>42</td>
-                                <td>128</td>
-                                <td>May 15, 2023</td>
-                                <td><span class="badge badge-published">Published</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="post-preview">
-                                        <h4>5-minute Meditation Benefits</h4>
-                                        <p>I started with just 5 minutes of meditation daily and the results have been amazing...</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">SJ</div>
-                                        <div class="user-details">
-                                            <h4>Sarah Johnson</h4>
-                                            <p>@sarahj</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Mindfulness</td>
-                                <td>35</td>
-                                <td>96</td>
-                                <td>May 12, 2023</td>
-                                <td><span class="badge badge-published">Published</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="post-preview">
-                                        <h4>Weekly Meal Prep Tips</h4>
-                                        <p>How I save 5 hours every week with simple meal prep habits...</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">MJ</div>
-                                        <div class="user-details">
-                                            <h4>Mike Johnson</h4>
-                                            <p>@mikej</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Health & Wellness</td>
-                                <td>28</td>
-                                <td>74</td>
-                                <td>May 10, 2023</td>
-                                <td><span class="badge badge-flagged">Flagged</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="post-preview">
-                                        <h4>30-Day Reading Challenge Results</h4>
-                                        <p>Completed the reading challenge and here's what I learned...</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">ES</div>
-                                        <div class="user-details">
-                                            <h4>Emma Smith</h4>
-                                            <p>@emmas</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Personal Development</td>
-                                <td>51</td>
-                                <td>142</td>
-                                <td>May 8, 2023</td>
-                                <td><span class="badge badge-pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-edit"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Comments Tab -->
-            <div class="tab-content" id="comments-tab">
-                <div class="community-filters">
-                    <select class="filter-select">
-                        <option>All Statuses</option>
-                        <option>Published</option>
-                        <option>Pending Review</option>
-                        <option>Flagged</option>
-                        <option>Removed</option>
-                    </select>
-                    <select class="filter-select">
-                        <option>Sort by Date</option>
-                        <option>Sort by Likes</option>
-                    </select>
-                    <input type="text" placeholder="Search comments..." class="form-control" style="width: 250px;">
-                </div>
-
-                <div class="comments-container">
-                    <div class="table-actions">
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                        </div>
+                    <div>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-outline">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
                     </div>
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>Comment</th>
-                                <th>Author</th>
-                                <th>Post</th>
-                                <th>Likes</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="comment-text">This is exactly what I needed! Starting tomorrow.</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">AL</div>
-                                        <div class="user-details">
-                                            <h4>Alex Lee</h4>
-                                            <p>@alexl</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>My Morning Routine Transformation</td>
-                                <td>12</td>
-                                <td>May 16, 2023</td>
-                                <td><span class="badge badge-published">Published</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="comment-text">Has anyone tried combining this with the 5-minute meditation?</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">RK</div>
-                                        <div class="user-details">
-                                            <h4>Rachel Kim</h4>
-                                            <p>@rachelk</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>5-minute Meditation Benefits</td>
-                                <td>8</td>
-                                <td>May 14, 2023</td>
-                                <td><span class="badge badge-published">Published</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="comment-text">This doesn't work for people with dietary restrictions.</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">TP</div>
-                                        <div class="user-details">
-                                            <h4>Thomas Park</h4>
-                                            <p>@thomasp</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Weekly Meal Prep Tips</td>
-                                <td>3</td>
-                                <td>May 11, 2023</td>
-                                <td><span class="badge badge-flagged">Flagged</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
-            </div>
-
-            <!-- Reports Tab -->
-            <div class="tab-content" id="reports-tab">
-                <div class="reports-container">
-                    <div class="table-actions">
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                        </div>
-                    </div>
-                    <table class="content-table">
-                        <thead>
-                            <tr>
-                                <th>Reported Content</th>
-                                <th>Reported By</th>
-                                <th>Reason</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Comment: "This doesn't work for people with dietary restrictions."</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">SJ</div>
-                                        <div class="user-details">
-                                            <h4>Sarah Johnson</h4>
-                                            <p>@sarahj</p>
-                                        </div>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Habit</th>
+                            <th>Category</th>
+                            <th>Frequency</th>
+                            <th>Completion Rate</th>
+                            <th>Active Users</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="habit-info">
+                                    <div class="habit-icon" style="background-color: #4caf50;">
+                                        <i class="fas fa-brain"></i>
                                     </div>
-                                </td>
-                                <td>Inappropriate Content</td>
-                                <td>May 12, 2023</td>
-                                <td><span class="badge badge-pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-check"></i></button>
-                                    <button class="action-btn"><i class="fas fa-times"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Post: "Weekly Meal Prep Tips"</td>
-                                <td>
-                                    <div class="user-info">
-                                        <div class="user-avatar-small">AL</div>
-                                        <div class="user-details">
-                                            <h4>Alex Lee</h4>
-                                            <p>@alexl</p>
-                                        </div>
+                                    <div class="habit-details">
+                                        <h4>Morning Meditation</h4>
+                                        <p>Start your day with clarity</p>
                                     </div>
-                                </td>
-                                <td>Spam</td>
-                                <td>May 11, 2023</td>
-                                <td><span class="badge badge-pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn"><i class="fas fa-eye"></i></button>
-                                    <button class="action-btn"><i class="fas fa-check"></i></button>
-                                    <button class="action-btn"><i class="fas fa-times"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
+                            <td>Mindfulness</td>
+                            <td>Daily</td>
+                            <td>
+                                <div>78%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%;"></div>
+                                </div>
+                            </td>
+                            <td>12,458</td>
+                            <td><span class="badge badge-published">Published</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-chart-line"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="habit-info">
+                                    <div class="habit-icon" style="background-color: #2196f3;">
+                                        <i class="fas fa-dumbbell"></i>
+                                    </div>
+                                    <div class="habit-details">
+                                        <h4>Daily Exercise</h4>
+                                        <p>30 minutes of physical activity</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Fitness</td>
+                            <td>Daily</td>
+                            <td>
+                                <div>65%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%;"></div>
+                                </div>
+                            </td>
+                            <td>10,927</td>
+                            <td><span class="badge badge-published">Published</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-chart-line"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="habit-info">
+                                    <div class="habit-icon" style="background-color: #ff9800;">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="habit-details">
+                                        <h4>Reading</h4>
+                                        <p>Read for 20 minutes daily</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Personal Development</td>
+                            <td>Daily</td>
+                            <td>
+                                <div>72%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 72%;"></div>
+                                </div>
+                            </td>
+                            <td>9,845</td>
+                            <td><span class="badge badge-published">Published</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-chart-line"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="habit-info">
+                                    <div class="habit-icon" style="background-color: #9c27b0;">
+                                        <i class="fas fa-glass-whiskey"></i>
+                                    </div>
+                                    <div class="habit-details">
+                                        <h4>Water Intake</h4>
+                                        <p>Drink 8 glasses of water daily</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Health & Wellness</td>
+                            <td>Daily</td>
+                            <td>
+                                <div>81%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 81%;"></div>
+                                </div>
+                            </td>
+                            <td>8,932</td>
+                            <td><span class="badge badge-published">Published</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-chart-line"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="habit-info">
+                                    <div class="habit-icon" style="background-color: #f44336;">
+                                        <i class="fas fa-apple-alt"></i>
+                                    </div>
+                                    <div class="habit-details">
+                                        <h4>Healthy Eating</h4>
+                                        <p>Eat 5 servings of fruits/vegetables</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Health & Wellness</td>
+                            <td>Daily</td>
+                            <td>
+                                <div>58%</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 58%;"></div>
+                                </div>
+                            </td>
+                            <td>7,654</td>
+                            <td><span class="badge badge-draft">Draft</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-chart-line"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- Create Post Modal -->
-    <div class="modal" id="createPostModal">
+    <!-- Add Habit Modal -->
+    <div class="modal" id="addHabitModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Create New Post</h3>
+                <h3>Add New Habit</h3>
                 <button class="modal-close" id="closeModal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="postTitle">Post Title</label>
-                    <input type="text" id="postTitle" class="form-control" placeholder="Enter post title">
+                    <label for="habitName">Habit Name</label>
+                    <input type="text" id="habitName" class="form-control" placeholder="Enter habit name">
                 </div>
                 <div class="form-group">
-                    <label for="postContent">Content</label>
-                    <textarea id="postContent" class="form-control" rows="6" placeholder="Write your post content here..."></textarea>
+                    <label for="habitDescription">Description</label>
+                    <textarea id="habitDescription" class="form-control" rows="3" placeholder="Enter habit description"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="habitCategory">Category</label>
+                        <select id="habitCategory" class="form-control">
+                            <option value="">Select Category</option>
+                            <option value="health">Health & Wellness</option>
+                            <option value="fitness">Fitness</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="development">Personal Development</option>
+                            <option value="mindfulness">Mindfulness</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="habitFrequency">Frequency</label>
+                        <select id="habitFrequency" class="form-control">
+                            <option value="">Select Frequency</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="postCategory">Category</label>
-                    <select id="postCategory" class="form-control">
-                        <option value="">Select Category</option>
-                        <option value="health">Health & Wellness</option>
-                        <option value="fitness">Fitness</option>
-                        <option value="productivity">Productivity</option>
-                        <option value="development">Personal Development</option>
-                        <option value="mindfulness">Mindfulness</option>
+                    <label for="habitIcon">Icon</label>
+                    <select id="habitIcon" class="form-control">
+                        <option value="">Select Icon</option>
+                        <option value="brain">Meditation</option>
+                        <option value="dumbbell">Exercise</option>
+                        <option value="book">Reading</option>
+                        <option value="glass-whiskey">Water</option>
+                        <option value="apple-alt">Nutrition</option>
+                        <option value="bed">Sleep</option>
+                        <option value="pen">Journaling</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="postTags">Tags</label>
-                    <input type="text" id="postTags" class="form-control" placeholder="Enter tags separated by commas">
+                    <label for="habitColor">Color Theme</label>
+                    <select id="habitColor" class="form-control">
+                        <option value="">Select Color</option>
+                        <option value="#4caf50">Green</option>
+                        <option value="#2196f3">Blue</option>
+                        <option value="#ff9800">Orange</option>
+                        <option value="#9c27b0">Purple</option>
+                        <option value="#f44336">Red</option>
+                        <option value="#607d8b">Gray</option>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline" id="cancelBtn">Cancel</button>
-                <button class="btn btn-primary" id="savePostBtn">Publish Post</button>
+                <button class="btn btn-primary" id="saveHabitBtn">Save Habit</button>
             </div>
         </div>
     </div>
@@ -1481,57 +1308,35 @@
             searchResults.classList.remove('active');
         });
 
-        // Tab functionality
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab').forEach(t => {
-                    t.classList.remove('active');
-                });
-                
-                // Add active class to clicked tab
-                this.classList.add('active');
-                
-                // Hide all tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show the selected tab content
-                const tabId = this.getAttribute('data-tab');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
-            });
-        });
-
         // Modal functionality
-        const addPostBtn = document.getElementById('addPostBtn');
-        const createPostModal = document.getElementById('createPostModal');
+        const addHabitBtn = document.getElementById('addHabitBtn');
+        const addHabitModal = document.getElementById('addHabitModal');
         const closeModal = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelBtn');
-        const savePostBtn = document.getElementById('savePostBtn');
+        const saveHabitBtn = document.getElementById('saveHabitBtn');
 
-        addPostBtn.addEventListener('click', function() {
-            createPostModal.classList.add('active');
+        addHabitBtn.addEventListener('click', function() {
+            addHabitModal.classList.add('active');
         });
 
         closeModal.addEventListener('click', function() {
-            createPostModal.classList.remove('active');
+            addHabitModal.classList.remove('active');
         });
 
         cancelBtn.addEventListener('click', function() {
-            createPostModal.classList.remove('active');
+            addHabitModal.classList.remove('active');
         });
 
-        savePostBtn.addEventListener('click', function() {
-            // In a real application, you would save the post data here
-            alert('Post published successfully!');
-            createPostModal.classList.remove('active');
+        saveHabitBtn.addEventListener('click', function() {
+            // In a real application, you would save the habit data here
+            alert('Habit saved successfully!');
+            addHabitModal.classList.remove('active');
         });
 
         // Close modal when clicking outside
         window.addEventListener('click', function(event) {
-            if (event.target === createPostModal) {
-                createPostModal.classList.remove('active');
+            if (event.target === addHabitModal) {
+                addHabitModal.classList.remove('active');
             }
         });
     </script>
