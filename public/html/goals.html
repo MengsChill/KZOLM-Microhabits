@@ -162,6 +162,7 @@
             border-left: 4px solid var(--primary-color);
             transition: var(--transition);
             animation: slideInRight 0.5s ease-out;
+            position: relative;
         }
 
         .goal-item:hover {
@@ -190,22 +191,38 @@
             font-size: 0.8rem;
         }
 
-        .goal-progress {
-            margin-top: 10px;
+        .goal-mask {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
         }
 
-        .progress-bar {
-            height: 8px;
-            background: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
+        .mask-status {
+            font-size: 0.9rem;
+            color: var(--text-light);
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            border-radius: 4px;
-            transition: width 0.5s ease;
+        .mask-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mask-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .mask-btn.masked {
+            background: var(--primary-light);
         }
 
         .btn {
@@ -408,7 +425,7 @@
                 category,
                 duration,
                 description,
-                progress: 0,
+                masked: false,
                 createdAt: new Date().toISOString()
             };
 
@@ -446,19 +463,29 @@
                         <div class="goal-category">${goal.category}</div>
                     </div>
                     <p>${goal.description}</p>
-                    <div class="goal-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                    <div class="goal-mask">
+                        <div class="mask-status">
+                            ${goal.masked ? '✓ Completed' : `${goal.duration} days remaining`}
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9rem;">
-                            <span>${goal.progress}% Complete</span>
-                            <span>${goal.duration} days</span>
-                        </div>
+                        <button class="mask-btn ${goal.masked ? 'masked' : ''}" onclick="toggleMask(${goal.id})">
+                            ${goal.masked ? 'Completed ✓' : 'Mark as Done'}
+                        </button>
                     </div>
                     <button class="delete-btn" onclick="deleteGoal(${goal.id})">Delete</button>
                 `;
                 container.appendChild(goalElement);
             });
+        }
+
+        function toggleMask(id) {
+            goals = goals.map(goal => {
+                if (goal.id === id) {
+                    return { ...goal, masked: !goal.masked };
+                }
+                return goal;
+            });
+            localStorage.setItem('goals', JSON.stringify(goals));
+            renderGoals();
         }
 
         function deleteGoal(id) {
