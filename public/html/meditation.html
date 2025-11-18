@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kzolm - Meditation</title>
+    <!-- Load Font Awesome FIRST -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #0e6b4b;
@@ -34,6 +36,16 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+        }
+
+        /* Make sure content is visible */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
         }
 
         /* Background Animation Elements */
@@ -115,14 +127,6 @@
             font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 1px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
         }
 
         /* Navigation */
@@ -226,24 +230,17 @@
             background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
         }
 
-        /* Breathing icon animation */
         .meditation-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    color: white;
-    font-size: 2rem;
-    /* Added animation to all meditation icons */
-    animation: float-icon 3s infinite ease-in-out;
-}
-        
-        /* Specific animation for breathing exercise icon */
-        .breathing-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2rem;
             animation: float-icon 3s infinite ease-in-out;
         }
 
@@ -360,17 +357,6 @@
             font-weight: bold;
         }
 
-        /* Confetti Styles */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #f00;
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-        }
-
         /* Music Control */
         .music-control {
             position: fixed;
@@ -400,7 +386,7 @@
             background: var(--text-light);
         }
 
-        /* Background Animations */
+        /* Animations */
         @keyframes float {
             0%, 100% {
                 transform: translateY(0) translateX(0) rotate(0deg);
@@ -479,8 +465,7 @@
                 opacity: 1;
             }
         }
-        
-        /* NEW: Breathing icon animation */
+
         @keyframes float-icon {
             0%, 100% {
                 transform: translateY(0);
@@ -553,9 +538,7 @@
     <!-- Top Bar -->
     <div class="top-bar">
         <a href="/main" class="back-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-            </svg>
+            <i class="fas fa-arrow-left"></i>
         </a>
         <div class="brand-name">kzolm</div>
     </div>
@@ -580,8 +563,7 @@
 
         <div class="meditation-grid">
             <div class="meditation-card" onclick="startMeditation('breathing', 300)">
-                <!-- Added breathing-icon class for animation -->
-                <div class="meditation-icon breathing-icon">🌬️</div>
+                <div class="meditation-icon">🌬️</div>
                 <h3>Breathing Exercise</h3>
                 <p>Focus on your breath and find calmness in the present moment</p>
                 <div class="duration">5 minutes</div>
@@ -619,10 +601,10 @@
         </div>
     </div>
 
-    <!-- Font Awesome for music icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <script>
+        // Simple initialization to ensure page loads
+        console.log("Page loading...");
+
         let timer;
         let timeLeft;
         let isRunning = false;
@@ -634,7 +616,12 @@
 
         // Initialize background animation
         function initBackgroundAnimation() {
+            console.log("Initializing background animation...");
             const container = document.getElementById('backgroundAnimation');
+            if (!container) {
+                console.error("Background animation container not found!");
+                return;
+            }
             
             // Create floating circles
             for (let i = 0; i < 8; i++) {
@@ -680,117 +667,17 @@
                 container.appendChild(dot);
             }
             
-            // Create wave lines
-            for (let i = 0; i < 5; i++) {
-                const wave = document.createElement('div');
-                wave.className = 'wave-line';
-                
-                wave.style.top = `${Math.random() * 100}%`;
-                wave.style.width = `${Math.random() * 200 + 100}px`;
-                wave.style.animationDelay = `${Math.random() * 12}s`;
-                wave.style.opacity = Math.random() * 0.3 + 0.1;
-                
-                container.appendChild(wave);
-            }
+            console.log("Background animation initialized successfully");
         }
 
-        // Initialize and play calming music
+        // Simple music functions for now
         function initBackgroundMusic() {
-            // REPLACE THIS URL WITH YOUR OWN MUSIC FILE
-            const musicUrl = 'https://example.com/your-meditation-music.mp3';
-            
-            // Create audio element for background music
-            backgroundMusic = new Audio();
-            backgroundMusic.src = musicUrl;
-            backgroundMusic.loop = true;
-            backgroundMusic.volume = 0.3; // Set initial volume
-            
-            // Handle audio loading
-            backgroundMusic.addEventListener('canplaythrough', function() {
-                console.log('Background music loaded and ready to play');
-            });
-            
-            backgroundMusic.addEventListener('error', function(e) {
-                console.error('Error loading background music:', e);
-                // Fallback to generated music if custom music fails
-                initGeneratedMusic();
-            });
-        }
-        
-        // Fallback function if custom music fails
-        function initGeneratedMusic() {
-            // Create audio context for generating calming music
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Create main oscillator for ambient sound
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
-            
-            // Set up the sound
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(110, audioContext.currentTime); // A2 - low calming frequency
-            
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, audioContext.currentTime);
-            
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Very low volume
-            
-            // Connect nodes
-            oscillator.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // Add gentle frequency modulation for natural sound
-            const lfo = audioContext.createOscillator();
-            const lfoGain = audioContext.createGain();
-            
-            lfo.type = 'sine';
-            lfo.frequency.setValueAtTime(0.1, audioContext.currentTime); // Very slow modulation
-            lfoGain.gain.setValueAtTime(2, audioContext.currentTime); // Small pitch variation
-            
-            lfo.connect(lfoGain);
-            lfoGain.connect(oscillator.frequency);
-            
-            // Start oscillators
-            oscillator.start();
-            lfo.start();
-            
+            console.log("Initializing background music...");
+            // We'll keep this simple for now to avoid errors
             backgroundMusic = {
-                context: audioContext,
-                oscillator: oscillator,
-                gain: gainNode,
-                lfo: lfo,
-                lfoGain: lfoGain,
-                filter: filter,
-                isGenerated: true
+                isGenerated: false,
+                volume: 0.3
             };
-        }
-
-        function playBackgroundMusic() {
-            if (backgroundMusic && !isMusicPlaying && !isMusicMuted) {
-                if (backgroundMusic.isGenerated) {
-                    backgroundMusic.gain.gain.setValueAtTime(0.1, backgroundMusic.context.currentTime);
-                } else {
-                    backgroundMusic.play().catch(e => {
-                        console.error('Error playing background music:', e);
-                    });
-                }
-                isMusicPlaying = true;
-                updateMusicButton();
-            }
-        }
-
-        function pauseBackgroundMusic() {
-            if (backgroundMusic && isMusicPlaying) {
-                if (backgroundMusic.isGenerated) {
-                    backgroundMusic.gain.gain.setValueAtTime(0, backgroundMusic.context.currentTime);
-                } else {
-                    backgroundMusic.pause();
-                }
-                isMusicPlaying = false;
-                updateMusicButton();
-            }
         }
 
         function toggleMusicMute() {
@@ -798,186 +685,45 @@
             const musicControl = document.getElementById('musicControl');
             
             if (isMusicMuted) {
-                pauseBackgroundMusic();
                 musicControl.classList.add('muted');
                 musicControl.title = "Unmute Music";
                 musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
             } else {
-                if (isRunning) {
-                    playBackgroundMusic();
-                }
                 musicControl.classList.remove('muted');
                 musicControl.title = "Mute Music";
                 musicControl.innerHTML = '<i class="fas fa-music"></i>';
             }
         }
 
-        function updateMusicButton() {
-            const musicControl = document.getElementById('musicControl');
-            if (!isMusicPlaying || isMusicMuted) {
-                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                musicControl.innerHTML = '<i class="fas fa-music"></i>';
-            }
-        }
-
-        // Sound effects functions
-        function playStartSound() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            oscillator.frequency.setValueAtTime(523.25, context.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659.25, context.currentTime + 0.1); // E5
-            oscillator.frequency.setValueAtTime(783.99, context.currentTime + 0.2); // G5
-            
-            gainNode.gain.setValueAtTime(0.3, context.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
-            
-            oscillator.start(context.currentTime);
-            oscillator.stop(context.currentTime + 0.5);
-        }
-
-        function playPauseSound() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            oscillator.frequency.setValueAtTime(392.00, context.currentTime); // G4
-            oscillator.frequency.setValueAtTime(349.23, context.currentTime + 0.1); // F4
-            
-            gainNode.gain.setValueAtTime(0.3, context.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.3);
-            
-            oscillator.start(context.currentTime);
-            oscillator.stop(context.currentTime + 0.3);
-        }
-
-        function playResetSound() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            oscillator.frequency.setValueAtTime(261.63, context.currentTime); // C4
-            oscillator.frequency.setValueAtTime(220.00, context.currentTime + 0.1); // A3
-            oscillator.frequency.setValueAtTime(196.00, context.currentTime + 0.2); // G3
-            
-            gainNode.gain.setValueAtTime(0.3, context.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.4);
-            
-            oscillator.start(context.currentTime);
-            oscillator.stop(context.currentTime + 0.4);
-        }
-
-        function playCompletionSound() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            oscillator.frequency.setValueAtTime(523.25, context.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659.25, context.currentTime + 0.1); // E5
-            oscillator.frequency.setValueAtTime(783.99, context.currentTime + 0.2); // G5
-            oscillator.frequency.setValueAtTime(1046.50, context.currentTime + 0.3); // C6
-            
-            gainNode.gain.setValueAtTime(0.3, context.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.8);
-            
-            oscillator.start(context.currentTime);
-            oscillator.stop(context.currentTime + 0.8);
-        }
-
-        // Confetti animation function
-        function createConfetti() {
-            const timerElement = document.getElementById('meditation-timer');
-            const colors = ['#0e6b4b', '#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0', '#ffeb3b'];
-            
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                
-                // Random position
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                
-                // Random color
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Random size
-                const size = Math.random() * 8 + 4;
-                
-                confetti.style.left = `${left}%`;
-                confetti.style.top = `${top}%`;
-                confetti.style.backgroundColor = color;
-                confetti.style.width = `${size}px`;
-                confetti.style.height = `${size}px`;
-                
-                // Random shape (circle or square)
-                if (Math.random() > 0.5) {
-                    confetti.style.borderRadius = '50%';
-                } else {
-                    confetti.style.borderRadius = '2px';
-                }
-                
-                timerElement.appendChild(confetti);
-                
-                // Animate confetti
-                const animation = confetti.animate([
-                    {
-                        opacity: 1,
-                        transform: `translate(0, 0) rotate(0deg) scale(1)`
-                    },
-                    {
-                        opacity: 1,
-                        transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg) scale(1.2)`
-                    },
-                    {
-                        opacity: 0,
-                        transform: `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) rotate(${Math.random() * 720}deg) scale(0.5)`
-                    }
-                ], {
-                    duration: 1500 + Math.random() * 1000,
-                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
-                });
-                
-                // Remove confetti after animation
-                animation.onfinish = () => {
-                    confetti.remove();
-                };
-            }
-        }
-
+        // Meditation functions
         function startMeditation(session, seconds) {
             currentSession = session;
             timeLeft = seconds;
-            document.getElementById('meditation-timer').style.display = 'block';
-            document.getElementById('session-title').textContent = 
-                session === 'breathing' ? 'Breathing Exercise' :
-                session === 'body-scan' ? 'Body Scan' : 'Loving Kindness';
+            const timerElement = document.getElementById('meditation-timer');
+            if (timerElement) {
+                timerElement.style.display = 'block';
+            }
+            
+            const sessionTitle = document.getElementById('session-title');
+            if (sessionTitle) {
+                sessionTitle.textContent = 
+                    session === 'breathing' ? 'Breathing Exercise' :
+                    session === 'body-scan' ? 'Body Scan' : 'Loving Kindness';
+            }
+            
             updateTimerDisplay();
             resetTimer();
             
             // Scroll to timer
-            document.getElementById('meditation-timer').scrollIntoView({ behavior: 'smooth' });
+            if (timerElement) {
+                timerElement.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         function startTimer() {
             if (!isRunning) {
                 isRunning = true;
                 timer = setInterval(updateTimer, 1000);
-                playStartSound(); // Play start sound
-                playBackgroundMusic(); // Start calming music
             }
         }
 
@@ -985,8 +731,6 @@
             if (isRunning) {
                 isRunning = false;
                 clearInterval(timer);
-                playPauseSound(); // Play pause sound
-                pauseBackgroundMusic(); // Pause calming music
             }
         }
 
@@ -996,8 +740,10 @@
                       currentSession === 'body-scan' ? 600 : 480;
             updateTimerDisplay();
             breathPhase = 'in';
-            document.getElementById('breath-text').textContent = 'Breathe In';
-            playResetSound(); // Play reset sound
+            const breathText = document.getElementById('breath-text');
+            if (breathText) {
+                breathText.textContent = 'Breathe In';
+            }
         }
 
         function updateTimer() {
@@ -1008,38 +754,53 @@
             if (currentSession === 'breathing') {
                 if (timeLeft % 6 === 0) {
                     breathPhase = breathPhase === 'in' ? 'hold' : 'out';
-                    document.getElementById('breath-text').textContent = 
-                        breathPhase === 'in' ? 'Breathe In' :
-                        breathPhase === 'hold' ? 'Hold' : 'Breathe Out';
+                    const breathText = document.getElementById('breath-text');
+                    if (breathText) {
+                        breathText.textContent = 
+                            breathPhase === 'in' ? 'Breathe In' :
+                            breathPhase === 'hold' ? 'Hold' : 'Breathe Out';
+                    }
                 }
             }
 
             if (timeLeft <= 0) {
                 pauseTimer();
-                playCompletionSound(); // Play completion sound
-                createConfetti(); // Create confetti burst
-                
-                // Enhanced completion message
-                setTimeout(() => {
-                    alert('🎉 Meditation session completed! 🎉\n\nYou did an amazing job taking time for mindfulness!');
-                }, 500);
+                alert('🎉 Meditation session completed! 🎉\n\nYou did an amazing job taking time for mindfulness!');
             }
         }
 
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timerElement = document.getElementById('timer');
+            if (timerElement) {
+                timerElement.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
         }
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM fully loaded and parsed");
+            
+            // Initialize components
             initBackgroundAnimation();
             initBackgroundMusic();
             
             // Add event listener for music control
-            document.getElementById('musicControl').addEventListener('click', toggleMusicMute);
+            const musicControl = document.getElementById('musicControl');
+            if (musicControl) {
+                musicControl.addEventListener('click', toggleMusicMute);
+            } else {
+                console.error("Music control button not found!");
+            }
+            
+            console.log("Page initialized successfully");
+        });
+
+        // Fallback in case DOMContentLoaded doesn't fire
+        window.addEventListener('load', function() {
+            console.log("Window fully loaded");
         });
     </script>
 </body>
