@@ -355,9 +355,9 @@ function initializeApp() {
         res.sendFile(path.join(__dirname, "public/html/meditation.html"))
     })
 
-    app.get("/challange", (req, res) => {
+    app.get("/challenge", (req, res) => {
         if (!req.session.userId) return res.redirect("/signin")
-        res.sendFile(path.join(__dirname, "public/html/challange.html"))
+        res.sendFile(path.join(__dirname, "public/html/challenge.html"))
     })
 
     app.get("/goals", (req, res) => {
