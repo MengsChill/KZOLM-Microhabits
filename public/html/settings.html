@@ -667,8 +667,8 @@
                 <i class="fas fa-user-cog"></i>
                 <h2 class="section-title">Account</h2>
             </div>
-            <div class="settings-list">
-                <div class="setting-item" onclick="openEditModal('profile')">
+<div class="settings-list">
+                <div class="setting-item" onclick="window.location.href='/edit-profile.html'">
                     <div class="setting-info">
                         <div class="setting-title">Edit Profile</div>
                         <div class="setting-description">Update your personal information and bio</div>
@@ -677,7 +677,8 @@
                         <i class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="setting-item" onclick="openEditModal('password')">
+                
+                <div class="setting-item" onclick="window.location.href='/edit-profile.html'">
                     <div class="setting-info">
                         <div class="setting-title">Change Password</div>
                         <div class="setting-description">Update your account password</div>
@@ -686,7 +687,8 @@
                         <i class="fas fa-chevron-right"></i>
                     </div>
                 </div>
-                <div class="setting-item" onclick="openEditModal('email')">
+
+                <div class="setting-item" onclick="window.location.href='/edit-profile.html'">
                     <div class="setting-info">
                         <div class="setting-title">Change Email</div>
                         <div class="setting-description">Update your email address</div>
@@ -696,7 +698,6 @@
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Danger Zone -->
         <div class="settings-section danger-zone">
@@ -842,13 +843,13 @@
                 }
             }
 
-            logout() {
-                this.showToast('Logging out...', 'success');
-                setTimeout(() => {
-                    // In a real app, you would call your logout API here
-                    window.location.href = 'login.html';
-                }, 1500);
-            }
+logout() {
+    this.showToast('Logging out...', 'success');
+    setTimeout(() => {
+        // Point to the server route that handles session destruction
+        window.location.href = '/exit'; 
+    }, 1500);
+}
 
             deleteAccount() {
                 this.showToast('Account deletion in progress...', 'warning');
@@ -905,34 +906,7 @@
             alert(messages[type] || 'Edit functionality');
         
         }
-        document.addEventListener('DOMContentLoaded', function() {
-    // Get the logout button and modal confirm button
-    const logoutButton = document.getElementById('logoutButton');
-    const confirmLogout = document.getElementById('confirmLogout');
-    
-    // Open logout modal when logout button is clicked
-    if (logoutButton) {
-        logoutButton.addEventListener('click', function() {
-            document.getElementById('logoutModal').style.display = 'flex';
-        });
-    }
-    
-    // Redirect to index.html when confirm logout is clicked
-    if (confirmLogout) {
-        confirmLogout.addEventListener('click', function() {
-            window.location.href = '../html/index.html';
-        });
-    }
-    
-    // Close modal functionality (if not already implemented)
-    const closeButtons = document.querySelectorAll('.close-button, .button-secondary');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modalId = this.getAttribute('data-modal');
-            document.getElementById(modalId).style.display = 'none';
-        });
-    });
-});
+
     </script>
 </body>
 </html>
