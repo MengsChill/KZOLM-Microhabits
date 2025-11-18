@@ -6,13 +6,14 @@
     <link rel="apple-touch-icon" href="../image/kzolm-page-icon.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Microhabits</title>
+    <title>Settings - Kzolm</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #0e6b4b;
             --primary-light: #4caf50;
             --primary-dark: #0a4f36;
+            --secondary-color: #ff9800;
             --background-color: #f5f7fa;
             --card-color: #ffffff;
             --text-color: #333333;
@@ -20,6 +21,10 @@
             --border-color: #e0e0e0;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --secondary-bg: #f8f9fa;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
         }
 
         * {
@@ -28,385 +33,909 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
+            min-height: 100vh;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            transition: var(--transition);
             padding: 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .settings-container {
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            background-color: var(--card-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+            height: 100%;
+            z-index: -1;
             overflow: hidden;
         }
 
-        /* Header */
-        .settings-header {
-            padding: 25px;
-            border-bottom: 1px solid var(--border-color);
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(14, 107, 75, 0.05) 0%, rgba(76, 175, 80, 0.05) 100%);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 6s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            top: 20%;
+            right: 20%;
+            animation-delay: 9s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(10px) translateX(-15px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-15px) translateX(-10px) rotate(3deg);
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-color);
+            color: var(--text-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-left-color: var(--success-color);
+        }
+
+        .toast-error {
+            border-left-color: var(--danger-color);
+        }
+
+        .toast-warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+
+        /* Header Styles */
+        .header {
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            animation: slideInDown 0.6s ease-out;
         }
 
         .back-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #f0f0f0;
-            color: var(--text-color);
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             transition: var(--transition);
+            text-decoration: none;
+            animation: pulse 2s infinite;
         }
 
         .back-button:hover {
-            background-color: var(--primary-color);
-            color: white;
+            background: var(--primary-dark);
+            transform: translateX(-2px);
+            animation: none;
         }
 
-        .settings-title {
-            font-size: 24px;
+        .header-title {
+            font-size: 28px;
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--primary-color);
         }
 
-        /* Settings Content */
-        .settings-content {
-            padding: 25px;
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Settings Sections */
+        .settings-section {
+            background: var(--card-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .settings-section:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .settings-section:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .settings-section:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            padding: 20px 25px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .section-header:hover::before {
+            transform: translateX(100%);
+        }
+
+        .section-header i {
+            font-size: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .settings-list {
+            padding: 0;
         }
 
         .setting-item {
-            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
             border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setting-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .setting-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .setting-item:hover {
+            background-color: var(--secondary-bg);
+            padding-left: 30px;
         }
 
         .setting-item:last-child {
             border-bottom: none;
         }
 
-        .setting-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+        .setting-info {
+            flex: 1;
         }
 
         .setting-title {
-            font-size: 18px;
-            font-weight: 500;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-color);
         }
 
         .setting-description {
-            color: var(--text-light);
             font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        /* Toggle Switch */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 52px;
-            height: 26px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: var(--transition);
-            border-radius: 34px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: var(--transition);
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-
-        /* Select Dropdown */
-        .select-container {
-            position: relative;
-            width: 100%;
-        }
-
-        .select-container select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: white;
-            appearance: none;
-            cursor: pointer;
-        }
-
-        .select-container:after {
-            content: "\f078";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
             color: var(--text-light);
+            line-height: 1.4;
         }
 
-        select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(14, 107, 75, 0.1);
+        .setting-control {
+            margin-left: 15px;
+            transition: transform 0.3s ease;
         }
 
-        /* Save Button */
-        .save-button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color);
-            color: white;
+        .setting-item:hover .setting-control {
+            transform: translateX(5px);
+        }
+
+        /* Button Styles */
+        .button {
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .save-button:hover {
-            background-color: var(--primary-dark);
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
         }
 
-        /* Alert */
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .button-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(14, 107, 75, 0.3);
+        }
+
+        .button-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .button-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .button-secondary {
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .button-secondary:hover {
+            background: var(--border-color);
+        }
+
+        /* Modal Styles */
+        .modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
         }
 
-        .alert-success {
-            background-color: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            color: #2e7d32;
+        .modal-content {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: zoomIn 0.3s ease-out;
         }
 
-        /* Profile Section */
-        .profile-section {
+        .modal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
+            padding: 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .profile-info h2 {
+        .modal-title {
             font-size: 20px;
             font-weight: 600;
-            margin-bottom: 5px;
         }
 
-        .profile-info p {
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
             color: var(--text-light);
-            font-size: 14px;
+            transition: color 0.2s ease;
         }
 
-        /* Responsive */
-        @media (max-width: 576px) {
-            .settings-container {
-                border-radius: 12px;
+        .close-button:hover {
+            color: var(--text-color);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-color);
+            color: var(--text-color);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 107, 75, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 2px solid var(--danger-color);
+        }
+
+        .danger-zone .section-header {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-            
-            .settings-header, .settings-content {
-                padding: 20px;
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(14, 107, 75, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(14, 107, 75, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(14, 107, 75, 0);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header-title {
+                font-size: 24px;
+            }
+
+            .setting-item {
+                padding: 15px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .setting-control {
+                margin-left: 0;
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .section-header {
+                padding: 15px 20px;
+            }
+
+            .modal-content {
+                width: 95%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="settings-container">
-        <!-- Header -->
-        <div class="settings-header">
-            <a href="/main" class="back-button">
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Confirmation Modals -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Log Out</h3>
+                <button class="close-button" data-modal="logoutModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to log out? You'll need to sign in again to access your account.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="button button-secondary" data-modal="logoutModal">Cancel</button>
+                <button class="button button-primary" id="confirmLogout">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteAccountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Account</h3>
+                <button class="close-button" data-modal="deleteAccountModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Warning:</strong> This action is permanent and cannot be undone. All your data, including posts, comments, and profile information will be permanently deleted.</p>
+                <div class="form-group">
+                    <label class="form-label">Please type "DELETE" to confirm:</label>
+                    <input type="text" class="form-input" id="deleteConfirmation" placeholder="Type DELETE here">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="button button-secondary" data-modal="deleteAccountModal">Cancel</button>
+                <button class="button button-danger" id="confirmDeleteAccount" disabled>Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <a href="javascript:history.back()" class="back-button">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <h1 class="settings-title">Settings</h1>
+            <h1 class="header-title">Settings</h1>
         </div>
 
-        <!-- Settings Content -->
-        <div class="settings-content">
-            <!-- Profile Section -->
-            <div class="profile-section">
-                <div class="profile-avatar">JD</div>
-                <div class="profile-info">
-                    <h2>John Doe</h2>
-                    <p>john.doe@example.com</p>
+        <!-- Account Section -->
+        <div class="settings-section">
+            <div class="section-header">
+                <i class="fas fa-user-cog"></i>
+                <h2 class="section-title">Account</h2>
+            </div>
+            <div class="settings-list">
+                <div class="setting-item" onclick="openEditModal('profile')">
+                    <div class="setting-info">
+                        <div class="setting-title">Edit Profile</div>
+                        <div class="setting-description">Update your personal information and bio</div>
+                    </div>
+                    <div class="setting-control">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="setting-item" onclick="openEditModal('password')">
+                    <div class="setting-info">
+                        <div class="setting-title">Change Password</div>
+                        <div class="setting-description">Update your account password</div>
+                    </div>
+                    <div class="setting-control">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="setting-item" onclick="openEditModal('email')">
+                    <div class="setting-info">
+                        <div class="setting-title">Change Email</div>
+                        <div class="setting-description">Update your email address</div>
+                    </div>
+                    <div class="setting-control">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Success Alert -->
-            <div class="alert alert-success" id="successAlert">
-                <i class="fas fa-check-circle"></i>
-                <span>Settings saved successfully!</span>
+        <!-- Danger Zone -->
+        <div class="settings-section danger-zone">
+            <div class="section-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2 class="section-title">Danger Zone</h2>
             </div>
-
-            <!-- Setting 1: Notifications -->
-            <div class="setting-item">
-                <div class="setting-header">
-                    <h3 class="setting-title">Notifications</h3>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="notificationsToggle" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
+            <div class="settings-list">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">Log Out</div>
+                        <div class="setting-description">Sign out from your account on this device</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="button button-secondary" id="logoutButton">Log Out</button>
+                    </div>
                 </div>
-                <p class="setting-description">Receive reminders and updates about your habits</p>
-            </div>
-
-            <!-- Setting 2: Theme -->
-            <div class="setting-item">
-                <div class="setting-header">
-                    <h3 class="setting-title">Theme</h3>
-                </div>
-                <p class="setting-description">Choose your preferred appearance</p>
-                <div class="select-container">
-                    <select id="themeSelect">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="auto">Auto (System)</option>
-                    </select>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">Delete Account</div>
+                        <div class="setting-description">Permanently delete your account and all data</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="button button-danger" id="deleteAccountButton">Delete Account</button>
+                    </div>
                 </div>
             </div>
-
-            <!-- Setting 3: Data & Privacy -->
-            <div class="setting-item">
-                <div class="setting-header">
-                    <h3 class="setting-title">Data & Privacy</h3>
-                </div>
-                <p class="setting-description">Control how your data is used</p>
-                <div class="select-container">
-                    <select id="privacySelect">
-                        <option value="standard">Standard (Recommended)</option>
-                        <option value="minimal">Minimal Data Collection</option>
-                        <option value="enhanced">Enhanced Analytics</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Save Button -->
-            <button class="save-button" id="saveButton">
-                <i class="fas fa-save"></i>
-                Save Changes
-            </button>
         </div>
     </div>
 
     <script>
-        // DOM Elements
-        const notificationsToggle = document.getElementById('notificationsToggle');
-        const themeSelect = document.getElementById('themeSelect');
-        const privacySelect = document.getElementById('privacySelect');
-        const saveButton = document.getElementById('saveButton');
-        const successAlert = document.getElementById('successAlert');
+        // Settings Management
+        class SettingsManager {
+            constructor() {
+                this.settings = this.loadSettings();
+                this.init();
+            }
 
-        // Load saved settings
-        function loadSettings() {
-            const savedSettings = JSON.parse(localStorage.getItem('userSettings')) || {};
-            
-            if (savedSettings.notifications !== undefined) {
-                notificationsToggle.checked = savedSettings.notifications;
+            init() {
+                this.bindEvents();
             }
-            
-            if (savedSettings.theme) {
-                themeSelect.value = savedSettings.theme;
+
+            loadSettings() {
+                const defaultSettings = {
+                    // Add any account-specific settings here if needed
+                };
+
+                try {
+                    const saved = localStorage.getItem('kzolm-account-settings');
+                    return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+                } catch (e) {
+                    console.error('Error loading settings:', e);
+                    return defaultSettings;
+                }
             }
-            
-            if (savedSettings.privacy) {
-                privacySelect.value = savedSettings.privacy;
+
+            bindEvents() {
+                // Modal handlers
+                document.getElementById('logoutButton').addEventListener('click', () => {
+                    this.openModal('logoutModal');
+                });
+
+                document.getElementById('deleteAccountButton').addEventListener('click', () => {
+                    this.openModal('deleteAccountModal');
+                });
+
+                document.getElementById('confirmLogout').addEventListener('click', () => {
+                    this.logout();
+                });
+
+                document.getElementById('confirmDeleteAccount').addEventListener('click', () => {
+                    this.deleteAccount();
+                });
+
+                document.getElementById('deleteConfirmation').addEventListener('input', (e) => {
+                    document.getElementById('confirmDeleteAccount').disabled = 
+                        e.target.value !== 'DELETE';
+                });
+
+                // Close modal buttons
+                document.querySelectorAll('.close-button, .button-secondary[data-modal]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const modalId = e.target.getAttribute('data-modal');
+                        this.closeModal(modalId);
+                    });
+                });
+
+                // Close modal when clicking outside
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            this.closeModal(modal.id);
+                        }
+                    });
+                });
+
+                // Add ripple effect to buttons
+                document.querySelectorAll('.button').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        // Remove any existing ripple
+                        const existingRipple = this.querySelector('.ripple');
+                        if (existingRipple) {
+                            existingRipple.remove();
+                        }
+                        
+                        // Create ripple element
+                        const ripple = document.createElement('span');
+                        ripple.classList.add('ripple');
+                        
+                        // Get button position and size
+                        const rect = this.getBoundingClientRect();
+                        const size = Math.max(rect.width, rect.height);
+                        
+                        // Position ripple at click location
+                        const x = e.clientX - rect.left - size / 2;
+                        const y = e.clientY - rect.top - size / 2;
+                        
+                        // Style ripple
+                        ripple.style.width = ripple.style.height = `${size}px`;
+                        ripple.style.left = `${x}px`;
+                        ripple.style.top = `${y}px`;
+                        
+                        // Add ripple to button
+                        this.appendChild(ripple);
+                        
+                        // Remove ripple after animation
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    });
+                });
+            }
+
+            openModal(modalId) {
+                document.getElementById(modalId).style.display = 'flex';
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+                if (modalId === 'deleteAccountModal') {
+                    document.getElementById('deleteConfirmation').value = '';
+                    document.getElementById('confirmDeleteAccount').disabled = true;
+                }
+            }
+
+            logout() {
+                this.showToast('Logging out...', 'success');
+                setTimeout(() => {
+                    // In a real app, you would call your logout API here
+                    window.location.href = 'login.html';
+                }, 1500);
+            }
+
+            deleteAccount() {
+                this.showToast('Account deletion in progress...', 'warning');
+                setTimeout(() => {
+                    // In a real app, you would call your account deletion API here
+                    localStorage.removeItem('kzolm-account-settings');
+                    this.showToast('Account deleted successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }, 2000);
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                const toastIcon = document.getElementById('toastIcon');
+                const toastMessage = document.getElementById('toastMessage');
+                
+                toastMessage.textContent = message;
+                
+                // Set icon and color based on type
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+                
+                toastIcon.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i>`;
+                toast.className = `toast toast-${type}`;
+                
+                // Show toast
+                toast.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
             }
         }
 
-        // Save settings
-        function saveSettings() {
-            const settings = {
-                notifications: notificationsToggle.checked,
-                theme: themeSelect.value,
-                privacy: privacySelect.value,
-                lastUpdated: new Date().toISOString()
+        // Initialize settings manager when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SettingsManager();
+        });
+
+        // Function to open edit modals (placeholder for future implementation)
+        function openEditModal(type) {
+            const messages = {
+                profile: 'Edit Profile functionality would open here',
+                password: 'Change Password functionality would open here',
+                email: 'Change Email functionality would open here'
             };
-            
-            localStorage.setItem('userSettings', JSON.stringify(settings));
-            
-            // Show success message
-            successAlert.style.display = 'flex';
-            
-            // Hide success message after 3 seconds
-            setTimeout(() => {
-                successAlert.style.display = 'none';
-            }, 3000);
+            alert(messages[type] || 'Edit functionality');
+        
         }
-
-        // Event Listeners
-        saveButton.addEventListener('click', saveSettings);
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', loadSettings);
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get the logout button and modal confirm button
+    const logoutButton = document.getElementById('logoutButton');
+    const confirmLogout = document.getElementById('confirmLogout');
+    
+    // Open logout modal when logout button is clicked
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        });
+    }
+    
+    // Redirect to index.html when confirm logout is clicked
+    if (confirmLogout) {
+        confirmLogout.addEventListener('click', function() {
+            window.location.href = '../html/index.html';
+        });
+    }
+    
+    // Close modal functionality (if not already implemented)
+    const closeButtons = document.querySelectorAll('.close-button, .button-secondary');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalId = this.getAttribute('data-modal');
+            document.getElementById(modalId).style.display = 'none';
+        });
+    });
+});
     </script>
 </body>
 </html>

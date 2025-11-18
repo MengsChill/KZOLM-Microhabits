@@ -36,9 +36,57 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
         }
+
+        /* Top Bar Styles */
+    .top-bar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 20px;
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Vertically center */
+    justify-content: flex-start; /* Align to the left */
+    gap: 15px; /* Space between button and text */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    position: relative;
+}
+
+         .back-button {
+    /* Removed absolute positioning */
+    position: static; 
+    transform: none;
+    
+    /* Circle Design */
+    background-color: rgba(255, 255, 255, 0.2); /* Glass effect */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    flex-shrink: 0; /* Prevents shrinking on small screens */
+}
+
+       .back-button:hover {
+    background-color: rgba(255, 255, 255, 0.35); /* Lighter on hover */
+}
+
+        .back-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .app-title {
+    font-size: 1.5rem;
+    font-weight: 700; /* Bold text like the image */
+    letter-spacing: 0.5px;
+}
 
         .container {
             max-width: 1200px;
@@ -46,6 +94,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 30px 20px;
+            margin: 0 auto;
+            flex: 1;
         }
 
         header {
@@ -118,19 +169,27 @@
             color: white;
             font-weight: bold;
             font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            background: var(--primary-dark);
         }
 
         .pointer {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: var(--secondary-color);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            z-index: 5;
-            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+    position: absolute;
+    top: -10px; /* Adjusted to overlap the wheel slightly */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--secondary-color);
+    /* Polygon coordinates: Top-Left, Top-Right, Bottom-Center */
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%); 
+    z-index: 5;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
         }
 
         .spin-button {
@@ -268,42 +327,6 @@
             background: #e68900;
         }
 
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .stat-card {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            flex: 1;
-            margin: 0 10px;
-            transition: var(--transition);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
         .confetti {
             position: fixed;
             width: 10px;
@@ -338,19 +361,20 @@
             .wheel-container, .challenges-info {
                 max-width: 100%;
             }
-            
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .stat-card {
-                margin: 5px 0;
-            }
         }
     </style>
 </head>
 <body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="/main" class="back-button">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z" fill="white"/>
+            </svg>
+        </a>
+        <div class="app-title">kzolm</div>
+    </div>
+
     <div class="container">
         <header>
             <h1>Wheel of Tiny Challenges</h1>
@@ -364,7 +388,7 @@
                     <svg class="wheel" viewBox="0 0 400 400" id="wheel">
                         <!-- Wheel segments will be generated by JavaScript -->
                     </svg>
-                    <div class="wheel-center">SPIN</div>
+                    <div class="wheel-center" id="centerSpin">SPIN</div>
                 </div>
                 <button class="spin-button" id="spinButton">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -393,21 +417,6 @@
                 <ul class="challenge-list" id="challengeList">
                     <!-- Challenges will be populated by JavaScript -->
                 </ul>
-            </div>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="completedChallenges">0</div>
-                <div class="stat-label">Completed Challenges</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="currentStreak">0</div>
-                <div class="stat-label">Current Streak</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="totalSpins">0</div>
-                <div class="stat-label">Total Spins</div>
             </div>
         </div>
     </div>
@@ -463,10 +472,12 @@
         let currentStreak = 0;
         let totalSpins = 0;
         let currentChallenge = null;
+        let currentRotation = 0;
 
         // DOM elements
         const wheel = document.getElementById('wheel');
         const spinButton = document.getElementById('spinButton');
+        const centerSpin = document.getElementById('centerSpin');
         const resultContainer = document.getElementById('resultContainer');
         const defaultResult = document.getElementById('defaultResult');
         const challengeResult = document.getElementById('challengeResult');
@@ -475,123 +486,161 @@
         const acceptChallengeBtn = document.getElementById('acceptChallenge');
         const skipChallengeBtn = document.getElementById('skipChallenge');
         const challengeList = document.getElementById('challengeList');
-        const completedChallengesEl = document.getElementById('completedChallenges');
-        const currentStreakEl = document.getElementById('currentStreak');
-        const totalSpinsEl = document.getElementById('totalSpins');
 
-        // Initialize the wheel
-        function initializeWheel() {
-            // Clear existing wheel content
-            wheel.innerHTML = '';
+    // Initialize the wheel
+    function initializeWheel() {
+    // Clear existing wheel content
+    wheel.innerHTML = '';
+    
+    const centerX = 200;
+    const centerY = 200;
+    const radius = 180;
+    const anglePerSegment = (2 * Math.PI) / challenges.length;
+    
+    // Create wheel segments
+    challenges.forEach((challenge, index) => {
+        const startAngle = index * anglePerSegment;
+        const endAngle = (index + 1) * anglePerSegment;
+        
+        // Create path for segment
+        const startX = centerX + radius * Math.cos(startAngle);
+        const startY = centerY + radius * Math.sin(startAngle);
+        const endX = centerX + radius * Math.cos(endAngle);
+        const endY = centerY + radius * Math.sin(endAngle);
+        
+        const largeArcFlag = endAngle - startAngle <= Math.PI ? 0 : 1;
+        
+        const pathData = [
+            `M ${centerX} ${centerY}`,
+            `L ${startX} ${startY}`,
+            `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+            'Z'
+        ].join(' ');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', challenge.color);
+        path.setAttribute('stroke', 'white');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('data-index', index);
+        
+        wheel.appendChild(path);
+        
+        // --- TEXT FIXES START HERE ---
+        const textAngle = startAngle + anglePerSegment / 2;
+        // Push text further out (0.75 instead of 0.7)
+        const textRadius = radius * 0.75; 
+        const textX = centerX + textRadius * Math.cos(textAngle);
+        const textY = centerY + textRadius * Math.sin(textAngle);
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', textX);
+        text.setAttribute('y', textY);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'middle'); // Vertically center text
+        text.setAttribute('fill', 'white');
+        text.setAttribute('font-weight', '600');
+        text.setAttribute('font-size', '12'); // Slightly smaller font for better fit
+        
+        // Rotation logic
+        const degrees = textAngle * 180 / Math.PI + 90;
+        text.setAttribute('transform', `rotate(${degrees}, ${textX}, ${textY})`);
+        
+        // Smarter text splitting logic
+        const words = challenge.name.split(' ');
+        // If the name is long or has long words, split it
+        if (words.length > 1 && challenge.name.length > 10) {
+            // Find the middle of the word array
+            const mid = Math.ceil(words.length / 2);
+            const line1 = words.slice(0, mid).join(' ');
+            const line2 = words.slice(mid).join(' ');
             
-            const centerX = 200;
-            const centerY = 200;
-            const radius = 180;
-            const anglePerSegment = (2 * Math.PI) / challenges.length;
-            
-            // Create wheel segments
-            challenges.forEach((challenge, index) => {
-                const startAngle = index * anglePerSegment;
-                const endAngle = (index + 1) * anglePerSegment;
-                
-                // Create path for segment
-                const startX = centerX + radius * Math.cos(startAngle);
-                const startY = centerY + radius * Math.sin(startAngle);
-                const endX = centerX + radius * Math.cos(endAngle);
-                const endY = centerY + radius * Math.sin(endAngle);
-                
-                const largeArcFlag = endAngle - startAngle <= Math.PI ? 0 : 1;
-                
-                const pathData = [
-                    `M ${centerX} ${centerY}`,
-                    `L ${startX} ${startY}`,
-                    `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`,
-                    'Z'
-                ].join(' ');
-                
-                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                path.setAttribute('d', pathData);
-                path.setAttribute('fill', challenge.color);
-                path.setAttribute('stroke', 'white');
-                path.setAttribute('stroke-width', '2');
-                path.setAttribute('data-index', index);
-                
-                wheel.appendChild(path);
-                
-                // Add text to segment
-                const textAngle = startAngle + anglePerSegment / 2;
-                const textRadius = radius * 0.7;
-                const textX = centerX + textRadius * Math.cos(textAngle);
-                const textY = centerY + textRadius * Math.sin(textAngle);
-                
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', textX);
-                text.setAttribute('y', textY);
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('fill', 'white');
-                text.setAttribute('font-weight', 'bold');
-                text.setAttribute('font-size', '14');
-                text.setAttribute('transform', `rotate(${textAngle * 180 / Math.PI + 90}, ${textX}, ${textY})`);
-                
-                // Split challenge name for better display
-                const words = challenge.name.split(' ');
-                if (words.length > 2) {
-                    text.innerHTML = `<tspan x="${textX}" dy="-0.5em">${words.slice(0, 2).join(' ')}</tspan><tspan x="${textX}" dy="1.2em">${words.slice(2).join(' ')}</tspan>`;
-                } else {
-                    text.textContent = challenge.name;
-                }
-                
-                wheel.appendChild(text);
-            });
-            
-            // Populate challenge list
-            challengeList.innerHTML = '';
-            challenges.forEach(challenge => {
-                const li = document.createElement('li');
-                li.className = 'challenge-item';
-                li.innerHTML = `<strong>${challenge.name}</strong> - ${challenge.description}`;
-                challengeList.appendChild(li);
-            });
-            
-            // Load stats from localStorage
-            loadStats();
+            text.innerHTML = `
+                <tspan x="${textX}" dy="-0.6em">${line1}</tspan>
+                <tspan x="${textX}" dy="1.2em">${line2}</tspan>
+            `;
+        } else {
+            text.textContent = challenge.name;
         }
+        // --- TEXT FIXES END HERE ---
+        
+        wheel.appendChild(text);
+    });
+    
+    // Populate challenge list
+    challengeList.innerHTML = '';
+    challenges.forEach(challenge => {
+        const li = document.createElement('li');
+        li.className = 'challenge-item';
+        li.innerHTML = `<strong>${challenge.name}</strong> - ${challenge.description}`;
+        challengeList.appendChild(li);
+    });
+    
+    // Load stats from localStorage
+    loadStats();
+}
 
-        // Spin the wheel
-        function spinWheel() {
-            if (isSpinning) return;
-            
-            isSpinning = true;
-            spinButton.disabled = true;
-            totalSpins++;
-            totalSpinsEl.textContent = totalSpins;
-            saveStats();
-            
-            // Hide previous result
-            defaultResult.style.display = 'block';
-            challengeResult.style.display = 'none';
-            
-            // Calculate random rotation
-            const extraRotations = 5; // Number of full rotations before stopping
-            const randomSegment = Math.floor(Math.random() * challenges.length);
-            const segmentAngle = 360 / challenges.length;
-            const stopAngle = 360 - (randomSegment * segmentAngle + segmentAngle / 2);
-            const totalRotation = 360 * extraRotations + stopAngle;
-            
-            // Apply rotation with easing
-            wheel.style.transform = `rotate(${totalRotation}deg)`;
-            
-            // Show result after animation
-            setTimeout(() => {
-                currentChallenge = challenges[randomSegment];
-                showChallengeResult(currentChallenge);
-                isSpinning = false;
-                spinButton.disabled = false;
-                
-                // Add confetti effect
-                createConfetti();
-            }, 4000);
-        }
+
+//spin the wheel
+function spinWheel() {
+    if (isSpinning) return;
+    
+    isSpinning = true;
+    spinButton.disabled = true;
+    totalSpins++;
+    saveStats();
+    
+    // Hide previous result
+    defaultResult.style.display = 'block';
+    challengeResult.style.display = 'none';
+    
+    // --- LOGIC FIX START ---
+    // 1. Select random segment
+    const randomSegment = Math.floor(Math.random() * challenges.length);
+    
+    // 2. Calculate angle of one segment
+    const segmentAngle = 360 / challenges.length;
+    
+    // 3. Calculate the angle where this segment is centered
+    // (Using the logic that index 0 starts at 0 degrees)
+    const stopAngle = 360 - (randomSegment * segmentAngle + segmentAngle / 2);
+    
+    // 4. Calculate the "delta" needed to reach that angle from current position
+    // We mod currentRotation by 360 to see where we effectively are now
+    const currentEffectiveAngle = currentRotation % 360;
+    
+    // 5. Calculate difference to target
+    let angleDiff = stopAngle - currentEffectiveAngle;
+    
+    // Ensure we always spin clockwise (positive difference)
+    if (angleDiff < 0) {
+        angleDiff += 360;
+    }
+    
+    // 6. Add 5 full spins (1800 degrees) PLUS the difference to the target
+    // We ADD this to the existing currentRotation variable instead of resetting it
+    const rotationToAdd = (360 * 5) + angleDiff;
+    
+    const newTotalRotation = currentRotation + rotationToAdd;
+    // --- LOGIC FIX END ---
+
+    // Apply rotation
+    wheel.style.transform = `rotate(${newTotalRotation}deg)`;
+    
+    // Update state
+    currentRotation = newTotalRotation;
+    
+    // Show result after animation
+    setTimeout(() => {
+        currentChallenge = challenges[randomSegment];
+        showChallengeResult(currentChallenge);
+        isSpinning = false;
+        spinButton.disabled = false;
+        
+        // Add confetti effect
+        createConfetti();
+    }, 4000);
+}
 
         // Show challenge result
         function showChallengeResult(challenge) {
@@ -613,8 +662,6 @@
             
             completedChallenges++;
             currentStreak++;
-            completedChallengesEl.textContent = completedChallenges;
-            currentStreakEl.textContent = currentStreak;
             saveStats();
             
             // Show success message
@@ -639,7 +686,6 @@
             if (!currentChallenge) return;
             
             currentStreak = 0;
-            currentStreakEl.textContent = currentStreak;
             saveStats();
             
             // Show skip message
@@ -712,15 +758,12 @@
                 completedChallenges = stats.completedChallenges || 0;
                 currentStreak = stats.currentStreak || 0;
                 totalSpins = stats.totalSpins || 0;
-                
-                completedChallengesEl.textContent = completedChallenges;
-                currentStreakEl.textContent = currentStreak;
-                totalSpinsEl.textContent = totalSpins;
             }
         }
 
         // Event listeners
         spinButton.addEventListener('click', spinWheel);
+        centerSpin.addEventListener('click', spinWheel);
         acceptChallengeBtn.addEventListener('click', acceptChallenge);
         skipChallengeBtn.addEventListener('click', skipChallenge);
 
