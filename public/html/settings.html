@@ -31,6 +31,97 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #f5f7fa, #c3cfe2, #e8f4f8, #d4e6f1);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            background: var(--primary-light);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            top: 60%;
+            left: 80%;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            top: 80%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background: var(--success-color);
+            border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%;
+            top: 20%;
+            left: 70%;
+            animation-delay: -15s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 40px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 80px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 40px) rotate(270deg);
+            }
+        }
+
         body {
             min-height: 100vh;
             background-color: var(--background-color);
@@ -38,9 +129,23 @@
             line-height: 1.6;
             transition: var(--transition);
             padding: 20px;
+            opacity: 0;
+            animation: fadeInBody 0.8s ease-out forwards;
+            position: relative;
         }
 
-        /* Toast Notification */
+        @keyframes fadeInBody {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toast Notification - Enhanced */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -54,14 +159,14 @@
             align-items: center;
             gap: 10px;
             z-index: 10000;
-            transform: translateY(100px);
+            transform: translateX(400px) scale(0.8);
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             border-left: 4px solid var(--primary-color);
         }
 
         .toast.show {
-            transform: translateY(0);
+            transform: translateX(0) scale(1);
             opacity: 1;
         }
 
@@ -79,9 +184,15 @@
 
         .toast-icon {
             font-size: 18px;
+            animation: pulse 2s infinite;
         }
 
-        /* Header Styles */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Header Styles - Enhanced */
         .header {
             display: flex;
             align-items: center;
@@ -89,6 +200,16 @@
             margin-bottom: 30px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: slideDownHeader 0.6s ease-out 0.2s forwards;
+        }
+
+        @keyframes slideDownHeader {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .back-button {
@@ -104,26 +225,57 @@
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .back-button:hover::before {
+            width: 100%;
+            height: 100%;
         }
 
         .back-button:hover {
             background: var(--primary-dark);
-            transform: translateX(-2px);
+            transform: translateX(-2px) scale(1.05);
         }
 
         .header-title {
             font-size: 28px;
             font-weight: 600;
             color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(14, 107, 75, 0.3)); }
+            50% { filter: drop-shadow(0 0 15px rgba(14, 107, 75, 0.6)); }
         }
 
         /* Main Container */
         .container {
             max-width: 800px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Settings Sections */
+        /* Settings Sections - Enhanced */
         .settings-section {
             background: var(--card-color);
             border-radius: 16px;
@@ -131,10 +283,26 @@
             margin-bottom: 25px;
             overflow: hidden;
             transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUpSection 0.6s ease-out forwards;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .settings-section:nth-child(1) { animation-delay: 0.3s; }
+        .settings-section:nth-child(2) { animation-delay: 0.5s; }
+
+        @keyframes slideUpSection {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .settings-section:hover {
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
         }
 
         .section-header {
@@ -144,10 +312,42 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .section-header:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .section-header i {
             font-size: 20px;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
         }
 
         .section-title {
@@ -167,10 +367,29 @@
             border-bottom: 1px solid var(--border-color);
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setting-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .setting-item:hover::before {
+            transform: scaleY(1);
         }
 
         .setting-item:hover {
             background-color: var(--secondary-bg);
+            transform: translateX(8px);
         }
 
         .setting-item:last-child {
@@ -185,6 +404,11 @@
             font-weight: 600;
             margin-bottom: 4px;
             color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .setting-item:hover .setting-title {
+            color: var(--primary-color);
         }
 
         .setting-description {
@@ -195,9 +419,14 @@
 
         .setting-control {
             margin-left: 15px;
+            transition: var(--transition);
         }
 
-        /* Button Styles */
+        .setting-item:hover .setting-control {
+            transform: translateX(5px) scale(1.1);
+        }
+
+        /* Button Styles - Enhanced */
         .button {
             padding: 10px 20px;
             border: none;
@@ -209,6 +438,26 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .button-primary {
@@ -218,7 +467,8 @@
 
         .button-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(14, 107, 75, 0.3);
         }
 
         .button-danger {
@@ -228,7 +478,15 @@
 
         .button-danger:hover {
             background: #c0392b;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) scale(1.05); }
+            25% { transform: translateX(-3px) scale(1.05); }
+            75% { transform: translateX(3px) scale(1.05); }
         }
 
         .button-secondary {
@@ -239,9 +497,10 @@
 
         .button-secondary:hover {
             background: var(--border-color);
+            transform: translateY(-2px);
         }
 
-        /* Modal Styles */
+        /* Modal Styles - Enhanced */
         .modal {
             display: none;
             position: fixed;
@@ -253,6 +512,12 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            animation: modalBgFade 0.3s ease-out;
+        }
+
+        @keyframes modalBgFade {
+            from { background-color: rgba(0, 0, 0, 0); }
+            to { background-color: rgba(0, 0, 0, 0.5); }
         }
 
         .modal-content {
@@ -263,6 +528,16 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: scale(0.7) translateY(-50px);
+            opacity: 0;
+            animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        @keyframes modalSlideIn {
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -284,11 +559,15 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--text-light);
-            transition: color 0.2s ease;
+            transition: var(--transition);
+            padding: 5px;
+            border-radius: 4px;
         }
 
         .close-button:hover {
             color: var(--text-color);
+            background: var(--secondary-bg);
+            transform: rotate(90deg);
         }
 
         .modal-body {
@@ -330,15 +609,57 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(14, 107, 75, 0.1);
+            transform: translateY(-2px);
         }
 
-        /* Danger Zone */
+        /* Danger Zone - Enhanced */
         .danger-zone {
             border: 2px solid var(--danger-color);
+            animation: dangerPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes dangerPulse {
+            0%, 100% { border-color: var(--danger-color); }
+            50% { border-color: rgba(231, 76, 60, 0.5); }
         }
 
         .danger-zone .section-header {
             background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+        }
+
+        .danger-zone .section-header i {
+            animation: dangerIcon 2s ease-in-out infinite;
+        }
+
+        @keyframes dangerIcon {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        /* Loading animation for actions */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive Design */
@@ -384,6 +705,15 @@
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toastIcon"></span>
@@ -473,7 +803,7 @@
             </div>
         </div>
 
-        <!-- Danger Zone -->
+        <!-- Danger Zone Section -->
         <div class="settings-section danger-zone">
             <div class="section-header">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -503,7 +833,7 @@
     </div>
 
     <script>
-        // Settings Management
+        // Settings Management - ALL ORIGINAL FUNCTIONALITY PRESERVED
         class SettingsManager {
             constructor() {
                 this.settings = this.loadSettings();
@@ -512,6 +842,38 @@
 
             init() {
                 this.bindEvents();
+                this.addPageLoadAnimations();
+            }
+
+            addPageLoadAnimations() {
+                // Add ripple effect to all interactive elements
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('button') || 
+                        e.target.classList.contains('setting-item') ||
+                        e.target.closest('.button') ||
+                        e.target.closest('.setting-item')) {
+                        this.createRipple(e);
+                    }
+                });
+            }
+
+            createRipple(event) {
+                const button = event.currentTarget;
+                const circle = document.createElement("span");
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+                circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+                circle.classList.add("ripple");
+
+                const ripple = button.getElementsByClassName("ripple")[0];
+                if (ripple) {
+                    ripple.remove();
+                }
+
+                button.appendChild(circle);
             }
 
             loadSettings() {
@@ -570,33 +932,50 @@
             }
 
             openModal(modalId) {
-                document.getElementById(modalId).style.display = 'flex';
+                const modal = document.getElementById(modalId);
+                modal.style.display = 'flex';
+                // Reset animation
+                const content = modal.querySelector('.modal-content');
+                content.style.animation = 'none';
+                setTimeout(() => {
+                    content.style.animation = 'modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+                }, 10);
             }
 
             closeModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-                if (modalId === 'deleteAccountModal') {
-                    document.getElementById('deleteConfirmation').value = '';
-                    document.getElementById('confirmDeleteAccount').disabled = true;
-                }
+                const modal = document.getElementById(modalId);
+                const content = modal.querySelector('.modal-content');
+                content.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+                
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    if (modalId === 'deleteAccountModal') {
+                        document.getElementById('deleteConfirmation').value = '';
+                        document.getElementById('confirmDeleteAccount').disabled = true;
+                    }
+                }, 300);
             }
 
             logout() {
+                const button = document.getElementById('confirmLogout');
+                button.classList.add('loading');
                 this.showToast('Logging out...', 'success');
+                
                 setTimeout(() => {
-                    // In a real app, you would call your logout API here
-                    window.location.href = 'login.html';
+                    window.location.href = '../html/index.html';
                 }, 1500);
             }
 
             deleteAccount() {
+                const button = document.getElementById('confirmDeleteAccount');
+                button.classList.add('loading');
                 this.showToast('Account deletion in progress...', 'warning');
+                
                 setTimeout(() => {
-                    // In a real app, you would call your account deletion API here
                     localStorage.removeItem('kzolm-account-settings');
                     this.showToast('Account deleted successfully', 'success');
                     setTimeout(() => {
-                        window.location.href = 'login.html';
+                        window.location.href = '../html/index.html';
                     }, 2000);
                 }, 2000);
             }
@@ -608,7 +987,6 @@
                 
                 toastMessage.textContent = message;
                 
-                // Set icon and color based on type
                 const icons = {
                     success: 'fa-check-circle',
                     error: 'fa-exclamation-circle',
@@ -619,10 +997,8 @@
                 toastIcon.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i>`;
                 toast.className = `toast toast-${type}`;
                 
-                // Show toast
                 toast.classList.add('show');
                 
-                // Hide after 3 seconds
                 setTimeout(() => {
                     toast.classList.remove('show');
                 }, 3000);
@@ -636,42 +1012,101 @@
 
         // Function to open edit modals (placeholder for future implementation)
         function openEditModal(type) {
+            const settingItem = event.currentTarget;
+            settingItem.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                settingItem.style.transform = '';
+            }, 200);
+            
             const messages = {
                 profile: 'Edit Profile functionality would open here',
                 password: 'Change Password functionality would open here',
                 email: 'Change Email functionality would open here'
             };
-            alert(messages[type] || 'Edit functionality');
-        
+            
+            // Show a fancy alert instead of default alert
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">${type.charAt(0).toUpperCase() + type.slice(1)} Settings</h3>
+                        <button class="close-button" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>${messages[type]}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="button button-primary" onclick="this.closest('.modal').style.display='none'">Got it!</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
         }
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.7);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+            }
+
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes modalSlideOut {
+                to {
+                    transform: scale(0.7) translateY(-50px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Original JavaScript functionality preserved
         document.addEventListener('DOMContentLoaded', function() {
-    // Get the logout button and modal confirm button
-    const logoutButton = document.getElementById('logoutButton');
-    const confirmLogout = document.getElementById('confirmLogout');
-    
-    // Open logout modal when logout button is clicked
-    if (logoutButton) {
-        logoutButton.addEventListener('click', function() {
-            document.getElementById('logoutModal').style.display = 'flex';
+            // Get the logout button and modal confirm button
+            const logoutButton = document.getElementById('logoutButton');
+            const confirmLogout = document.getElementById('confirmLogout');
+            
+            // Open logout modal when logout button is clicked
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    document.getElementById('logoutModal').style.display = 'flex';
+                });
+            }
+            
+            // Redirect to index.html when confirm logout is clicked
+            if (confirmLogout) {
+                confirmLogout.addEventListener('click', function() {
+                    window.location.href = '../html/index.html';
+                });
+            }
+            
+            // Close modal functionality (if not already implemented)
+            const closeButtons = document.querySelectorAll('.close-button, .button-secondary');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    document.getElementById(modalId).style.display = 'none';
+                });
+            });
         });
-    }
-    
-    // Redirect to index.html when confirm logout is clicked
-    if (confirmLogout) {
-        confirmLogout.addEventListener('click', function() {
-            window.location.href = '../html/index.html';
-        });
-    }
-    
-    // Close modal functionality (if not already implemented)
-    const closeButtons = document.querySelectorAll('.close-button, .button-secondary');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modalId = this.getAttribute('data-modal');
-            document.getElementById(modalId).style.display = 'none';
-        });
-    });
-});
     </script>
 </body>
 </html>

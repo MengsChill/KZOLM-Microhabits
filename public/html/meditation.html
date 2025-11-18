@@ -74,7 +74,7 @@
             animation: wave 12s infinite linear;
         }
 
-        /* Top Bar - ADDED */
+        /* Top Bar */
         .top-bar {
             background: var(--primary-color);
             color: white;
@@ -223,19 +223,25 @@
             background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
         }
 
-        /* REMOVED: Meditation icon animation */
+        /* Breathing icon animation */
         .meditation-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: white;
-            font-size: 2rem;
-            /* Removed the float animation */
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: white;
+    font-size: 2rem;
+    /* Added animation to all meditation icons */
+    animation: float-icon 3s infinite ease-in-out;
+}
+        
+        /* Specific animation for breathing exercise icon */
+        .breathing-icon {
+            animation: float-icon 3s infinite ease-in-out;
         }
 
         .meditation-card h3 {
@@ -470,6 +476,16 @@
                 opacity: 1;
             }
         }
+        
+        /* NEW: Breathing icon animation */
+        @keyframes float-icon {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -531,7 +547,7 @@
         <i class="fas fa-music"></i>
     </button>
 
-    <!-- Top Bar - ADDED -->
+    <!-- Top Bar -->
     <div class="top-bar">
         <a href="/main" class="back-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -561,7 +577,8 @@
 
         <div class="meditation-grid">
             <div class="meditation-card" onclick="startMeditation('breathing', 300)">
-                <div class="meditation-icon">🌬️</div>
+                <!-- Added breathing-icon class for animation -->
+                <div class="meditation-icon breathing-icon">🌬️</div>
                 <h3>Breathing Exercise</h3>
                 <p>Focus on your breath and find calmness in the present moment</p>
                 <div class="duration">5 minutes</div>
@@ -676,6 +693,29 @@
 
         // Initialize and play calming music
         function initBackgroundMusic() {
+            // REPLACE THIS URL WITH YOUR OWN MUSIC FILE
+            const musicUrl = 'https://example.com/your-meditation-music.mp3';
+            
+            // Create audio element for background music
+            backgroundMusic = new Audio();
+            backgroundMusic.src = musicUrl;
+            backgroundMusic.loop = true;
+            backgroundMusic.volume = 0.3; // Set initial volume
+            
+            // Handle audio loading
+            backgroundMusic.addEventListener('canplaythrough', function() {
+                console.log('Background music loaded and ready to play');
+            });
+            
+            backgroundMusic.addEventListener('error', function(e) {
+                console.error('Error loading background music:', e);
+                // Fallback to generated music if custom music fails
+                initGeneratedMusic();
+            });
+        }
+        
+        // Fallback function if custom music fails
+        function initGeneratedMusic() {
             // Create audio context for generating calming music
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             
@@ -719,13 +759,20 @@
                 gain: gainNode,
                 lfo: lfo,
                 lfoGain: lfoGain,
-                filter: filter
+                filter: filter,
+                isGenerated: true
             };
         }
 
         function playBackgroundMusic() {
             if (backgroundMusic && !isMusicPlaying && !isMusicMuted) {
-                backgroundMusic.gain.gain.setValueAtTime(0.1, backgroundMusic.context.currentTime);
+                if (backgroundMusic.isGenerated) {
+                    backgroundMusic.gain.gain.setValueAtTime(0.1, backgroundMusic.context.currentTime);
+                } else {
+                    backgroundMusic.play().catch(e => {
+                        console.error('Error playing background music:', e);
+                    });
+                }
                 isMusicPlaying = true;
                 updateMusicButton();
             }
@@ -733,7 +780,11 @@
 
         function pauseBackgroundMusic() {
             if (backgroundMusic && isMusicPlaying) {
-                backgroundMusic.gain.gain.setValueAtTime(0, backgroundMusic.context.currentTime);
+                if (backgroundMusic.isGenerated) {
+                    backgroundMusic.gain.gain.setValueAtTime(0, backgroundMusic.context.currentTime);
+                } else {
+                    backgroundMusic.pause();
+                }
                 isMusicPlaying = false;
                 updateMusicButton();
             }
@@ -747,19 +798,21 @@
                 pauseBackgroundMusic();
                 musicControl.classList.add('muted');
                 musicControl.title = "Unmute Music";
+                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
             } else {
                 if (isRunning) {
                     playBackgroundMusic();
                 }
                 musicControl.classList.remove('muted');
                 musicControl.title = "Mute Music";
+                musicControl.innerHTML = '<i class="fas fa-music"></i>';
             }
         }
 
         function updateMusicButton() {
             const musicControl = document.getElementById('musicControl');
             if (!isMusicPlaying || isMusicMuted) {
-                musicControl.innerHTML = '<i class="fas fa-music-slash"></i>';
+                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
             } else {
                 musicControl.innerHTML = '<i class="fas fa-music"></i>';
             }
