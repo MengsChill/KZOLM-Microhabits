@@ -300,7 +300,7 @@
         .user-avatar {
             position: absolute;
             top: 50%;
-            left: 50px;
+            left: 2%; 
             transform: translate(-50%, -50%);
             width: 70px;
             height: 70px;
@@ -315,7 +315,7 @@
                 0 8px 25px rgba(0, 0, 0, 0.2),
                 0 0 0 4px rgba(255, 255, 255, 0.9);
             z-index: 20;
-            transition: var(--transition);
+            transition: left 0.5s ease-in-out;
         }
 
         .user-avatar::after {
@@ -362,6 +362,7 @@
             text-align: center;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            position: relative;
         }
 
         .stat:hover {
@@ -380,6 +381,19 @@
             font-size: 0.9rem;
             color: var(--text-light);
             font-weight: 500;
+        }
+
+        .stat-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--secondary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .tasks-container {
@@ -506,7 +520,41 @@
             font-weight: 600;
         }
 
-        /* REMOVED .task-difficulty CSS rule */
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+
+        .toast.warning {
+            background: #f57c00; /* Orange for warning */
+        }
+
+        .toast.success {
+            background: var(--primary);
+        }
 
         .celebration-modal {
             position: fixed;
@@ -757,7 +805,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Beginner</div>
-                    <div class="difficulty-indicator difficulty-easy">Easy</div>
+                    <div class="difficulty-indicator difficulty-easy">10</div>
                 </div>
                 
                 <div class="milestone" style="left: 25%;">
@@ -766,7 +814,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Learner</div>
-                    <div class="difficulty-indicator difficulty-easy">Easy</div>
+                    <div class="difficulty-indicator difficulty-easy">50</div>
                 </div>
                 
                 <div class="milestone" style="left: 40%;">
@@ -775,7 +823,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Explorer</div>
-                    <div class="difficulty-indicator difficulty-medium">Medium</div>
+                    <div class="difficulty-indicator difficulty-medium">150</div>
                 </div>
                 
                 <div class="milestone" style="left: 55%;">
@@ -784,7 +832,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Adventurer</div>
-                    <div class="difficulty-indicator difficulty-medium">Medium</div>
+                    <div class="difficulty-indicator difficulty-medium">450</div>
                 </div>
                 
                 <div class="milestone" style="left: 70%;">
@@ -793,7 +841,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Climber</div>
-                    <div class="difficulty-indicator difficulty-hard">Hard</div>
+                    <div class="difficulty-indicator difficulty-hard">900</div>
                 </div>
                 
                 <div class="milestone" style="left: 85%;">
@@ -802,7 +850,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Expert</div>
-                    <div class="difficulty-indicator difficulty-hard">Hard</div>
+                    <div class="difficulty-indicator difficulty-hard">1500</div>
                 </div>
                 
                 <div class="milestone" style="left: 95%;">
@@ -811,7 +859,7 @@
                     </div>
                     <div class="milestone-progress"></div>
                     <div class="milestone-label">Master</div>
-                    <div class="difficulty-indicator difficulty-expert">Expert</div>
+                    <div class="difficulty-indicator difficulty-expert">3000</div>
                 </div>
             </div>
             
@@ -822,7 +870,7 @@
         
         <div class="progress-info">
             <div class="progress-text">Start</div>
-            <div class="progress-text" id="currentProgress">0/0 tasks completed</div>
+            <div class="progress-text" id="currentProgress">0 tasks completed</div>
             <div class="progress-text">Destination</div>
         </div>
         
@@ -836,23 +884,28 @@
                 <div class="stat-label">Total Points</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="currentLevel">1</div>
-                <div class="stat-label">Current Level</div>
+                <div class="stat-value" id="dailyCap">0/4</div>
+                <div class="stat-label">Daily Point Cap</div>
+                <div class="stat-badge">New!</div>
             </div>
             <div class="stat">
                 <div class="stat-value" id="nextMilestone">5</div>
-                <div class="stat-label">Tasks to Next</div>
+                <div class="stat-label">Points to Next</div>
             </div>
         </div>
         
         <div class="tasks-container">
             <div class="tasks-header">
                 <h2 class="tasks-title">Your Tasks</h2>
-                </button>
             </div>
             
             <div class="tasks-list" id="tasksList">
-                </div>
+            </div>
+        </div>
+        
+        <div id="toast" class="toast">
+            <div class="toast-icon" id="toastIcon"></div>
+            <div class="toast-message" id="toastMessage"></div>
         </div>
         
         <div class="celebration-modal" id="celebrationModal">
@@ -892,42 +945,55 @@
             let currentLevel = 1;
             let userTasks = []; // Holds tasks fetched from server
             
-            // Difficulty progression - tasks needed for each milestone
-            // THIS LOGIC IS KEPT FROM YOUR ORIGINAL FILE
+            // Updated milestones to match server achievements
             const milestones = [
-                { id: 1, position: 10, name: 'Beginner', tasksNeeded: 5, difficulty: 'easy' },
-                { id: 2, position: 25, name: 'Learner', tasksNeeded: 10, difficulty: 'easy' },
-                { id: 3, position: 40, name: 'Explorer', tasksNeeded: 15, difficulty: 'medium' },
-                { id: 4, position: 55, name: 'Adventurer', tasksNeeded: 20, difficulty: 'medium' },
-                { id: 5, position: 70, name: 'Climber', tasksNeeded: 25, difficulty: 'hard' },
-                { id: 6, position: 85, name: 'Expert', tasksNeeded: 30, difficulty: 'hard' },
-                { id: 7, position: 95, name: 'Master', tasksNeeded: 35, difficulty: 'expert' }
+                { id: 1, position: 10, name: 'Beginner', tasksNeeded: 5, difficulty: 'easy', threshold: 10 },
+                { id: 2, position: 25, name: 'Learner', tasksNeeded: 10, difficulty: 'easy', threshold: 50 },
+                { id: 3, position: 40, name: 'Explorer', tasksNeeded: 15, difficulty: 'medium', threshold: 150 },
+                { id: 4, position: 55, name: 'Adventurer', tasksNeeded: 20, difficulty: 'medium', threshold: 450 },
+                { id: 5, position: 70, name: 'Climber', tasksNeeded: 25, difficulty: 'hard', threshold: 900 },
+                { id: 6, position: 85, name: 'Expert', tasksNeeded: 30, difficulty: 'hard', threshold: 1500 },
+                { id: 7, position: 95, name: 'Master', tasksNeeded: 35, difficulty: 'expert', threshold: 3000 }
             ];
             
             // DOM elements
             const userAvatar = document.getElementById('userAvatar');
             const tasksList = document.getElementById('tasksList');
-            const addTaskBtn = document.getElementById('addTaskBtn');
             const currentProgress = document.getElementById('currentProgress');
             const completedTasksEl = document.getElementById('completedTasks');
             const userPointsEl = document.getElementById('userPoints');
-            const currentLevelEl = document.getElementById('currentLevel');
+            const dailyCapEl = document.getElementById('dailyCap');
             const nextMilestoneEl = document.getElementById('nextMilestone');
             const celebrationModal = document.getElementById('celebrationModal');
             const closeModal = document.querySelector('.close-modal');
             const confettiContainer = document.getElementById('confettiContainer');
             
-            // --- NEW --- Helper functions to map server data
-            function getPointsForPriority(priority) {
-                // UPDATED: All tasks now give 5 points
-                return 5;
+            // Toast Elements
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            function showToast(message, type = 'success') {
+                toastMessage.textContent = message;
+                toast.className = 'toast active';
+                
+                if (type === 'warning') {
+                    toast.classList.add('warning');
+                    toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                } else {
+                    toast.classList.add('success');
+                    toastIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                }
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('active');
+                }, 3000);
             }
             
-            // --- REMOVED --- getDifficultyForPriority function
-
-            // --- NEW --- Load tasks from the server
-            async function loadTasks() {
+            async function loadTasksAndStats() {
                 try {
+                    // 1. Fetch Tasks
                     const response = await fetch('/api/tasks');
                     if (!response.ok) {
                         if (response.status === 401) window.location.href = '/signin';
@@ -936,61 +1002,56 @@
                     }
                     const tasks = await response.json();
                     
+                    // 2. Fetch Real Stats (Points)
+                    const progressResponse = await fetch('/api/user/progress');
+                    const progressData = await progressResponse.json();
+                    
+                    if (progressData) {
+                        userPoints = progressData.totalPoints;
+                    }
+                    
                     tasksList.innerHTML = ''; // Clear list
                     userTasks = []; // Clear local cache
-                    
-                    // Reset stats before recalculating
                     completedTasks = 0;
-                    userPoints = 0;
                     totalTasks = tasks.length;
 
                     tasks.forEach(task => {
-                        // Map server data (priority) to the format this page's logic expects (points)
                         const mappedTask = {
-                            ...task, // id, name, description, priority, is_completed
-                            points: getPointsForPriority(task.priority),
-                            // difficulty property removed
-                            completed: task.is_completed // For compatibility with original logic
+                            ...task, 
+                            points: 5, // Visual indicator only
+                            completed: task.is_completed
                         };
                         
                         userTasks.push(mappedTask);
                         addTaskToDOM(mappedTask);
                         
-                        // Recalculate stats based on fetched data
                         if (mappedTask.completed) {
                             completedTasks++;
-                            userPoints += mappedTask.points;
                         }
                     });
                     
-                    updateProgress(); // Update stats display
-                    moveAvatarForward(); // Set initial avatar position
-                    checkMilestones(); // Set initial milestone state
+                    updateProgress(progressData); 
+                    moveAvatarForward(); 
 
                 } catch (err) {
-                    console.error('Error loading tasks:', err);
+                    console.error('Error loading data:', err);
                 }
             }
             
             
-            // Close modal event
             closeModal.addEventListener('click', function() {
                 celebrationModal.classList.remove('active');
             });
             
-            // Close modal when clicking outside
             celebrationModal.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
                 }
             });
             
-            // --- MODIFIED --- Function to add task to DOM
             function addTaskToDOM(task) {
                 const taskCard = document.createElement('div');
                 taskCard.className = 'task-card';
-                
-                // --- REMOVED --- Difficulty switch and variables
                 
                 taskCard.innerHTML = `
                     <div class="task-checkbox ${task.is_completed ? 'checked' : ''}" data-task-id="${task.id}">
@@ -1000,20 +1061,17 @@
                         <div class="task-name">${task.name}</div>
                         <div class="task-desc">${task.description}</div>
                     </div>
-                    <div class="task-points">+${task.points}</div>
                     `;
                 
                 tasksList.appendChild(taskCard);
                 
-                // Add event listener to checkbox
                 const checkbox = taskCard.querySelector('.task-checkbox');
                 checkbox.addEventListener('click', function() {
                     const taskId = parseInt(this.getAttribute('data-task-id'));
-                    toggleTaskCompletion(taskId); // This is now async
+                    toggleTaskCompletion(taskId);
                 });
             }
             
-            // --- REWRITTEN --- Function to toggle task completion
             async function toggleTaskCompletion(taskId) {
                 const task = userTasks.find(t => t.id === taskId);
                 if (!task) return;
@@ -1034,97 +1092,88 @@
                     
                     const result = await response.json();
                     
-                    // Server response is the source of truth
                     const newStatus = result.is_completed;
-                    
-                    // Update local task object
                     task.is_completed = newStatus;
-                    task.completed = newStatus; // For old logic
+                    task.completed = newStatus;
                     
-                    // Manually update local stats to drive the milestone logic
+                    // USE SERVER POINTS
+                    if (result.newTotalScore !== undefined) {
+                        userPoints = result.newTotalScore;
+                    }
+                    
                     if (newStatus) {
-                        // Complete task
                         checkbox.classList.add('checked');
                         checkbox.innerHTML = '<i class="fas fa-check"></i>';
                         completedTasks++;
-                        userPoints += task.points;
+                        
+                        // SMART FEEDBACK
+                        if (result.pointsAwarded > 0) {
+                            showToast(`Complete! +${result.pointsAwarded} Points`, 'success');
+                        } else {
+                            showToast(`Daily cap reached! No points awarded.`, 'warning');
+                        }
+                        
                     } else {
-                        // Undo completion
                         checkbox.classList.remove('checked');
                         checkbox.innerHTML = '';
                         completedTasks--;
-                        userPoints -= task.points;
                     }
                     
-                    // --- Call the ORIGINAL page logic functions ---
-                    // This preserves the milestone/avatar progression
                     moveAvatarForward();
                     updateProgress();
-                    // ----------------------------------------------
 
                 } catch (err) {
                     console.error('Error toggling task:', err);
                 }
             }
             
-            // --- UNTOUCHED --- Function to move avatar
             function moveAvatarForward() {
-                // Calculate progress based on completed tasks with progressive scaling
-                let progressPercentage = 0;
+                const maxPoints = 3000;
+                let progressPercentage = (userPoints / maxPoints) * 100;
                 
-                if (completedTasks <= 5) {
-                    progressPercentage = (completedTasks / 5) * 10;
-                } else if (completedTasks <= 10) {
-                    progressPercentage = 10 + ((completedTasks - 5) / 5) * 15;
-                } else if (completedTasks <= 15) {
-                    progressPercentage = 25 + ((completedTasks - 10) / 5) * 15;
-                } else if (completedTasks <= 20) {
-                    progressPercentage = 40 + ((completedTasks - 15) / 5) * 15;
-                } else if (completedTasks <= 25) {
-                    progressPercentage = 55 + ((completedTasks - 20) / 5) * 15;
-                } else if (completedTasks <= 30) {
-                    progressPercentage = 70 + ((completedTasks - 25) / 5) * 15;
-                } else {
-                    progressPercentage = 85 + ((completedTasks - 30) / 5) * 10;
+                // Clamp between 2% (start) and 95% (end)
+                let visualPosition = Math.max(2, Math.min(progressPercentage, 95));
+                
+                // If points are low but user has tasks, ensure some movement so it doesn't look broken
+                if (visualPosition < 5 && completedTasks > 0) {
+                    visualPosition = 5 + (completedTasks); 
                 }
                 
-                // Calculate position based on the path
-                const pathStart = 50; // Starting position in pixels
-                const pathEnd = window.innerWidth - 50; // Ending position in pixels
-                const pathLength = pathEnd - pathStart;
+                userAvatar.style.left = `${visualPosition}%`;
                 
-                // Clamp progress to a max of 95% (end of path)
-                const clampedProgress = Math.min(progressPercentage, 95); 
-                const newPosition = pathStart + (clampedProgress / 100) * pathLength;
+                // Update level logic based on actual milestones
+                let foundLevel = 1;
+                for (let i = 0; i < milestones.length; i++) {
+                    if (userPoints >= milestones[i].threshold) {
+                        foundLevel = i + 1; // Beginner is level 1
+                    }
+                }
+                currentLevel = foundLevel;
                 
-                userAvatar.style.left = `${newPosition}px`;
-                
-                // Update level based on progress
-                currentLevel = Math.floor(completedTasks / 5) + 1;
-                
-                // Check for milestone achievements
                 checkMilestones();
             }
             
-            // --- UNTOUCHED --- Function to check milestones
             function checkMilestones() {
-                milestones.forEach(milestone => {
-                    // Find the milestone element by its index (1-based)
-                    const milestoneElement = document.querySelector(`.journey-milestones .milestone:nth-child(${milestone.id})`);
+                milestones.forEach((milestone, index) => {
+                    const milestoneElement = document.querySelector(`.journey-milestones .milestone:nth-child(${index + 1})`);
                     
-                    if (milestoneElement && completedTasks >= milestone.tasksNeeded && !milestoneElement.classList.contains('active')) {
-                        milestoneElement.classList.add('active');
-                        
-                        // Show celebration for this milestone
-                        showCelebration(milestone);
+                    if (milestoneElement) {
+                        // Check if unlocked based on points
+                        if (userPoints >= milestone.threshold) {
+                            if (!milestoneElement.classList.contains('active')) {
+                                milestoneElement.classList.add('active');
+                                showCelebration(milestone);
+                            }
+                        } else {
+                            milestoneElement.classList.remove('active');
+                        }
                     }
                 });
             }
             
-            // --- UNTOUCHED --- Function to show celebration
             function showCelebration(milestone) {
                 document.getElementById('celebrationTitle').textContent = `${milestone.name} Achieved!`;
-                document.getElementById('celebrationDesc').textContent = `You've reached the ${milestone.name} milestone! The journey gets tougher from here.`;
+                document.getElementById('celebrationDesc').textContent = `You've reached the ${milestone.name} milestone by earning ${milestone.threshold} points!`;
                 document.getElementById('statTasks').textContent = completedTasks;
                 document.getElementById('statPoints').textContent = userPoints;
                 document.getElementById('statLevel').textContent = currentLevel;
@@ -1133,33 +1182,39 @@
                 celebrationModal.classList.add('active');
             }
             
-            // --- UNTOUCHED --- Function to update progress
-            function updateProgress() {
+            function updateProgress(serverData) {
                 currentProgress.textContent = `${completedTasks}/${totalTasks} tasks completed`;
                 completedTasksEl.textContent = completedTasks;
-                userPointsEl.textContent = userPoints;
-                currentLevelEl.textContent = currentLevel;
+                userPointsEl.textContent = Math.round(userPoints);
                 
-                // Calculate tasks to next milestone
-                let nextMilestone = milestones.find(m => completedTasks < m.tasksNeeded);
-                if (nextMilestone) {
-                    nextMilestoneEl.textContent = nextMilestone.tasksNeeded - completedTasks;
+                // Update Daily Cap
+                let cappedCount = Math.min(completedTasks, 4);
+                dailyCapEl.textContent = `${cappedCount}/4`;
+                if (completedTasks >= 4) {
+                     dailyCapEl.style.color = "#ff9800"; // Orange when maxed
                 } else {
-                    nextMilestoneEl.textContent = 'Max';
+                     dailyCapEl.style.color = "#0e6b4b"; // Green otherwise
+                }
+
+                // Find next milestone based on points
+                let next = milestones.find(m => userPoints < m.threshold);
+                
+                if (next) {
+                    nextMilestoneEl.textContent = Math.round(next.threshold - userPoints);
+                    const nextLabel = document.querySelector('#nextMilestone + .stat-label');
+                    if(nextLabel) nextLabel.textContent = `Points to ${next.name}`;
+                } else {
+                    nextMilestoneEl.textContent = 'MAX';
                 }
             }
             
-            // --- UNTOUCHED --- Function to create confetti
             function createConfetti() {
                 confettiContainer.innerHTML = '';
-                
                 const colors = ['#f56565', '#48bb78', '#4299e1', '#ed8936', '#9c27b0', '#0e6b4b'];
                 
                 for (let i = 0; i < 120; i++) {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
-                    
-                    // Random properties
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     const size = Math.random() * 8 + 4;
                     const left = Math.random() * 100;
@@ -1177,8 +1232,7 @@
                 }
             }
 
-            // --- NEW --- Initial load of tasks
-            await loadTasks();
+            await loadTasksAndStats();
         });
     </script>
 </body>
