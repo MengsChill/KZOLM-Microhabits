@@ -74,7 +74,7 @@
             animation: wave 12s infinite linear;
         }
 
-        /* Top Bar - ADDED */
+        /* Top Bar - MODIFIED */
         .top-bar {
             background: var(--primary-color);
             color: white;
@@ -82,8 +82,10 @@
             display: flex;
             align-items: center;
             box-shadow: var(--shadow);
-            position: sticky;
+            position: fixed; /* Changed from sticky to fixed */
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
         }
 
@@ -120,6 +122,8 @@
             padding: 20px;
             position: relative;
             z-index: 1;
+            /* Added top padding to account for fixed top bar */
+            padding-top: 80px;
         }
 
         /* Navigation */
@@ -129,6 +133,8 @@
             box-shadow: var(--shadow);
             position: relative;
             z-index: 2;
+            /* Added top margin to account for fixed top bar */
+            margin-top: 70px;
         }
 
         .nav-content {
@@ -532,7 +538,7 @@
         <i class="fas fa-music"></i>
     </button> -->
 
-    <!-- Top Bar - ADDED -->
+    <!-- Top Bar - MODIFIED -->
     <div class="top-bar">
         <a href="/main" class="back-button">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
