@@ -38,6 +38,8 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            /* Added padding to account for fixed top bar */
+            padding-top: 80px;
         }
 
         /* Navigation */
@@ -45,6 +47,8 @@
             background: var(--primary-color);
             padding: 15px 0;
             box-shadow: var(--shadow);
+            /* Added margin to account for fixed top bar */
+            margin-top: 70px;
         }
 
         .nav-content {
@@ -261,8 +265,11 @@
             display: flex;
             align-items: center;
             box-shadow: var(--shadow);
-            position: sticky;
+            /* Changed from sticky to fixed */
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
         }
                 .back-button {
@@ -290,12 +297,6 @@
             font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 1px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
         }
 
         /* Animations */
@@ -341,6 +342,12 @@
             }
             .top-bar {
                 padding: 12px 15px;
+            }
+            .container {
+                padding-top: 70px;
+            }
+            .nav-container {
+                margin-top: 60px;
             }
         }
     </style>
