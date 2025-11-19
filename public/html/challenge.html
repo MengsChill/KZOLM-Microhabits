@@ -591,9 +591,6 @@
         li.innerHTML = `<strong>${challenge.name}</strong> - ${challenge.description}`;
         challengeList.appendChild(li);
     });
-    
-    // Load stats from localStorage
-    loadStats();
 }
 
 
@@ -619,7 +616,7 @@ function spinWheel() {
     
     // 3. Calculate the angle where this segment is centered
     // (Using the logic that index 0 starts at 0 degrees)
-    const stopAngle = 360 - (randomSegment * segmentAngle + segmentAngle / 2);
+    const stopAngle = 270 - (randomSegment * segmentAngle + segmentAngle / 2);
     
     // 4. Calculate the "delta" needed to reach that angle from current position
     // We mod currentRotation by 360 to see where we effectively are now
@@ -638,7 +635,6 @@ function spinWheel() {
     const rotationToAdd = (360 * 5) + angleDiff;
     
     const newTotalRotation = currentRotation + rotationToAdd;
-    // --- LOGIC FIX END ---
 
     // Apply rotation
     wheel.style.transform = `rotate(${newTotalRotation}deg)`;
@@ -766,16 +762,6 @@ function spinWheel() {
             localStorage.setItem('wheelOfChallengesStats', JSON.stringify(stats));
         }
 
-        // Load stats from localStorage
-        function loadStats() {
-            const savedStats = localStorage.getItem('wheelOfChallengesStats');
-            if (savedStats) {
-                const stats = JSON.parse(savedStats);
-                completedChallenges = stats.completedChallenges || 0;
-                currentStreak = stats.currentStreak || 0;
-                totalSpins = stats.totalSpins || 0;
-            }
-        }
 
         // Event listeners
         spinButton.addEventListener('click', spinWheel);
