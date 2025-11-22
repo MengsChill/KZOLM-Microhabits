@@ -361,24 +361,24 @@
         </div>
 
         <!-- Stats Section -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="total-points">1,250</div>
-                <div class="stat-label">Total Points</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="completed-goals">8</div>
-                <div class="stat-label">Goals Completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="current-streak">12</div>
-                <div class="stat-label">Day Streak</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="achievements">5</div>
-                <div class="stat-label">Achievements</div>
-            </div>
-        </div>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number" id="total-points">0</div>
+        <div class="stat-label">Total Points</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="completed-goals">0</div>
+        <div class="stat-label">Goals Completed</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="current-streak">0</div>
+        <div class="stat-label">Day Streak</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="achievements">0</div>
+        <div class="stat-label">Achievements</div>
+    </div>
+</div>
 
         <div class="rewards-grid">
             <div class="reward-card">
@@ -436,53 +436,55 @@
             </div>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 1. Animation for progress rings (Existing visual logic)
-            const circles = document.querySelectorAll('.progress-ring-circle');
-            circles.forEach(circle => {
-                const length = circle.getTotalLength();
-                circle.style.strokeDasharray = length + ' ' + length;
-                circle.style.strokeDashoffset = length;
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("✅ Script loaded. Attempting to fetch stats...");
+        fetchRewardStats();
+    });
 
-            // 2. Fetch and Link Data from Backend
-            fetchStats();
-        });
-
-        async function fetchStats() {
-            try {
-                // Fetch Points from /api/user/progress
-                const progressRes = await fetch('/api/user/progress');
-                if (progressRes.ok) {
-                    const progressData = await progressRes.json();
-                    // Update Total Points
-                    document.getElementById('total-points').textContent = progressData.totalPoints.toLocaleString();
-                }
-
-                // Fetch Streak and Task counts from /api/statistics
-                const statsRes = await fetch('/api/statistics');
-                if (statsRes.ok) {
-                    const statsData = await statsRes.json();
-                    // Update Goals Completed (mapping 'tasksCompleted' to goals)
-                    document.getElementById('completed-goals').textContent = statsData.tasksCompleted;
-                    // Update Day Streak
-                    document.getElementById('current-streak').textContent = statsData.currentStreak;
-                }
-
-                // Fetch Achievement count from /api/user/achievements/manage
-                const achRes = await fetch('/api/user/achievements/manage');
-                if (achRes.ok) {
-                    const achData = await achRes.json();
-                    // Count how many achievements are unlocked (unlocked === 1 or true)
-                    const unlockedCount = achData.filter(item => item.unlocked).length;
-                    // Update Achievements count
-                    document.getElementById('achievements').textContent = unlockedCount;
-                }
-
-            } catch (error) {
-                console.error("Error fetching reward stats:", error);
+    async function fetchRewardStats() {
+        try {
+            // 1. Fetch Total Points
+            console.log("Fetching points...");
+            const progressRes = await fetch('/api/user/progress');
+            if (progressRes.ok) {
+                const progressData = await progressRes.json();
+                console.log("✅ Points received:", progressData.totalPoints);
+                document.getElementById('total-points').textContent = Math.round(progressData.totalPoints);
+            } else {
+                console.error("❌ Failed to fetch points. Status:", progressRes.status);
             }
+
+            // 2. Fetch Streak & Goals
+            console.log("Fetching statistics...");
+            const statsRes = await fetch('/api/statistics');
+            if (statsRes.ok) {
+                const statsData = await statsRes.json();
+                console.log("✅ Stats received:", statsData);
+                document.getElementById('completed-goals').textContent = statsData.tasksCompleted || 0;
+                document.getElementById('current-streak').textContent = statsData.currentStreak || 0;
+            } else {
+                console.error("❌ Failed to fetch statistics. Status:", statsRes.status);
+            }
+
+            // 3. Fetch Achievements
+            console.log("Fetching achievements...");
+            const achRes = await fetch('/api/user/achievements/manage');
+            if (achRes.ok) {
+                const achData = await achRes.json();
+                // Count items where unlocked is true
+                const unlockedCount = achData.filter(item => item.unlocked).length;
+                console.log("✅ Achievements count:", unlockedCount);
+                document.getElementById('achievements').textContent = unlockedCount;
+            } else {
+                console.error("❌ Failed to fetch achievements. Status:", achRes.status);
+            }
+
+        } catch (error) {
+            console.error("❌ CRITICAL ERROR in fetchRewardStats:", error);
         }
-    </script>
+    }
+</script>
+</body>
+</html>
 </body>
 </html>

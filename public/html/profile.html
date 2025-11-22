@@ -137,7 +137,6 @@
         <div class="card profile-stats">
             <div class="stat-item"><h3 id="statPoints">0</h3><p>Total Points</p></div>
             <div class="stat-item"><h3 id="statStreak">0 Days</h3><p>Current Streak</p></div>
-            <div class="stat-item"><h3 id="statLevel">...</h3><p>Level</p></div>
             <div class="stat-item"><h3 id="statJoined">...</h3><p>Since Joining</p></div>
         </div>
 
@@ -193,6 +192,16 @@
                 
                 document.getElementById('profileName').textContent = user.display_name;
                 document.getElementById('profileBio').textContent = user.bio || "No bio set.";
+
+                if (user.created_at) {
+    const joinedDate = new Date(user.created_at.replace(" ", "T") + "Z"); // Ensure UTC format
+    const now = new Date();
+    const diffTime = Math.abs(now - joinedDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    document.getElementById('statJoined').textContent = `${diffDays} Days`;
+} else {
+    document.getElementById('statJoined').textContent = "Unknown";
+}
                 
                 const avatarDiv = document.getElementById('profileAvatar');
                 if (user.profile_image) {
@@ -288,7 +297,7 @@
                     document.getElementById('statStreak').textContent = `${stats.currentStreak} Days`;
                     document.getElementById('statLevel').textContent = progress.currentLevel.name;
                     // Note: "Since Joining" is hardcoded in the original, would require storing join date
-                    document.getElementById('statJoined').textContent = '...'; 
+                    //document.getElementById('statJoined').textContent = '...'; 
                 }
             } catch (error) {
                 console.error("Failed to load profile stats", error);

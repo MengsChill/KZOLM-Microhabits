@@ -53,19 +53,20 @@ const db = new sqlite3.Database("./users.db", (err) => {
 //db setup
 db.serialize(() => {
     // --- CREATE ALL TABLES FIRST ---
-    db.run(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        security_question TEXT,
-        security_answer TEXT,
-        display_name TEXT DEFAULT 'User',
-        profile_image TEXT,
-        banner_image TEXT,
-        bio TEXT
-      )
-    `);
+db.run(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    security_question TEXT,
+    security_answer TEXT,
+    display_name TEXT DEFAULT 'User',
+    profile_image TEXT,
+    banner_image TEXT,
+    bio TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- <--- ADD THIS LINE
+  )
+`);
 
     db.run(`
       CREATE TABLE IF NOT EXISTS posts (
@@ -507,14 +508,15 @@ function initializeApp() {
     });
 
 
-    app.get("/api/user/:id", (req, res) => {
-        const userId = req.params.id;
-        db.get("SELECT id, display_name, profile_image, banner_image, bio FROM users WHERE id = ?", [userId], (err, row) => {
-            if (err) return res.status(500).json({ error: "Database error" })
-            if (!row) return res.status(404).json({ error: "User not found" })
-            res.json(row)
-        })
+app.get("/api/user/:id", (req, res) => {
+    const userId = req.params.id;
+    // Add 'created_at' to the SELECT statement
+    db.get("SELECT id, display_name, profile_image, banner_image, bio, created_at FROM users WHERE id = ?", [userId], (err, row) => {
+        if (err) return res.status(500).json({ error: "Database error" })
+        if (!row) return res.status(404).json({ error: "User not found" })
+        res.json(row)
     })
+})
 
     // COMMUNITY API's
 
@@ -1036,14 +1038,14 @@ function initializeApp() {
     });
 
     //user API's
-    app.get("/api/user", (req, res) => {
-        if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" })
-        
-        db.get("SELECT id, email, display_name, profile_image, banner_image, bio FROM users WHERE id = ?", [req.session.userId], (err, row) => {
-            if (err) return res.status(500).json({ error: "Database error" })
-            res.json(row)
-        })
+app.get("/api/user", (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" })
+    
+    db.get("SELECT id, email, display_name, profile_image, banner_image, bio, created_at FROM users WHERE id = ?", [req.session.userId], (err, row) => {
+        if (err) return res.status(500).json({ error: "Database error" })
+        res.json(row)
     })
+})
 
     app.post("/api/verify-password", (req, res) => {
         if (!req.session.userId) return res.status(401).json({ error: "Unauthorized" })
