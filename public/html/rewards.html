@@ -104,7 +104,8 @@
             max-width: 600px;
             margin: 0 auto;
         }
-                .top-bar {
+        
+        .top-bar {
             background: var(--primary-color);
             color: white;
             padding: 15px 20px;
@@ -115,7 +116,8 @@
             top: 0;
             z-index: 1000;
         }
-                .back-button {
+        
+        .back-button {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
@@ -327,7 +329,7 @@
             .rewards-grid, .stats-grid {
                 grid-template-columns: 1fr;
             }
-                        .top-bar {
+            .top-bar {
                 padding: 12px 15px;
             }
         }
@@ -342,7 +344,7 @@
         </a>
         <div class="brand-name">kzolm</div>
     </div>
-    <!-- Navigation -->
+    
     <div class="nav-container">
         <div class="nav-content">
             <a href="/menu" class="logo">MicroHabits</a>
@@ -357,28 +359,23 @@
     <div class="container">
         <div class="page-header">
             <h1>Earn Rewards</h1>
-            <p>Celebrate your progress and unlock achievements</p>
+            <p>Celebrate your progress and earn points</p>
         </div>
 
-        <!-- Stats Section -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-number" id="total-points">0</div>
-        <div class="stat-label">Total Points</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number" id="completed-goals">0</div>
-        <div class="stat-label">Goals Completed</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number" id="current-streak">0</div>
-        <div class="stat-label">Day Streak</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number" id="achievements">0</div>
-        <div class="stat-label">Achievements</div>
-    </div>
-</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-points">0</div>
+                <div class="stat-label">Total Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completed-goals">0</div>
+                <div class="stat-label">Goals Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="current-streak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
 
         <div class="rewards-grid">
             <div class="reward-card">
@@ -386,8 +383,7 @@
                 <h3>Consistency Master</h3>
                 <p>Complete 30 days of meditation</p>
                 <div class="reward-points">500 Points</div>
-                <div class="progress-ring">
-                </div>
+                <div class="progress-ring"></div>
             </div>
 
             <div class="reward-card">
@@ -395,8 +391,7 @@
                 <h3>Goal Crusher</h3>
                 <p>Complete 30 goals in one month</p>
                 <div class="reward-points">300 Points</div>
-                <div class="progress-ring">
-                </div>
+                <div class="progress-ring"></div>
             </div>
 
             <div class="reward-card">
@@ -404,8 +399,7 @@
                 <h3>Early Riser</h3>
                 <p>Complete 5 goals before 9AM</p>
                 <div class="reward-points">250 Points</div>
-                <div class="progress-ring">
-                </div>
+                <div class="progress-ring"></div>
             </div>
 
             <div class="reward-card">
@@ -413,9 +407,7 @@
                 <h3>Knowledge Seeker</h3>
                 <p>Complete a Learning & Development task everyday for a month</p>
                 <div class="reward-points">400 Points</div>
-                <div class="progress-ring">
-                    </svg>
-                </div>
+                <div class="progress-ring"></div>
             </div>
 
             <div class="reward-card">
@@ -423,8 +415,7 @@
                 <h3>Fitness Fanatic</h3>
                 <p>Complete a Health & Fitness task everyday for a month</p>
                 <div class="reward-points">400 Points</div>
-                <div class="progress-ring">
-                </div>
+                <div class="progress-ring"></div>
             </div>
 
             <div class="reward-card">
@@ -432,59 +423,48 @@
                 <h3>Complete Mastery</h3>
                 <p>Obtain every achievement available</p>
                 <div class="reward-points">999 Points</div>
-                <div class="progress-ring">
-            </div>
+                <div class="progress-ring"></div>
+            </div> 
+        </div> </div> <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("✅ Script loaded. Fetching stats...");
+            fetchRewardStats();
+        });
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("✅ Script loaded. Attempting to fetch stats...");
-        fetchRewardStats();
-    });
+        async function fetchRewardStats() {
+            try {
+                // 1. Fetch Points directly from DB
+                const progressRes = await fetch('/api/user/progress');
+                if (progressRes.ok) {
+                    const progressData = await progressRes.json();
+                    
+                    // Display the raw points value (25.0)
+                    const points = progressData.totalPoints;
+                    document.getElementById('total-points').textContent = points;
+                    console.log("✅ Updated points to:", points);
+                } else {
+                    console.error("❌ Failed to fetch points. Server status:", progressRes.status);
+                }
 
-    async function fetchRewardStats() {
-        try {
-            // 1. Fetch Total Points
-            console.log("Fetching points...");
-            const progressRes = await fetch('/api/user/progress');
-            if (progressRes.ok) {
-                const progressData = await progressRes.json();
-                console.log("✅ Points received:", progressData.totalPoints);
-                document.getElementById('total-points').textContent = Math.round(progressData.totalPoints);
-            } else {
-                console.error("❌ Failed to fetch points. Status:", progressRes.status);
+                // 2. Fetch Stats
+                const statsRes = await fetch('/api/statistics');
+                if (statsRes.ok) {
+                    const statsData = await statsRes.json();
+                    document.getElementById('completed-goals').textContent = statsData.tasksCompleted || 0;
+                    document.getElementById('current-streak').textContent = statsData.currentStreak || 0;
+                }
+
+                // 3. Fetch Achievements
+                const achRes = await fetch('/api/user/achievements/manage');
+                if (achRes.ok) {
+                    const achData = await achRes.json();
+                    const unlockedCount = achData.filter(item => item.unlocked).length;
+                    document.getElementById('achievements').textContent = unlockedCount;
+                }
+            } catch (error) {
+                console.error("❌ CRITICAL ERROR:", error);
             }
-
-            // 2. Fetch Streak & Goals
-            console.log("Fetching statistics...");
-            const statsRes = await fetch('/api/statistics');
-            if (statsRes.ok) {
-                const statsData = await statsRes.json();
-                console.log("✅ Stats received:", statsData);
-                document.getElementById('completed-goals').textContent = statsData.tasksCompleted || 0;
-                document.getElementById('current-streak').textContent = statsData.currentStreak || 0;
-            } else {
-                console.error("❌ Failed to fetch statistics. Status:", statsRes.status);
-            }
-
-            // 3. Fetch Achievements
-            console.log("Fetching achievements...");
-            const achRes = await fetch('/api/user/achievements/manage');
-            if (achRes.ok) {
-                const achData = await achRes.json();
-                // Count items where unlocked is true
-                const unlockedCount = achData.filter(item => item.unlocked).length;
-                console.log("✅ Achievements count:", unlockedCount);
-                document.getElementById('achievements').textContent = unlockedCount;
-            } else {
-                console.error("❌ Failed to fetch achievements. Status:", achRes.status);
-            }
-
-        } catch (error) {
-            console.error("❌ CRITICAL ERROR in fetchRewardStats:", error);
         }
-    }
-</script>
-</body>
-</html>
+    </script>
 </body>
 </html>
