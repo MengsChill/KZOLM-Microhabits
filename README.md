@@ -31,12 +31,11 @@ Feedback is always welcome!
  node server.js
 ```
 
-## Contributors
+##  Contributors
 
 This project was a collaborative effort by the following members:
 
-* **Backend Integration, Documentation & Testing:** [Choong Jun Zac] (@ishtardsama) 
-* **Frontend Design, UX & Testing** [Oh Chu Meng] (@Meng-prog-ux) 
-* **Frontend Design, UX & Testing:** [Yeoh Ming Xuan] (@minxuan886-spec) 
-* **Frontend Design, UX & Testing** [Eng Jun Kent] (@teatimesxd)
-
+* **Backend Integration, Documentation & Testing:** [Choong Jun Zac](https://github.com/ishtardsama)
+* **Frontend Design, UX & Testing:** [Oh Chu Meng](https://github.com/Meng-prog-ux)
+* **Frontend Design, UX & Testing:** [Yeoh Ming Xuan](https://github.com/minxuan886-spec)
+* **Frontend Design, UX & Testing:** [Eng Jun Kent](https://github.com/teatimesxd)
