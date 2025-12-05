@@ -15,6 +15,7 @@ Feedback is welcome!
 
  # Run it locally yourself! (paste commands into terminal)
 <ins>1. Clone the repo</ins>
-
-   git clone [Your Repo URL]
+```
+   git clone https://github.com/Meng-prog-ux/hackathon-website.git
    cd hackathon-website
+```
