@@ -31,6 +31,12 @@ Feedback is always welcome!
  node server.js
 ```
 
-# Contribution
-@ishtardsama
+## 🤝 Contributors
+
+This project was a collaborative effort by the following members:
+
+* **Backend Integration, Documentation & Testing:** [Zac] (@ishtardsama) 
+* **Frontend Design, UX & Testing** [Teammate 1 Name] (@Meng-prog-ux) 
+* **Frontend Design, UX & Testing:** [Teammate 2 Name] (@minxuan886-spec) 
+* **Frontend Design, UX & Testing** [Teammate 3 Name] (@teatimesxd)
 
