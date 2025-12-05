@@ -34,8 +34,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         if (!req.session || !req.session.userId) {
-            // Handle case where user is not logged in or session is not populated
-            return cb(new Error("User not authenticated"), false);
+            return cb(new Error("User not authenticated"), false)
         }
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, 'user-' + req.session.userId + '-' + uniqueSuffix + path.extname(file.originalname))
@@ -44,17 +43,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-// --- FIX: Use Absolute Path to ensure we use the REAL database ---
 const dbPath = path.join(__dirname, "users.db");
 const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) console.error("❌ Database connection failed:", err.message)
-    else console.log("✅ Connected to SQLite database.")
+    if (err) console.error("Database connection failed:", err.message)
+    else console.log("Connected to SQLite database.")
 })
 
 
 //db setup
 db.serialize(() => {
-    // --- CREATE ALL TABLES FIRST ---
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +65,7 @@ db.run(`
     bio TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- <--- ADD THIS LINE
   )
-`);
+`)
 
     db.run(`
       CREATE TABLE IF NOT EXISTS posts (
@@ -79,7 +76,7 @@ db.run(`
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
-    `);
+    `)
 
     db.run(`
       CREATE TABLE IF NOT EXISTS comments (
@@ -91,7 +88,7 @@ db.run(`
         FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
-    `);
+    `)
 
     db.run(`
       CREATE TABLE IF NOT EXISTS likes (
@@ -101,7 +98,7 @@ db.run(`
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
       )
-    `);
+    `)
 
     db.run(`
       CREATE TABLE IF NOT EXISTS tasks (
@@ -118,7 +115,7 @@ db.run(`
         completed_at DATETIME,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
-    `);
+    `)
     
     db.run(`
       CREATE TABLE IF NOT EXISTS user_stats (
@@ -126,7 +123,7 @@ db.run(`
         total_points REAL DEFAULT 0,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       )
-    `);
+    `)
     
     db.run(`
       CREATE TABLE IF NOT EXISTS daily_completions (
@@ -138,7 +135,7 @@ db.run(`
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE CASCADE
       )
-    `);
+    `)
     
     db.run(`
       CREATE TABLE IF NOT EXISTS achievements (
@@ -149,7 +146,7 @@ db.run(`
         threshold REAL NOT NULL,
         icon TEXT NOT NULL
       )
-    `);
+    `)
     
     db.run(`
       CREATE TABLE IF NOT EXISTS user_achievements (
@@ -162,22 +159,20 @@ db.run(`
         FOREIGN KEY (achievement_id) REFERENCES achievements (id) ON DELETE CASCADE,
         UNIQUE(user_id, achievement_id)
       )
-    `, (err) => { // <-- Callback on the *LAST* table creation
+    `, (err) => { 
         if (err) {
             console.error("CRITICAL: Error creating tables:", err.message);
             return;
         }
-        console.log("✅ All tables created or verified.");
+        console.log("All tables created or verified.");
 
-        // --- Force-delete all existing achievements to clear corruption ---
         db.run("DELETE FROM achievements", (deleteErr) => {
             if (deleteErr) {
                 console.error("CRITICAL: Error clearing achievements table:", deleteErr.message);
                 return;
             }
-            console.log("✅ Cleared old achievements.");
+            console.log("Cleared old achievements.")
             
-            // --- Seeding logic runs *after* tables are created and cleared ---
             const achievements = [
                 { name: 'Beginner', desc: 'Reach 10 points', type: 'points', threshold: 10, icon: 'fas fa-seedling' },
                 { name: 'Learner', desc: 'Reach 50 points', type: 'points', threshold: 50, icon: 'fas fa-leaf' },
@@ -186,7 +181,7 @@ db.run(`
                 { name: 'Climber', desc: 'Reach 900 points', type: 'points', threshold: 900, icon: 'fas fa-mountain' },
                 { name: 'Expert', desc: 'Reach 1500 points', type: 'points', threshold: 1500, icon: 'fas fa-tree' },
                 { name: 'Master', desc: 'Reach 3000 points', type: 'points', threshold: 3000, icon: 'fas fa-trophy' }
-            ];
+            ]
 
             const stmt = db.prepare("INSERT OR IGNORE INTO achievements (name, description, type, threshold, icon) VALUES (?, ?, ?, ?, ?)");
         
