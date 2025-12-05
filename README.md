@@ -1,8 +1,11 @@
 # Hackathon Submission: KZOLM Microhabits
 
-built during our first semester in CS
+Built during our first semester in CS.
+
 This project was built using AI-assisted workflows to maximize our efficiency within the hackathon time constraints.
+
 Our website utilizes microhabits to help users to build up good habits, focusing more on the consistency instead of the magnitude of the task.
+
 Feedback is always welcome!
 
  # Tech Stack 
