@@ -15,18 +15,18 @@ Feedback is always welcome!
 ```
 
  # Run it locally yourself! (requires node.js to be installed)
-<ins>1. Clone the repo</ins>
+**1. Clone the repo**
 ```
    git clone https://github.com/Meng-prog-ux/hackathon-website.git
    cd hackathon-website
 ```
 
-<ins>2. Install node dependencies</ins>
+**2. Install node dependencies**
 ```
   npm install
 ```
 
-<ins>3. Start the server</ins>
+**3. Start the server**
 ```
  node server.js
 ```
