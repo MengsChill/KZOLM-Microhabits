@@ -5,11 +5,13 @@ This project was built using AI-assisted workflows to maximize our efficiency wi
 Feedback is welcome!
 
  # Tech Stack 
-Backend: Node.js (Express)
-Database: SQLite3
-Authentication: bcrypt for secure password hashing and express-session for session management.
-File Handling: multer and fs for file uploads and processing.
-Frontend: HTML, CSS, and vanilla JavaScript
+ ```
+ Backend: Node.js (Express)
+ Database: SQLite3
+ Authentication: bcrypt for secure password hashing and express-session for session management.
+ File Handling: multer and fs for file uploads and processing.
+ Frontend: HTML, CSS, and vanilla JavaScript
+```
 
  # Run it locally yourself! (paste commands into terminal)
 <ins>1. Clone the repo</ins>
