@@ -20,8 +20,8 @@ Feedback is always welcome!
  # Run it locally yourself! (requires node.js to be installed)
 **1. Clone the repo**
 ```
-   git clone https://github.com/Meng-prog-ux/hackathon-website.git
-   cd hackathon-website
+   git clone https://github.com/Meng-prog-ux/KZOLM-Microhabits.git
+   cd KZOLM-Microhabits
 ```
 
 **2. Install node dependencies**
