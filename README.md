@@ -19,6 +19,7 @@ Feedback is always welcome!
 
  # Run it locally yourself! 
  (requires node.js & git to be installed)
+
 **1. Clone the repo**
 ```
    git clone https://github.com/Meng-prog-ux/KZOLM-Microhabits.git
