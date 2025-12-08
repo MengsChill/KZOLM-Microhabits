@@ -14,11 +14,11 @@ Feedback is always welcome!
 ```
 # Features  
 Heres what you can do with KZOLM Microhabits  
-1. Sign In & Sign Out module : Local sign in and sign out that hashes your password and saves it to SQL database
-2. Add tasks : Add a task to be tracked
-3. Profile page : Upload profile picture, update bio & display achievements
-4. Community tab : hare your progress thoughts & images with your peers
-5. Streaks : Check in daily to upkeep your steaks
+1. Sign In & Sign Out module: Local sign in and sign out that hashes your password and saves it to SQL database
+2. Add tasks: Add a task to be tracked
+3. Profile page: Upload profile picture, update bio & display achievements
+4. Community tab: hare your progress thoughts & images with your peers
+5. Streaks: Check in daily to upkeep your steaks
 
  # Run it locally yourself! (requires node & git to be installed)
 **1. Clone the repo**
