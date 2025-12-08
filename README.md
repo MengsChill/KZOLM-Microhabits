@@ -1,12 +1,8 @@
 # Hackathon Submission: KZOLM Microhabits
-
-Built during our first semester in CS.
-
-This project was built using AI-assisted workflows to maximize our efficiency within the hackathon time constraints.
-
-Our website utilizes microhabits to help users to build up good habits, focusing more on the consistency instead of the magnitude of the task.
-
-Feedback is always welcome!
+Built during our first semester in CS.  
+This project was built using AI-assisted workflows to maximize our efficiency within the hackathon time constraints.  
+Our website utilizes microhabits to help users to build up good habits, focusing more on the consistency instead of the magnitude of the task.  
+Feedback is always welcome!  
 
  # Tech Stack 
  ```
@@ -16,6 +12,13 @@ Feedback is always welcome!
  File Handling: multer and fs for file uploads and processing.
  Frontend: HTML, CSS, and vanilla JavaScript
 ```
+# Features  
+Heres what you can do with KZOLM Microhabits  
+1. **Sign In & Sign Out module : ** Local sign in and sign out that hashes your password and saves it to SQL database
+2. **Add tasks : ** Add a task to be tracked
+3. **Profile page : ** Upload profile picture, update bio & display achievements
+4. **Community tab : ** Share your progress thoughts & images with your peers
+5. **Streaks : ** Check in daily to upkeep your steaks
 
  # Run it locally yourself! (requires node & git to be installed)
 **1. Clone the repo**
