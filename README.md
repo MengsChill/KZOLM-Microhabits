@@ -13,7 +13,6 @@ Feedback is always welcome!
  Frontend: HTML, CSS, and vanilla JavaScript
 ```
 ### Built With
-* [![html][html.com]][html-url]
 * [![Java][Java.com]][Java-url]
 
 # Features  
@@ -49,3 +48,8 @@ This project was a collaborative effort by the following members:
 * **Frontend Design, UX & Testing:** [Oh Chu Meng](https://github.com/MengsChill)
 * **Frontend Design, UX & Testing:** [Yeoh Ming Xuan](https://github.com/minxuan886-spec)
 * **Frontend Design, UX & Testing:** [Eng Jun Kent](https://github.com/teatimesxd)
+
+
+
+[Java.com]: https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white
+[Java-url]: https://www.java.com/
