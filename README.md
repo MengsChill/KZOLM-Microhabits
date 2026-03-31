@@ -12,6 +12,10 @@ Feedback is always welcome!
  File Handling: multer and fs for file uploads and processing.
  Frontend: HTML, CSS, and vanilla JavaScript
 ```
+### Built With
+* [![html][html.com]][html-url]
+* [![Java][Java.com]][Java-url]
+
 # Features  
 Heres what you can do with KZOLM Microhabits  
 1. Sign In & Sign Out module: Local sign in and sign out that hashes your password and saves it to SQL database
